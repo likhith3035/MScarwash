@@ -4,12 +4,13 @@ import { Booking } from './types';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-export const supabase = (supabaseUrl && supabaseAnonKey)
+export const supabase = (supabaseUrl && supabaseAnonKey && supabaseUrl.startsWith('http'))
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
 // New clean key so old mock data cached in browser localStorage is ignored
 const LOCAL_STORAGE_KEY = 'ms_car_wash_bookings_v2';
+let isSupabaseDisabled = false;
 
 export async function saveBooking(bookingData: Omit<Booking, 'id' | 'createdAt' | 'status'>): Promise<Booking> {
   const newId = `MSCW-${Math.floor(1000 + Math.random() * 9000)}`;
@@ -20,7 +21,7 @@ export async function saveBooking(bookingData: Omit<Booking, 'id' | 'createdAt' 
     createdAt: new Date().toISOString(),
   };
 
-  if (supabase) {
+  if (supabase && !isSupabaseDisabled) {
     try {
       const { data, error } = await supabase
         .from('bookings')
@@ -29,6 +30,10 @@ export async function saveBooking(bookingData: Omit<Booking, 'id' | 'createdAt' 
         .single();
       if (!error && data) {
         return data as Booking;
+      }
+      if (error && (error.code === 'PGRST301' || error.status === 401)) {
+        console.warn('Supabase RLS or Auth 401 error. Falling back to local storage.');
+        isSupabaseDisabled = true;
       }
     } catch (err) {
       console.warn('Supabase insert error:', err);
@@ -46,7 +51,7 @@ export async function saveBooking(bookingData: Omit<Booking, 'id' | 'createdAt' 
 }
 
 export async function getBookings(): Promise<Booking[]> {
-  if (supabase) {
+  if (supabase && !isSupabaseDisabled) {
     try {
       const { data, error } = await supabase
         .from('bookings')
@@ -54,6 +59,10 @@ export async function getBookings(): Promise<Booking[]> {
         .order('createdAt', { ascending: false });
       if (!error && data) {
         return data as Booking[];
+      }
+      if (error && (error.code === 'PGRST301' || error.status === 401)) {
+        console.warn('Supabase 401 Unauthorized. Using local storage fallback.');
+        isSupabaseDisabled = true;
       }
     } catch (err) {
       console.warn('Supabase fetch error:', err);
@@ -64,12 +73,15 @@ export async function getBookings(): Promise<Booking[]> {
 }
 
 export async function updateBookingStatus(id: string, status: Booking['status'], totalAmount?: number): Promise<boolean> {
-  if (supabase) {
+  if (supabase && !isSupabaseDisabled) {
     try {
       const updatePayload: Partial<Booking> = { status };
       if (totalAmount !== undefined) updatePayload.totalAmount = totalAmount;
       const { error } = await supabase.from('bookings').update(updatePayload).eq('id', id);
       if (!error) return true;
+      if (error && (error.code === 'PGRST301' || error.status === 401)) {
+        isSupabaseDisabled = true;
+      }
     } catch (err) {
       console.warn('Supabase update error:', err);
     }
