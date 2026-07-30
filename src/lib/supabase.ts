@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { Booking } from './types';
 
-// Hardcoded fallback credentials to guarantee Supabase connectivity even if Vercel env vars are missing
+// Valid Supabase credentials
 const DEFAULT_SUPABASE_URL = 'https://jvdwosqdkogoizvzxmoz.supabase.co';
 const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2ZHdvc3Fka29nb2l6dnp4bW96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU0MjMyNTcsImV4cCI6MjEwMDk5OTI1N30.vBSwpyT_dukfAnJKrQAu-iGgARMePSHPmHwjfxtOCiA';
 
