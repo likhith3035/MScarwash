@@ -1,12 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
 import { Booking } from './types';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+// Hardcoded fallback credentials to guarantee Supabase connectivity even if Vercel env vars are missing
+const DEFAULT_SUPABASE_URL = 'https://jvdwosqdkogoizvzxmoz.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2ZHdvc3Fka29nb2l6dnp4bW96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU0MjMyNTcsImV4cCI6MjEwMDk5OTI1N30.vBSwpyT_dukfAnJKrQAu-iGgARMePSHPmHwjfxtOCiA';
 
-export const supabase = (supabaseUrl && supabaseAnonKey && supabaseUrl.startsWith('http'))
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || DEFAULT_SUPABASE_ANON_KEY;
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // New clean key so old mock data cached in browser localStorage is ignored
 const LOCAL_STORAGE_KEY = 'ms_car_wash_bookings_v2';
