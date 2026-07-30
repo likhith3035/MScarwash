@@ -34,6 +34,9 @@ export const metadata: Metadata = {
   authors: [{ name: 'MS Car Wash Srikalahasti' }],
   creator: 'MS Car Wash Team',
   publisher: 'MS Car Wash Srikalahasti',
+  verification: {
+    google: 'Y9Pz6KKF2dRqhHD68hqf5NrUjcpR2ULh8je2rh_8Kyw',
+  },
   formatDetection: {
     email: false,
     address: true,
