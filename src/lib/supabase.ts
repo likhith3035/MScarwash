@@ -33,8 +33,8 @@ export async function saveBooking(bookingData: Omit<Booking, 'id' | 'createdAt' 
       if (!error && data) {
         return data as Booking;
       }
-      if (error && (error.code === 'PGRST301' || error.code === '401')) {
-        console.warn('Supabase RLS or Auth 401 error. Falling back to local storage.');
+      if (error && (error.code === 'PGRST301' || error.code === '401' || error.code === '400')) {
+        console.warn('Supabase RLS/400 error. Falling back to local storage.');
         isSupabaseDisabled = true;
       }
     } catch (err) {
@@ -55,15 +55,22 @@ export async function saveBooking(bookingData: Omit<Booking, 'id' | 'createdAt' 
 export async function getBookings(): Promise<Booking[]> {
   if (supabase && !isSupabaseDisabled) {
     try {
+      // Fetch select('*') without Postgres column casing order issues
       const { data, error } = await supabase
         .from('bookings')
-        .select('*')
-        .order('createdAt', { ascending: false });
+        .select('*');
+
       if (!error && data) {
-        return data as Booking[];
+        // Sort by createdAt descending in JS/TS font-safe manner
+        const sorted = (data as Booking[]).sort((a, b) => {
+          const dateA = new Date(a.createdAt || 0).getTime();
+          const dateB = new Date(b.createdAt || 0).getTime();
+          return dateB - dateA;
+        });
+        return sorted;
       }
       if (error && (error.code === 'PGRST301' || error.code === '401')) {
-        console.warn('Supabase 401 Unauthorized. Using local storage fallback.');
+        console.warn('Supabase 401/400 error. Using local storage fallback.');
         isSupabaseDisabled = true;
       }
     } catch (err) {
