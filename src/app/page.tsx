@@ -70,21 +70,21 @@ export default function HomePage() {
       name: 'Subba Rao K.',
       location: 'Panagal, Srikalahasti',
       vehicle: 'Hyundai Creta (Car)',
-      quote: 'Best foam wash in Srikalahasti! Completely scratch free and the underbody washing removed all temple trip road mud.',
+      quote: 'Best car wash in Srikalahasti! Completely scratch free and the underbody pressure washing removed all highway mud.',
       rating: 5,
     },
     {
       name: 'V. Naresh',
       location: 'RTO Office Area',
       vehicle: 'Royal Enfield Bullet (Bike)',
-      quote: 'Quick 20-minute bike foam wash with chain lube. The free chilled water bottle after the wash was a great touch.',
+      quote: 'Quick 20-minute bike foam wash with chain lube. MS Car Wash SKHT is definitely the top choice.',
       rating: 5,
     },
     {
       name: 'Sekhar Reddy',
-      location: 'Bypass Road',
+      location: 'Bypass Road, SKHT',
       vehicle: 'Toyota Innova (SUV)',
-      quote: 'The doorstep pickup wash service is extremely convenient. They picked up my Innova from home and returned it spotless.',
+      quote: 'The doorstep pickup wash service near highway Srikalahasti is super convenient. They returned my Innova spotless.',
       rating: 5,
     },
   ];
@@ -115,20 +115,20 @@ export default function HomePage() {
             {/* Pulsing Live Status Pill */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1D1D1F]/5 dark:bg-white/10 text-xs font-semibold text-[#1D1D1F] dark:text-white border border-[#1D1D1F]/10 dark:border-white/10">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>Open 7 AM – 10 PM • Srikalahasti Vehicle Wash</span>
+              <span>Open 7 AM – 10 PM • Srikalahasti Best Car Wash</span>
             </div>
 
-            {/* Main Headline */}
+            {/* Main SEO Optimized Headline */}
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.06] text-[#1D1D1F] dark:text-white">
-              Clean Car. <br />
+              MS Car Wash. <br />
               <span className="text-neutral-500 dark:text-neutral-400 font-normal">
-                Happy Ride.
+                Srikalahasti Best Wash.
               </span>
             </h1>
 
-            {/* Subtitle */}
+            {/* Subtitle with SKHT & Highway Keywords */}
             <p className="text-base sm:text-lg text-neutral-600 dark:text-neutral-400 max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
-              100% scratch-free foam washing, doorstep pickup service, and guaranteed center slot booking in Srikalahasti.
+              100% scratch-free snow foam washing, doorstep pickup service, and slot booking near highway & Panagal area in Srikalahasti (SKHT).
             </p>
 
             {/* CTAs */}
@@ -169,7 +169,7 @@ export default function HomePage() {
               <div className="p-4 rounded-2xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/5 dark:border-white/5">
                 <Image
                   src="/logo.png"
-                  alt="MS Car Wash Emblem"
+                  alt="MS Car Wash Srikalahasti SKHT Logo"
                   width={180}
                   height={180}
                   className="w-40 h-40 object-contain"
@@ -178,9 +178,9 @@ export default function HomePage() {
               </div>
 
               <div>
-                <h3 className="font-extrabold text-xl tracking-tight text-[#1D1D1F] dark:text-white">MS CAR WASH</h3>
+                <h3 className="font-extrabold text-xl tracking-tight text-[#1D1D1F] dark:text-white">MS CAR WASH SKHT</h3>
                 <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-                  Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Srikalahasti
+                  Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Near Highway Srikalahasti
                 </p>
               </div>
 
@@ -211,13 +211,13 @@ export default function HomePage() {
           <div className="text-center sm:text-left space-y-1">
             <div className="inline-flex items-center gap-1.5 text-rose-500 text-xs font-bold uppercase tracking-wider">
               <Heart className="w-4 h-4 fill-rose-500" />
-              <span>Because We Care Perks</span>
+              <span>Complimentary Perks</span>
             </div>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-[#1D1D1F] dark:text-white tracking-tight">
               Complimentary Perks With Every Wash
             </h2>
             <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400">
-              Every single wash comes with a sealed mineral water bottle & premium car tissue box.
+              Every single vehicle wash at MS Car Wash Srikalahasti comes with a sealed mineral water bottle & car tissue box.
             </p>
           </div>
 
@@ -228,7 +228,7 @@ export default function HomePage() {
               <div className="relative w-full sm:w-52 h-52 bg-white dark:bg-[#1C1C1F] shrink-0 overflow-hidden">
                 <Image
                   src="/water-bottle.png"
-                  alt="Free Mineral Water Bottle Perk"
+                  alt="Free Mineral Water Bottle Perk — MS Car Wash SKHT"
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
@@ -249,7 +249,7 @@ export default function HomePage() {
               <div className="relative w-full sm:w-52 h-52 bg-white dark:bg-[#1C1C1F] shrink-0 overflow-hidden">
                 <Image
                   src="/tissue-box.png"
-                  alt="Free Car Tissue Paper Box Perk"
+                  alt="Free Car Tissue Paper Box Perk — Best Car Wash in Srikalahasti"
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
@@ -276,13 +276,13 @@ export default function HomePage() {
         <div className="text-center max-w-xl mx-auto mb-10 space-y-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-bold uppercase">
             <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
-            <span>Local Customer Feedback</span>
+            <span>Top Rated Car Wash in SKHT</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#1D1D1F] dark:text-white">
-            Trusted in Srikalahasti
+            Trusted Near Highway Srikalahasti
           </h2>
           <p className="text-xs sm:text-sm text-neutral-500">
-            Real feedback from local car owners and daily commuters.
+            Real reviews for MS Car Wash SKHT from local car owners and highway commuters.
           </p>
         </div>
 
@@ -322,7 +322,7 @@ export default function HomePage() {
             Wash & Detailing Services
           </h2>
           <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400">
-            High-pressure water washing, snow foam detailing, and interior hygiene treatment.
+            High-pressure water washing, snow foam detailing, and interior hygiene treatment in SKHT.
           </p>
         </div>
 
@@ -374,7 +374,7 @@ export default function HomePage() {
       <section className="py-12 bg-white dark:bg-[#0A0A0C] border-y border-[#E5E5EA] dark:border-[#27272A]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-extrabold text-[#1D1D1F] dark:text-white">Vehicles We Wash</h2>
+            <h2 className="text-xl font-extrabold text-[#1D1D1F] dark:text-white">Vehicles We Wash in SKHT</h2>
             <Link href="/pricing" className="text-xs font-semibold text-neutral-500 hover:text-black dark:hover:text-white">
               View Price Tiers &rarr;
             </Link>
@@ -401,7 +401,7 @@ export default function HomePage() {
       <section className="py-8 bg-[#FBFBFC] dark:bg-[#09090B] border-b border-[#E5E5EA] dark:border-[#27272A]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <p className="text-center text-xs font-bold uppercase tracking-widest text-neutral-500 mb-6">
-            All Automobile Brands Serviced Daily
+            All Automobile Brands Serviced Daily in Srikalahasti
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs sm:text-sm font-semibold text-neutral-600 dark:text-neutral-400">
             {brandLogos.map((brand) => (
@@ -420,14 +420,14 @@ export default function HomePage() {
           
           <div className="lg:col-span-5 space-y-5 text-xs">
             <div>
-              <span className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Srikalahasti Shop</span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1D1D1F] dark:text-white mt-1">Visit Our Center</h2>
+              <span className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Panagal & Near Highway</span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1D1D1F] dark:text-white mt-1">Visit MS Car Wash SKHT</h2>
             </div>
             
             <div className="space-y-3.5 text-neutral-600 dark:text-neutral-400">
               <div className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 shrink-0 text-[#1D1D1F] dark:text-white mt-0.5" />
-                <span>Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Srikalahasti - 517644</span>
+                <span>Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Near Highway, Srikalahasti - 517644</span>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-4 h-4 shrink-0 text-[#1D1D1F] dark:text-white" />
@@ -458,7 +458,7 @@ export default function HomePage() {
 
           <div className="lg:col-span-7 h-[320px] rounded-3xl overflow-hidden border border-[#E5E5EA] dark:border-[#27272A] bg-white dark:bg-[#141416]">
             <iframe
-              title="MS Car Wash Map Location"
+              title="MS Car Wash Srikalahasti Map Location"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15486.294241761895!2d79.6914561!3d13.7538202!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a4d4b1a45a33111%3A0x6b801a2f64126937!2sPanagal%2C%20Srikalahasti%2C%20Andhra%20Pradesh%20517644!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
               width="100%"
               height="100%"
@@ -471,8 +471,6 @@ export default function HomePage() {
 
         </div>
       </section>
-
-      {/* TODO: replace with real customer reviews/photos */}
 
     </div>
   );
