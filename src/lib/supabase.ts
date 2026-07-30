@@ -31,7 +31,7 @@ export async function saveBooking(bookingData: Omit<Booking, 'id' | 'createdAt' 
       if (!error && data) {
         return data as Booking;
       }
-      if (error && (error.code === 'PGRST301' || error.status === 401)) {
+      if (error && (error.code === 'PGRST301' || error.code === '401')) {
         console.warn('Supabase RLS or Auth 401 error. Falling back to local storage.');
         isSupabaseDisabled = true;
       }
@@ -60,7 +60,7 @@ export async function getBookings(): Promise<Booking[]> {
       if (!error && data) {
         return data as Booking[];
       }
-      if (error && (error.code === 'PGRST301' || error.status === 401)) {
+      if (error && (error.code === 'PGRST301' || error.code === '401')) {
         console.warn('Supabase 401 Unauthorized. Using local storage fallback.');
         isSupabaseDisabled = true;
       }
@@ -79,7 +79,7 @@ export async function updateBookingStatus(id: string, status: Booking['status'],
       if (totalAmount !== undefined) updatePayload.totalAmount = totalAmount;
       const { error } = await supabase.from('bookings').update(updatePayload).eq('id', id);
       if (!error) return true;
-      if (error && (error.code === 'PGRST301' || error.status === 401)) {
+      if (error && (error.code === 'PGRST301' || error.code === '401')) {
         isSupabaseDisabled = true;
       }
     } catch (err) {
