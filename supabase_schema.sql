@@ -1,4 +1,4 @@
--- MS Car Wash — Supabase Database Schema
+-- MS Car Wash — Supabase Database Schema (Clean & Idempotent)
 -- Run this script in your Supabase project's SQL Editor
 
 CREATE TABLE IF NOT EXISTS public.bookings (
@@ -19,16 +19,16 @@ CREATE TABLE IF NOT EXISTS public.bookings (
   totalAmount NUMERIC DEFAULT 350
 );
 
+-- Drop existing policies if present to prevent 42710 duplicate error
+DROP POLICY IF EXISTS "Allow public insert" ON public.bookings;
+DROP POLICY IF EXISTS "Allow public read and update" ON public.bookings;
+DROP POLICY IF EXISTS "Allow public read" ON public.bookings;
+DROP POLICY IF EXISTS "Allow public update" ON public.bookings;
+
 -- Enable Row Level Security (RLS)
 ALTER TABLE public.bookings ENABLE ROW LEVEL SECURITY;
 
--- Allow public insert (anyone can create a booking)
-CREATE POLICY "Allow public insert" ON public.bookings
-  FOR INSERT WITH CHECK (true);
-
--- Allow public select & update for management
-CREATE POLICY "Allow public read and update" ON public.bookings
-  FOR SELECT USING (true);
-
-CREATE POLICY "Allow public update" ON public.bookings
-  FOR UPDATE USING (true);
+-- Create policies cleanly
+CREATE POLICY "Allow public insert" ON public.bookings FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow public read" ON public.bookings FOR SELECT USING (true);
+CREATE POLICY "Allow public update" ON public.bookings FOR UPDATE USING (true);
