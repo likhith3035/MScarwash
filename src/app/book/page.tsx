@@ -9,6 +9,12 @@ import {
   ExternalLink,
   MessageSquare,
   Gift,
+  Car,
+  Clock,
+  Sparkles,
+  ShieldCheck,
+  User,
+  PhoneCall
 } from 'lucide-react';
 import { BookingMode, TIME_SLOTS, VEHICLE_TYPES, ADD_ONS } from '@/lib/types';
 import { saveBooking } from '@/lib/supabase';
@@ -112,100 +118,101 @@ Booking ID: ${saved.id}`;
   };
 
   return (
-    <div className="py-8 max-w-2xl mx-auto px-4 sm:px-6 w-full space-y-6">
+    <div className="py-12 max-w-3xl mx-auto px-4 sm:px-6 w-full space-y-8">
       
       {/* Header */}
-      <div className="text-center space-y-1">
-        <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest block">
-          {t('easyBooking')}
-        </span>
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">{t('bookVehicleWash')}</h1>
-        <p className="text-xs text-neutral-500">
+      <div className="text-center space-y-2">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-black uppercase tracking-wider border border-emerald-500/20">
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>{t('easyBooking')}</span>
+        </div>
+        <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white">{t('bookVehicleWash')}</h1>
+        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium max-w-lg mx-auto">
           {t('selectModeDesc')}
         </p>
       </div>
 
       {/* MODE TOGGLE BUTTONS */}
-      <div className="p-1.5 rounded-2xl bg-neutral-200/70 dark:bg-[#1C1C1F] grid grid-cols-2 gap-1 text-xs sm:text-sm font-extrabold shadow-xs">
+      <div className="p-2 rounded-2xl bg-slate-200/80 dark:bg-[#0D131D] grid grid-cols-2 gap-2 text-xs sm:text-sm font-black shadow-inner border border-black/5 dark:border-white/5">
         <button
           type="button"
           onClick={() => setMode('pickup')}
-          className={`py-3 px-3 rounded-xl transition-all flex items-center justify-center gap-2 ${
+          className={`py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2.5 ${
             mode === 'pickup'
-              ? 'bg-black text-white dark:bg-white dark:text-black shadow-md scale-[1.01]'
-              : 'text-neutral-600 dark:text-neutral-400'
+              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 scale-[1.01]'
+              : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
-          <MapPin className="w-4 h-4 shrink-0 text-emerald-500" />
+          <MapPin className="w-4.5 h-4.5 shrink-0" />
           <span>{t('doorstepPickup')}</span>
         </button>
 
         <button
           type="button"
           onClick={() => setMode('slot')}
-          className={`py-3 px-3 rounded-xl transition-all flex items-center justify-center gap-2 ${
+          className={`py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2.5 ${
             mode === 'slot'
-              ? 'bg-black text-white dark:bg-white dark:text-black shadow-md scale-[1.01]'
-              : 'text-neutral-600 dark:text-neutral-400'
+              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 scale-[1.01]'
+              : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
-          <Calendar className="w-4 h-4 shrink-0 text-amber-500" />
+          <Calendar className="w-4.5 h-4.5 shrink-0" />
           <span>{t('centerDriveIn')}</span>
         </button>
       </div>
 
       {/* Slot Warning Banner */}
       {mode === 'slot' && (
-        <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs flex items-start gap-2.5">
+        <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs font-medium flex items-start gap-3 shadow-xs">
           <AlertCircle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
           <span>
-            <strong>Slot Rule:</strong> {t('slotRule')}
+            <strong className="font-black">Center Slot Note:</strong> {t('slotRule')}
           </span>
         </div>
       )}
 
       {/* SUCCESS CONFIRMATION */}
       {submittedBooking ? (
-        <div className="p-8 rounded-3xl bg-white dark:bg-[#141416] border border-black/[0.08] dark:border-white/[0.08] text-center space-y-4 shadow-lg">
-          <div className="w-14 h-14 mx-auto rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
-            <CheckCircle2 className="w-8 h-8" />
+        <div className="p-8 sm:p-10 rounded-3xl bg-white dark:bg-[#0D131D] border border-black/10 dark:border-white/10 text-center space-y-6 shadow-xl relative overflow-hidden">
+          <div className="w-16 h-16 mx-auto rounded-full bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 flex items-center justify-center shadow-lg shadow-emerald-500/20 animate-bounce">
+            <CheckCircle2 className="w-9 h-9" />
           </div>
           <div>
-            <h2 className="text-2xl font-extrabold text-[#1D1D1F] dark:text-white">{t('bookingReceived')}</h2>
-            <p className="text-xs text-neutral-500 mt-1">Booking ID: <span className="font-mono font-bold text-black dark:text-white">{submittedBooking.id}</span></p>
+            <h2 className="text-3xl font-black text-slate-900 dark:text-white">{t('bookingReceived')}</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">Booking Reference ID: <span className="font-mono font-black text-slate-900 dark:text-white bg-slate-100 dark:bg-white/10 px-2 py-0.5 rounded-md">{submittedBooking.id}</span></p>
           </div>
-          <p className="text-xs text-neutral-500">
-            Notifications have been dispatched to the wash center team on WhatsApp & Telegram.
+          <p className="text-xs text-slate-600 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
+            Your wash slot request has been generated. Notifications have been dispatched to our Srikalahasti wash center desk on WhatsApp & Telegram.
           </p>
 
-          <div className="pt-2 flex flex-col sm:flex-row gap-3">
+          <div className="pt-3 flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
             <a
               href={submittedBooking.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-md"
+              className="flex-1 py-4 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 hover:scale-105 transition-all"
             >
-              <MessageSquare className="w-4 h-4" />
+              <MessageSquare className="w-4 h-4 fill-current" />
               <span>{t('openWhatsapp')}</span>
             </a>
             <button
               type="button"
               onClick={() => setSubmittedBooking(null)}
-              className="px-5 py-3.5 rounded-full bg-neutral-100 dark:bg-[#1C1C1F] text-xs font-bold text-neutral-700 dark:text-neutral-300"
+              className="px-6 py-4 rounded-full bg-slate-100 dark:bg-white/10 text-xs font-black text-slate-800 dark:text-slate-200 hover:bg-slate-200 transition-all"
             >
               {t('bookAnother')}
             </button>
           </div>
         </div>
       ) : (
-        /* EASY FORM */
-        <form onSubmit={handleSubmit} className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#141416] border border-black/[0.08] dark:border-white/[0.08] shadow-xs space-y-5">
+        /* EASY FORM CARD */
+        <form onSubmit={handleSubmit} className="p-6 sm:p-9 rounded-3xl bg-white dark:bg-[#0D131D] border border-black/10 dark:border-white/10 shadow-lg space-y-6">
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             
             {/* Name Input */}
-            <div className="space-y-1">
-              <label className="block text-xs font-extrabold text-[#1D1D1F] dark:text-white">
+            <div className="space-y-1.5">
+              <label className="block text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
                 {t('yourName')}
               </label>
               <input
@@ -214,34 +221,34 @@ Booking ID: ${saved.id}`;
                 placeholder="e.g. Ramesh Kumar"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.08] dark:border-white/[0.08] text-xs font-medium focus:ring-1 focus:ring-black dark:focus:ring-white focus:outline-none"
+                className="w-full px-4.5 py-3.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/10 dark:border-white/10 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
               />
             </div>
 
             {/* Phone Input */}
-            <div className="space-y-1">
-              <label className="block text-xs font-extrabold text-[#1D1D1F] dark:text-white">
+            <div className="space-y-1.5">
+              <label className="block text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
                 {t('phoneNumber')}
               </label>
               <input
                 type="tel"
                 required
-                placeholder="e.g. 9848012345"
+                placeholder="e.g. 9494829450"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.08] dark:border-white/[0.08] text-xs font-medium focus:ring-1 focus:ring-black dark:focus:ring-white focus:outline-none"
+                className="w-full px-4.5 py-3.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/10 dark:border-white/10 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
               />
             </div>
 
             {/* Vehicle Type */}
-            <div className="space-y-1">
-              <label className="block text-xs font-extrabold text-[#1D1D1F] dark:text-white">
+            <div className="space-y-1.5">
+              <label className="block text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
                 {t('vehicleType')}
               </label>
               <select
                 value={vehicleType}
                 onChange={(e) => setVehicleType(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.08] dark:border-white/[0.08] text-xs font-bold focus:ring-1 focus:ring-black dark:focus:ring-white focus:outline-none"
+                className="w-full px-4.5 py-3.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/10 dark:border-white/10 text-xs font-black text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
               >
                 {VEHICLE_TYPES.map((v) => (
                   <option key={v.id} value={v.id}>{v.name}</option>
@@ -250,17 +257,17 @@ Booking ID: ${saved.id}`;
             </div>
 
             {/* Vehicle Model */}
-            <div className="space-y-1">
-              <label className="block text-xs font-extrabold text-[#1D1D1F] dark:text-white">
+            <div className="space-y-1.5">
+              <label className="block text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
                 {t('vehicleModel')}
               </label>
               <input
                 type="text"
                 required
-                placeholder="e.g. Swift, Creta, Pulsar, Activa"
+                placeholder="e.g. Swift, Creta, Bullet, Activa"
                 value={vehicleModel}
                 onChange={(e) => setVehicleModel(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.08] dark:border-white/[0.08] text-xs font-medium focus:ring-1 focus:ring-black dark:focus:ring-white focus:outline-none"
+                className="w-full px-4.5 py-3.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/10 dark:border-white/10 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
               />
             </div>
 
@@ -268,28 +275,28 @@ Booking ID: ${saved.id}`;
 
           {/* Conditional Mode Fields */}
           {mode === 'pickup' ? (
-            <div className="space-y-4 pt-3 border-t border-black/[0.08] dark:border-white/[0.08]">
-              <div className="space-y-1">
-                <label className="block text-xs font-extrabold text-[#1D1D1F] dark:text-white">
+            <div className="space-y-5 pt-4 border-t border-black/10 dark:border-white/10">
+              <div className="space-y-1.5">
+                <label className="block text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
                   {t('pickupAddress')}
                 </label>
                 <textarea
                   rows={2}
-                  placeholder="House no, street name, landmark in Srikalahasti"
+                  placeholder="Door No., Street name, Landmark in Srikalahasti (e.g. Panagal, near Petrol bunk)"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.08] dark:border-white/[0.08] text-xs font-medium focus:ring-1 focus:ring-black dark:focus:ring-white focus:outline-none"
+                  className="w-full px-4.5 py-3.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/10 dark:border-white/10 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="block text-xs font-extrabold text-[#1D1D1F] dark:text-white">
+              <div className="space-y-1.5">
+                <label className="block text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
                   {t('pickupWindow')}
                 </label>
                 <select
                   value={timeWindow}
                   onChange={(e) => setTimeWindow(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.08] dark:border-white/[0.08] text-xs font-bold"
+                  className="w-full px-4.5 py-3.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/10 dark:border-white/10 text-xs font-black text-slate-900 dark:text-white"
                 >
                   <option value="8:00 AM – 10:00 AM">8:00 AM – 10:00 AM</option>
                   <option value="10:00 AM – 12:00 PM">10:00 AM – 12:00 PM</option>
@@ -302,31 +309,31 @@ Booking ID: ${saved.id}`;
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-black/[0.08] dark:border-white/[0.08]">
-              <div className="space-y-1">
-                <label className="block text-xs font-extrabold text-[#1D1D1F] dark:text-white">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-4 border-t border-black/10 dark:border-white/10">
+              <div className="space-y-1.5">
+                <label className="block text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
                   {t('preferredDate')}
                 </label>
                 <input
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.08] dark:border-white/[0.08] text-xs font-bold"
+                  className="w-full px-4.5 py-3.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/10 dark:border-white/10 text-xs font-black text-slate-900 dark:text-white"
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="block text-xs font-extrabold text-[#1D1D1F] dark:text-white">
+              <div className="space-y-1.5">
+                <label className="block text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
                   {t('timeSlot')}
                 </label>
                 <select
                   value={timeSlot}
                   onChange={(e) => setTimeSlot(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.08] dark:border-white/[0.08] text-xs font-bold"
+                  className="w-full px-4.5 py-3.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/10 dark:border-white/10 text-xs font-black text-slate-900 dark:text-white"
                 >
                   {TIME_SLOTS.map((ts) => (
                     <option key={ts.slot} value={ts.slot}>
-                      {ts.slot} {ts.isPeak ? '(Peak)' : ''}
+                      {ts.slot} {ts.isPeak ? '(Peak Hour)' : ''}
                     </option>
                   ))}
                 </select>
@@ -335,9 +342,9 @@ Booking ID: ${saved.id}`;
           )}
 
           {/* Included Free Perks Banner */}
-          <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between text-xs font-bold text-amber-700 dark:text-amber-300">
+          <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between text-xs font-bold text-amber-800 dark:text-amber-300 shadow-xs">
             <span className="flex items-center gap-2">
-              <Gift className="w-4 h-4 text-amber-500" /> 
+              <Gift className="w-4.5 h-4.5 text-amber-500 animate-pulse" /> 
               <span>{t('freePerks')} (Free Water Bottle + Car Tissue Box Included)</span>
             </span>
           </div>
@@ -346,7 +353,7 @@ Booking ID: ${saved.id}`;
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-4 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm sm:text-base shadow-md transition-all flex items-center justify-center gap-2"
+            className="w-full py-4.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm sm:text-base shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2.5 hover:scale-[1.01] active:scale-[0.98]"
           >
             <MessageSquare className="w-5 h-5 fill-current" />
             <span>{isSubmitting ? 'Saving Request...' : t('submitWhatsapp')}</span>
@@ -358,3 +365,4 @@ Booking ID: ${saved.id}`;
     </div>
   );
 }
+

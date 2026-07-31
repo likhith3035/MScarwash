@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
-import { Sun, Moon, Phone, Menu, X, CalendarCheck, Languages } from 'lucide-react';
+import { Sun, Moon, Phone, Menu, X, CalendarCheck, Languages, Sparkles } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function Navbar() {
@@ -31,13 +31,13 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-[#FBFBFC]/85 dark:bg-[#08080A]/85 backdrop-blur-xl border-b border-black/[0.08] dark:border-white/[0.08] text-[#1D1D1F] dark:text-[#FAFAFA] transition-colors duration-200">
+    <header className="sticky top-0 z-50 bg-[#F8FAF9]/80 dark:bg-[#06090E]/80 backdrop-blur-xl border-b border-black/[0.08] dark:border-white/[0.08] text-slate-900 dark:text-slate-100 transition-colors duration-200">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16 sm:h-20">
           
           {/* Logo & Brand Wordmark */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="p-1 rounded-2xl bg-white dark:bg-[#141416] border border-black/[0.08] dark:border-white/[0.08] shadow-xs group-hover:scale-105 transition-transform duration-200">
+            <div className="relative p-1.5 rounded-2xl bg-white dark:bg-[#0D131D] border border-black/[0.08] dark:border-white/[0.08] shadow-sm group-hover:scale-105 group-hover:border-emerald-500/40 transition-all duration-300">
               <Image
                 src="/logo.png"
                 alt="MS Car Wash"
@@ -46,32 +46,35 @@ export function Navbar() {
                 className="w-9 h-9 sm:w-10 sm:h-10 object-contain"
                 priority
               />
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-[#06090E] animate-pulse"></span>
             </div>
             <div className="flex flex-col leading-none">
               <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-base sm:text-lg tracking-tight text-[#1D1D1F] dark:text-white">
+                <span className="font-black text-base sm:text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                   MS CAR WASH
                 </span>
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold tracking-wider uppercase border border-emerald-500/20">
+                  SKHT
+                </span>
               </div>
-              <span className="text-[10px] sm:text-[11px] font-medium text-neutral-500 dark:text-neutral-400 tracking-wide uppercase mt-0.5">
+              <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 dark:text-slate-400 tracking-wide uppercase mt-0.5">
                 Clean Car... Happy Ride!
               </span>
             </div>
           </Link>
 
           {/* Desktop Nav Pills */}
-          <nav className="hidden md:flex items-center gap-1 bg-[#E5E5EA]/50 dark:bg-[#1C1C1F]/60 p-1.5 rounded-full border border-black/[0.06] dark:border-white/[0.06] shadow-xs">
+          <nav className="hidden md:flex items-center gap-1 bg-slate-200/50 dark:bg-[#0D131D]/80 p-1.5 rounded-full border border-black/[0.06] dark:border-white/[0.06] shadow-inner backdrop-blur-md">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 ${
+                  className={`px-4 py-1.5 rounded-full text-xs font-extrabold transition-all duration-200 relative ${
                     isActive
-                      ? 'bg-white dark:bg-[#2C2C30] text-black dark:text-white shadow-xs'
-                      : 'text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white'
+                      ? 'bg-white dark:bg-emerald-600 text-black dark:text-white shadow-sm scale-[1.02]'
+                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5'
                   }`}
                 >
                   {link.label}
@@ -80,19 +83,19 @@ export function Navbar() {
             })}
           </nav>
 
-          {/* Right Actions: Small Round Language Icon + Phone + Book + Theme */}
+          {/* Right Actions */}
           <div className="flex items-center gap-2 sm:gap-2.5">
             
             {/* Small Round Language Icon Button */}
             <button
               type="button"
               onClick={toggleLanguage}
-              className="p-2.5 rounded-full bg-neutral-100 dark:bg-[#1C1C1F] text-neutral-800 dark:text-white border border-black/[0.08] dark:border-white/[0.08] hover:scale-105 transition-all flex items-center justify-center relative group"
+              className="p-2.5 rounded-full bg-slate-100 dark:bg-[#0D131D] text-slate-800 dark:text-white border border-black/[0.08] dark:border-white/[0.08] hover:scale-105 hover:border-emerald-500/50 transition-all flex items-center justify-center relative shadow-xs"
               title={`Switch language (Current: ${language === 'en' ? 'English' : 'Telugu'})`}
               aria-label="Toggle Language"
             >
               <Languages className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-              <span className="absolute -top-1 -right-1 px-1 py-0.2 rounded-full bg-black text-white dark:bg-white dark:text-black text-[9px] font-extrabold leading-tight">
+              <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-950 text-[9px] font-extrabold leading-tight">
                 {language === 'en' ? 'EN' : 'తె'}
               </span>
             </button>
@@ -100,18 +103,18 @@ export function Navbar() {
             {/* Phone Call CTA */}
             <a
               href="tel:9494829450"
-              className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-neutral-100 dark:bg-[#1C1C1F] text-[#1D1D1F] dark:text-white border border-black/[0.08] dark:border-white/[0.08] hover:bg-neutral-200 dark:hover:bg-[#2C2C30] transition-all"
+              className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-slate-100 dark:bg-[#0D131D] text-slate-900 dark:text-white border border-black/[0.08] dark:border-white/[0.08] hover:bg-slate-200 dark:hover:bg-white/10 transition-all shadow-xs"
             >
               <Phone className="w-3.5 h-3.5 text-emerald-500" />
               <span>9494829450</span>
             </a>
 
-            {/* Book Now Button */}
+            {/* Book Now Button with Glow Accent */}
             <Link
               href="/book"
-              className="hidden lg:flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold bg-[#1D1D1F] dark:bg-white text-white dark:text-black shadow-xs hover:opacity-90 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="hidden lg:flex items-center gap-1.5 px-4.5 py-2 rounded-full text-xs font-black bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 transition-all hover:scale-[1.03] active:scale-[0.98]"
             >
-              <CalendarCheck className="w-3.5 h-3.5" />
+              <CalendarCheck className="w-4 h-4" />
               <span>{t('bookWash')}</span>
             </Link>
 
@@ -119,13 +122,13 @@ export function Navbar() {
             {mounted && (
               <button
                 onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-                className="p-2.5 rounded-full bg-neutral-100 dark:bg-[#1C1C1F] text-neutral-700 dark:text-neutral-300 border border-black/[0.08] dark:border-white/[0.08] hover:scale-105 transition-all"
+                className="p-2.5 rounded-full bg-slate-100 dark:bg-[#0D131D] text-slate-700 dark:text-slate-300 border border-black/[0.08] dark:border-white/[0.08] hover:scale-105 transition-all shadow-xs"
                 aria-label="Toggle Theme"
               >
                 {resolvedTheme === 'dark' ? (
                   <Sun className="w-4 h-4 text-amber-400" />
                 ) : (
-                  <Moon className="w-4 h-4 text-neutral-700" />
+                  <Moon className="w-4 h-4 text-slate-700" />
                 )}
               </button>
             )}
@@ -133,7 +136,7 @@ export function Navbar() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2.5 rounded-xl bg-neutral-100 dark:bg-[#1C1C1F] text-neutral-800 dark:text-white"
+              className="md:hidden p-2.5 rounded-xl bg-slate-100 dark:bg-[#0D131D] text-slate-800 dark:text-white"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -144,16 +147,16 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white/95 dark:bg-[#08080A]/95 backdrop-blur-xl border-b border-black/[0.08] dark:border-white/[0.08] px-4 py-4 space-y-2 animate-in slide-in-from-top duration-200">
+        <div className="md:hidden bg-white/95 dark:bg-[#06090E]/95 backdrop-blur-2xl border-b border-black/[0.08] dark:border-white/[0.08] px-4 py-4 space-y-2 animate-in slide-in-from-top duration-200">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setMobileMenuOpen(false)}
-              className={`block px-4 py-2.5 rounded-xl text-sm font-bold ${
+              className={`block px-4 py-2.5 rounded-xl text-sm font-extrabold ${
                 pathname === link.href
-                  ? 'bg-neutral-100 dark:bg-[#1C1C1F] text-black dark:text-white'
-                  : 'text-neutral-600 dark:text-neutral-400'
+                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                  : 'text-slate-600 dark:text-slate-400'
               }`}
             >
               {link.label}
@@ -162,7 +165,7 @@ export function Navbar() {
           <div className="pt-2 border-t border-black/[0.08] dark:border-white/[0.08] flex flex-col gap-2">
             <a
               href="tel:9494829450"
-              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-neutral-100 dark:bg-[#1C1C1F] text-xs font-bold text-black dark:text-white"
+              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-100 dark:bg-[#0D131D] text-xs font-bold text-slate-900 dark:text-white"
             >
               <Phone className="w-4 h-4 text-emerald-500" />
               <span>Call 9494829450</span>
@@ -170,7 +173,7 @@ export function Navbar() {
             <Link
               href="/book"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#1D1D1F] dark:bg-white text-white dark:text-black font-bold text-xs"
+              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-emerald-600 text-white font-black text-xs shadow-md shadow-emerald-600/20"
             >
               <CalendarCheck className="w-4 h-4" />
               <span>{t('bookWash')}</span>
@@ -181,3 +184,4 @@ export function Navbar() {
     </header>
   );
 }
+

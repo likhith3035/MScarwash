@@ -1,70 +1,83 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
-import { Sparkles, SlidersHorizontal } from 'lucide-react';
+import { Sparkles, SlidersHorizontal, ShieldCheck, Droplets } from 'lucide-react';
 
 export function BeforeAfterSlider() {
   const [sliderPosition, setSliderPosition] = useState(50);
 
   return (
-    <div className="relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden border border-[#E5E5EA] dark:border-[#27272A] shadow-xl bg-black select-none">
+    <div className="relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden border border-black/[0.1] dark:border-white/[0.1] shadow-2xl bg-slate-950 select-none group">
       
       {/* Container aspect ratio */}
-      <div className="relative w-full h-[280px] sm:h-[380px] md:h-[440px]">
+      <div className="relative w-full h-[300px] sm:h-[400px] md:h-[460px]">
         
-        {/* AFTER WASH IMAGE (Layer 1 - Bottom) */}
+        {/* AFTER WASH IMAGE (Layer 1 - Bottom: Deep Emerald Gloss & Clean Visual) */}
         <div className="absolute inset-0 w-full h-full">
-          <div className="relative w-full h-full bg-slate-900">
-            {/* Glossy Clean Car Visual representation */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-tr from-emerald-950/80 via-slate-900 to-sky-950/80 text-white text-center p-6 space-y-3">
-              <div className="p-3 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                <Sparkles className="w-8 h-8" />
+          <div className="relative w-full h-full bg-[#06141B]">
+            {/* Ambient Gloss Background Effects */}
+            <div className="absolute top-1/2 left-3/4 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-emerald-500/25 blur-3xl pointer-events-none"></div>
+            <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
+            
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center p-6 space-y-4">
+              <div className="p-3.5 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-lg shadow-emerald-500/10 animate-bounce">
+                <Sparkles className="w-8 h-8 sm:w-10 sm:h-10" />
               </div>
-              <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-extrabold uppercase tracking-widest border border-emerald-500/30">
-                AFTER MS FOAM WASH
+              <span className="px-3.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-black uppercase tracking-widest border border-emerald-500/30 shadow-xs">
+                AFTER MS FOAM WASH & GLOSS POLISH
               </span>
-              <h3 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-                100% Scratch-Free Metallic Gloss
+              <h3 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight drop-shadow-md">
+                100% Scratch-Free Metallic Mirror Shine
               </h3>
-              <p className="text-xs sm:text-sm text-emerald-200/80 max-w-md">
-                Clean body, polished dashboard, mud-free underbody & tire shine finish.
+              <p className="text-xs sm:text-sm text-emerald-200/90 max-w-md font-medium leading-relaxed">
+                Crystal clean paint, wet-look tire shine, underbody mud removal & sanitized cabin interior.
               </p>
+              
+              <div className="flex items-center gap-3 pt-2">
+                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400 bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-500/30">
+                  <ShieldCheck className="w-4 h-4" /> 100% Paint Safe
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-400 bg-cyan-950/60 px-3 py-1 rounded-full border border-cyan-500/30">
+                  <Droplets className="w-4 h-4" /> Snow Foam Bath
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* BEFORE WASH IMAGE (Layer 2 - Top clipped) */}
+        {/* BEFORE WASH IMAGE (Layer 2 - Top clipped: Dusty Muddy Visual) */}
         <div
           className="absolute inset-0 h-full overflow-hidden"
           style={{ width: `${sliderPosition}%` }}
         >
-          <div className="relative w-[100vw] max-w-4xl h-full bg-stone-900">
-            {/* Muddy Dusty Car Visual representation */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-stone-900 via-amber-950/80 to-stone-950 text-white text-center p-6 space-y-3">
-              <div className="p-3 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                <SlidersHorizontal className="w-8 h-8" />
+          <div className="relative w-[100vw] max-w-4xl h-full bg-[#18110B]">
+            {/* Dusty Background Effects */}
+            <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-amber-700/20 blur-3xl pointer-events-none"></div>
+
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center p-6 space-y-4">
+              <div className="p-3.5 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                <SlidersHorizontal className="w-8 h-8 sm:w-10 sm:h-10" />
               </div>
-              <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-extrabold uppercase tracking-widest border border-amber-500/30">
-                BEFORE WASH (DIRTY & MUDDY)
+              <span className="px-3.5 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-black uppercase tracking-widest border border-amber-500/30 shadow-xs">
+                BEFORE WASH (DIRTY HIGHWAY MUD)
               </span>
-              <h3 className="text-2xl sm:text-4xl font-extrabold text-stone-200 tracking-tight">
-                Heavy Highway Dust & Road Mud
+              <h3 className="text-2xl sm:text-4xl lg:text-5xl font-black text-amber-100/90 tracking-tight">
+                Highway Dust, Bugs & Mud Buildup
               </h3>
-              <p className="text-xs sm:text-sm text-amber-200/70 max-w-md">
-                Stubborn dirt buildup on wheels, bumpers, underbody & foggy windows.
+              <p className="text-xs sm:text-sm text-amber-200/70 max-w-md font-medium leading-relaxed">
+                Stubborn road grime, dried splash marks, dusty glass & stained wheels before detailing.
               </p>
             </div>
           </div>
         </div>
 
-        {/* SLIDER DIVIDER LINE & DRAGGER HANDLE */}
+        {/* SLIDER DIVIDER LINE & GLOWING DRAGGER HANDLE */}
         <div
-          className="absolute top-0 bottom-0 w-1 bg-white shadow-2xl cursor-ew-resize z-20 flex items-center justify-center"
+          className="absolute top-0 bottom-0 w-1 bg-gradient-to-b from-emerald-400 via-white to-cyan-400 shadow-[0_0_15px_rgba(255,255,255,0.8)] cursor-ew-resize z-20 flex items-center justify-center"
           style={{ left: `${sliderPosition}%` }}
         >
-          <div className="w-9 h-9 rounded-full bg-white dark:bg-[#1C1C1F] text-black dark:text-white border-2 border-slate-300 dark:border-slate-700 shadow-2xl flex items-center justify-center shrink-0 -translate-x-1/2 hover:scale-110 transition-transform">
-            <SlidersHorizontal className="w-4 h-4 text-black dark:text-white rotate-90" />
+          <div className="w-10 h-10 rounded-full bg-white dark:bg-[#06090E] text-slate-900 dark:text-white border-2 border-emerald-500 shadow-2xl shadow-emerald-500/50 flex items-center justify-center shrink-0 -translate-x-1/2 hover:scale-115 active:scale-95 transition-transform duration-150">
+            <SlidersHorizontal className="w-4 h-4 text-emerald-600 dark:text-emerald-400 rotate-90" />
           </div>
         </div>
 
@@ -76,17 +89,18 @@ export function BeforeAfterSlider() {
           value={sliderPosition}
           onChange={(e) => setSliderPosition(Number(e.target.value))}
           className="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-30"
-          aria-label="Before and after wash comparison slider"
+          aria-label="Before and after car wash comparison slider"
         />
 
       </div>
 
       {/* Helper label below */}
-      <div className="p-3 bg-neutral-900 text-neutral-400 text-center text-xs font-medium flex items-center justify-center gap-2">
-        <SlidersHorizontal className="w-3.5 h-3.5 text-emerald-400" />
-        <span>Drag the slider left or right to see the transformation before & after MS Car Wash</span>
+      <div className="p-3.5 bg-slate-900 text-slate-300 text-center text-xs font-bold flex items-center justify-center gap-2 border-t border-white/10">
+        <SlidersHorizontal className="w-4 h-4 text-emerald-400" />
+        <span>Drag or click slider left/right to compare vehicle before & after MS Car Wash</span>
       </div>
 
     </div>
   );
 }
+
