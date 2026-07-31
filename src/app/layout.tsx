@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     'MS Car Wash Srikalahasti',
     'srikalahasti best car wash',
     'best car wash in srikalahasti',
+    'car wash near me srikalahasti',
     'near highway car wash srikalahasti',
     'highway car wash srikalahasti',
     'ms car wash skht',
@@ -27,13 +28,24 @@ export const metadata: Metadata = {
     'panagal car wash srikalahasti',
     'doorstep car wash srikalahasti',
     'foam car wash srikalahasti',
+    'car pressure wash srikalahasti',
+    'underbody wash srikalahasti',
     'bike wash srikalahasti',
     'suv wash srikalahasti',
     'car polish srikalahasti',
+    'auto detailing srikalahasti',
+    'car cleaning services srikalahasti',
   ],
-  authors: [{ name: 'MS Car Wash Srikalahasti' }],
+  authors: [{ name: 'MS Car Wash Srikalahasti', url: 'https://mscarwash.vercel.app' }],
   creator: 'MS Car Wash Team',
   publisher: 'MS Car Wash Srikalahasti',
+  manifest: '/manifest.webmanifest',
+  other: {
+    'geo.region': 'IN-AP',
+    'geo.placename': 'Srikalahasti',
+    'geo.position': '13.7538202;79.6914561',
+    'ICBM': '13.7538202, 79.6914561',
+  },
   verification: {
     google: 'Y9Pz6KKF2dRqhHD68hqf5NrUjcpR2ULh8je2rh_8Kyw',
   },
@@ -82,6 +94,11 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: 'https://mscarwash.vercel.app',
+    languages: {
+      'en-IN': 'https://mscarwash.vercel.app',
+      'te-IN': 'https://mscarwash.vercel.app',
+      'x-default': 'https://mscarwash.vercel.app',
+    },
   },
 };
 

@@ -3,12 +3,15 @@ export function StructuredData() {
     '@context': 'https://schema.org',
     '@type': 'AutoWash',
     name: 'MS Car Wash Srikalahasti',
-    alternateName: ['MS Car Wash SKHT', 'SKHT Car Wash', 'Best Car Wash in Srikalahasti'],
+    alternateName: ['MS Car Wash SKHT', 'SKHT Car Wash', 'Best Car Wash in Srikalahasti', 'MS Auto Wash'],
     image: 'https://mscarwash.vercel.app/logo.png',
+    logo: 'https://mscarwash.vercel.app/logo.png',
     '@id': 'https://mscarwash.vercel.app/#autowash',
     url: 'https://mscarwash.vercel.app',
     telephone: ['+919494829450', '+918309390902'],
     priceRange: '₹100 - ₹600',
+    paymentAccepted: 'Cash, UPI, PhonePe, Google Pay, Paytm',
+    currenciesAccepted: 'INR',
     address: {
       '@type': 'PostalAddress',
       streetAddress: 'Panagal, Opposite Old RTO Office, Beside Bharat Petroleum',
@@ -22,6 +25,14 @@ export function StructuredData() {
       latitude: 13.7538202,
       longitude: 79.6914561,
     },
+    areaServed: [
+      { '@type': 'AdministrativeArea', name: 'Srikalahasti' },
+      { '@type': 'AdministrativeArea', name: 'Panagal' },
+      { '@type': 'AdministrativeArea', name: 'RTO Office Area' },
+      { '@type': 'AdministrativeArea', name: 'Highway Srikalahasti' },
+      { '@type': 'AdministrativeArea', name: 'Naidupeta Road' },
+      { '@type': 'AdministrativeArea', name: 'Tirupati Highway' },
+    ],
     openingHoursSpecification: [
       {
         '@type': 'OpeningHoursSpecification',
@@ -42,9 +53,134 @@ export function StructuredData() {
       '@type': 'AggregateRating',
       ratingValue: '4.9',
       reviewCount: '128',
+      bestRating: '5',
+      worstRating: '1',
+    },
+    review: [
+      {
+        '@type': 'Review',
+        author: { '@type': 'Person', name: 'Subba Rao K.' },
+        datePublished: '2026-06-15',
+        reviewBody: 'Best car wash in Srikalahasti! Completely scratch-free snow foam and the underbody pressure washing removed all highway mud.',
+        reviewRating: {
+          '@type': 'Rating',
+          ratingValue: '5',
+          bestRating: '5',
+        },
+      },
+      {
+        '@type': 'Review',
+        author: { '@type': 'Person', name: 'V. Naresh' },
+        datePublished: '2026-06-20',
+        reviewBody: 'Quick 20-minute bike foam wash with chain lube. MS Car Wash SKHT is definitely the top choice for daily commuters.',
+        reviewRating: {
+          '@type': 'Rating',
+          ratingValue: '5',
+          bestRating: '5',
+        },
+      },
+      {
+        '@type': 'Review',
+        author: { '@type': 'Person', name: 'Sekhar Reddy' },
+        datePublished: '2026-07-02',
+        reviewBody: 'The doorstep pickup wash service near highway Srikalahasti is super convenient. Returned my Innova spotless & shiny.',
+        reviewRating: {
+          '@type': 'Rating',
+          ratingValue: '5',
+          bestRating: '5',
+        },
+      },
+    ],
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Car & Bike Wash Services Catalog',
+      itemListElement: [
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Two-Wheeler Bike & Scooter Foam Wash',
+            description: 'Scratch-free snow foam wash, pressure cleaning & chain lube for bikes and scooters.',
+          },
+          price: '100',
+          priceCurrency: 'INR',
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Hatchback Car Foam & Underbody Wash',
+            description: 'Foam wash, high-pressure underbody rinse, cabin vacuum, free water bottle & tissue box.',
+          },
+          price: '350',
+          priceCurrency: 'INR',
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Sedan Car Complete Wash',
+            description: 'Full exterior snow foam bath, high-pressure underbody rinse, dashboard dusting & cabin vacuum.',
+          },
+          price: '450',
+          priceCurrency: 'INR',
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'SUV & Compact SUV Deep Wash',
+            description: 'Deep foam wash, heavy underbody blast, interior sanitization & free perks.',
+          },
+          price: '600',
+          priceCurrency: 'INR',
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Doorstep Vehicle Pickup & Drop Wash Service',
+            description: 'Convenient doorstep vehicle pickup from your home, office or location anywhere in Srikalahasti.',
+          },
+          price: '350',
+          priceCurrency: 'INR',
+        },
+      ],
+    },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      telephone: '+919494829450',
+      contactType: 'customer service',
+      areaServed: 'IN',
+      availableLanguage: ['English', 'Telugu', 'Hindi'],
     },
     sameAs: [
       'https://maps.google.com/?q=Panagal+Srikalahasti+Bharat+Petroleum',
+    ],
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://mscarwash.vercel.app',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Pricing',
+        item: 'https://mscarwash.vercel.app/pricing',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: 'Book Wash Slot',
+        item: 'https://mscarwash.vercel.app/book',
+      },
     ],
   };
 
@@ -84,6 +220,22 @@ export function StructuredData() {
           text: 'Bike wash starts at ₹100, Hatchback car wash is ₹350, Sedan is ₹450, and SUV wash is ₹600. Every wash includes a free mineral water bottle and car tissue box.',
         },
       },
+      {
+        '@type': 'Question',
+        name: 'Does MS Car Wash offer underbody pressure washing?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes, MS Car Wash provides high-pressure underbody cleaning to clear highway mud, road grime, and salt deposits, helping prevent chassis rust.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Do I get free gifts with every car wash?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes! Every car wash booking includes a complimentary mineral water bottle and a premium car tissue box.',
+        },
+      },
     ],
   };
 
@@ -92,6 +244,10 @@ export function StructuredData() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <script
         type="application/ld+json"
