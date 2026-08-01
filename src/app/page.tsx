@@ -140,24 +140,24 @@ export default function HomePage() {
             {/* Pulsing Live Status Pill */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/5 dark:bg-white/10 text-xs font-extrabold text-slate-900 dark:text-white border border-slate-900/10 dark:border-white/15 backdrop-blur-md shadow-xs">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-sm shadow-emerald-500"></span>
-              <span>OPEN NOW • 7 AM to 10 PM • Srikalahasti Detailing Center</span>
+              <span>OPEN NOW • 7 AM to 10 PM • Srikalahasti Center</span>
             </div>
 
             {/* Main SEO Headline */}
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.05]">
-              <span className="text-slate-900 dark:text-white block">MS CAR WASH.</span>
+              <span className="text-slate-900 dark:text-white block">MS CAR WASH</span>
               <span className="text-gradient-emerald block mt-1">
-                Srikalahasti’s #1 Detailing.
+                Best Car Wash in Srikalahasti
               </span>
             </h1>
 
             {/* Subtitle */}
             <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-              100% scratch-free snow foam wash, underbody pressure blast, cabin sanitization, and doorstep pickup near Panagal & highway Srikalahasti.
+              Top-rated water wash & car wash in Srikalahasti (SKHT). 100% scratch-free snow foam bath, high-pressure underbody rinse, cabin sanitization, and doorstep pickup near Panagal & highway Srikalahasti.
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
               <Link
                 href="/book"
                 className="w-full sm:w-auto px-8 py-4 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm transition-all shadow-lg shadow-emerald-600/30 hover:scale-[1.03] active:scale-[0.98] flex items-center justify-center gap-2.5 group"
@@ -168,11 +168,21 @@ export default function HomePage() {
 
               <Link
                 href="/pricing"
-                className="w-full sm:w-auto px-7 py-4 rounded-full bg-white dark:bg-[#0D131D] text-slate-900 dark:text-white border border-black/10 dark:border-white/10 text-sm font-extrabold hover:bg-slate-100 dark:hover:bg-white/10 transition-all flex items-center justify-center gap-2 shadow-xs"
+                className="w-full sm:w-auto px-6 py-4 rounded-full bg-white dark:bg-[#0D131D] text-slate-900 dark:text-white border border-black/10 dark:border-white/10 text-xs font-extrabold hover:bg-slate-100 dark:hover:bg-white/10 transition-all flex items-center justify-center gap-2 shadow-xs"
               >
                 <span>View Rates (From ₹100)</span>
                 <ChevronRight className="w-4 h-4 text-emerald-500" />
               </Link>
+
+              <a
+                href="https://maps.app.goo.gl/i8Wa5ef1dZZwnJmF9"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto px-6 py-4 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30 text-xs font-extrabold transition-all flex items-center justify-center gap-2 hover:scale-[1.03]"
+              >
+                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                <span>Google Reviews</span>
+              </a>
             </div>
 
             {/* Feature Highlights Badges */}
@@ -512,7 +522,7 @@ export default function HomePage() {
 
             <div className="pt-2 flex flex-wrap gap-3">
               <a
-                href="https://maps.google.com/?q=Panagal+Srikalahasti+Bharat+Petroleum"
+                href="https://maps.app.goo.gl/i8Wa5ef1dZZwnJmF9"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-black text-xs shadow-md hover:scale-105 transition-all"
@@ -536,13 +546,13 @@ export default function HomePage() {
           <div className="lg:col-span-7 h-[360px] rounded-3xl overflow-hidden border border-black/10 dark:border-white/10 bg-white dark:bg-[#0D131D] shadow-xl relative">
             <iframe
               title="MS Car Wash Srikalahasti Map Location"
-              src="https://maps.google.com/maps?q=13.742436,79.683298&z=17&output=embed"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3876.8436!2d79.6805988!3d13.7424099!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a4d3f22350a7173%3A0x32f5cae534cb0429!2sMS%20Car%20Wash%20Srikalahasti!5e0!3m2!1sen!2sin!4v1722527000000!5m2!1sen!2sin"
               width="100%"
               height="100%"
               style={{ border: 0 }}
               allowFullScreen={false}
               loading="lazy"
-              className="w-full h-full grayscale opacity-85 hover:grayscale-0 transition-all duration-500"
+              className="w-full h-full opacity-90 hover:opacity-100 transition-all duration-500"
             ></iframe>
           </div>
 

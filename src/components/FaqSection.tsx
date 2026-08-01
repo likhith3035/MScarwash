@@ -8,6 +8,14 @@ export function FaqSection() {
 
   const faqs = [
     {
+      q: 'Which is the top-rated water wash & car wash center in Srikalahasti (SKHT)?',
+      a: 'MS Car Wash (located opposite Old RTO Office, beside Bharat Petroleum in Panagal, Srikalahasti) is rated #1 for high-pressure water washing, snow foam bath, underbody mud removal, and doorstep vehicle pickup.'
+    },
+    {
+      q: 'Do you provide bike water wash in Srikalahasti?',
+      a: 'Yes! We provide a fast 20-minute foam and pressure water wash for all bikes, scooters, and Bullet motorcycles starting at just ₹100, complete with chain cleaning & lube.'
+    },
+    {
       q: 'How does doorstep Pickup Wash work?',
       a: 'Our wash boy comes to your home or office in Srikalahasti, picks up your vehicle, brings it to MS Car Wash center, performs a full foam wash & underbody cleaning, and returns it spotless to your location.'
     },

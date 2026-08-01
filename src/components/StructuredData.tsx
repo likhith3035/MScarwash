@@ -3,7 +3,17 @@ export function StructuredData() {
     '@context': 'https://schema.org',
     '@type': 'AutoWash',
     name: 'MS Car Wash Srikalahasti',
-    alternateName: ['MS Car Wash SKHT', 'SKHT Car Wash', 'Best Car Wash in Srikalahasti', 'MS Auto Wash'],
+    alternateName: [
+      'MS Car Wash SKHT',
+      'SKHT Car Wash',
+      'Best Car Wash in Srikalahasti',
+      'Water Wash in Srikalahasti',
+      'Best Water Wash in SKHT',
+      'Top Water Wash SKHT',
+      'Car Water Wash Srikalahasti',
+      'MS Auto Wash',
+      'Panagal Water Wash',
+    ],
     image: 'https://mscarwash.vercel.app/logo.png',
     logo: 'https://mscarwash.vercel.app/logo.png',
     '@id': 'https://mscarwash.vercel.app/#autowash',
@@ -22,8 +32,8 @@ export function StructuredData() {
     },
     geo: {
       '@type': 'GeoCoordinates',
-      latitude: 13.742436,
-      longitude: 79.683298,
+      latitude: 13.74241,
+      longitude: 79.683174,
     },
     areaServed: [
       { '@type': 'AdministrativeArea', name: 'Srikalahasti' },
@@ -155,7 +165,9 @@ export function StructuredData() {
       availableLanguage: ['English', 'Telugu', 'Hindi'],
     },
     sameAs: [
-      'https://maps.google.com/?q=13.742436,79.683298',
+      'https://maps.app.goo.gl/i8Wa5ef1dZZwnJmF9',
+      'https://share.google/bN5KNns6mgg3uI4tP',
+      'https://maps.google.com/?q=13.742410,79.683174',
     ],
   };
 
