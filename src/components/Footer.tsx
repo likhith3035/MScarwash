@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { MapPin, Phone, MessageSquare, Clock, ShieldCheck, Heart, Sparkles } from 'lucide-react';
+import { MapPin, Phone, MessageSquare, Clock, ShieldCheck, Heart, Sparkles, Code, Star } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -57,14 +57,24 @@ export function Footer() {
                 <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
                 <div>
                   <span>Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Near Highway Srikalahasti - 517644</span>
-                  <a
-                    href="https://www.google.com/maps/dir/?api=1&destination=13.742436,79.683298"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[10px] shadow-xs transition-all hover:scale-105"
-                  >
-                    <MapPin className="w-3 h-3" /> Get Directions (Google Maps)
-                  </a>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <a
+                      href="https://maps.app.goo.gl/i8Wa5ef1dZZwnJmF9"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[10px] shadow-xs transition-all hover:scale-105"
+                    >
+                      <MapPin className="w-3 h-3" /> Get Directions
+                    </a>
+                    <a
+                      href="https://maps.app.goo.gl/i8Wa5ef1dZZwnJmF9"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 font-extrabold text-[10px] border border-amber-500/30 transition-all hover:scale-105"
+                    >
+                      <Star className="w-3 h-3 text-amber-500 fill-amber-500" /> Review Us
+                    </a>
+                  </div>
                 </div>
               </li>
               <li className="flex items-center gap-2">
@@ -95,11 +105,25 @@ export function Footer() {
 
         </div>
 
-        <div className="pt-6 border-t border-black/[0.08] dark:border-white/[0.08] flex flex-col sm:flex-row items-center justify-between text-xs gap-3">
+        <div className="pt-6 border-t border-black/[0.08] dark:border-white/[0.08] flex flex-col md:flex-row items-center justify-between text-xs gap-3">
           <p>&copy; {new Date().getFullYear()} MS Car Wash Srikalahasti. All rights reserved.</p>
+          
           <span className="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300">
             <ShieldCheck className="w-4 h-4 text-emerald-500" /> 100% Scratch-Free Snow Foam Technology
           </span>
+
+          <p className="text-slate-600 dark:text-slate-400 font-medium flex items-center gap-1.5">
+            <span>Designed & Developed by</span>
+            <a
+              href="https://devlikhith.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 font-black text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 transition-all px-2.5 py-1 rounded-full bg-black/5 dark:bg-white/10 border border-black/5 dark:border-white/10 hover:scale-105"
+            >
+              <Code className="w-3.5 h-3.5 text-emerald-500" />
+              <span>Likhith</span>
+            </a>
+          </p>
         </div>
       </div>
     </footer>

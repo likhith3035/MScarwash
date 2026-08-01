@@ -14,7 +14,8 @@ import {
   Sparkles,
   ShieldCheck,
   User,
-  PhoneCall
+  PhoneCall,
+  Star
 } from 'lucide-react';
 import { BookingMode, TIME_SLOTS, VEHICLE_TYPES, ADD_ONS } from '@/lib/types';
 import { saveBooking } from '@/lib/supabase';
@@ -185,23 +186,25 @@ Booking ID: ${saved.id}`;
             Your wash slot request has been generated. Notifications have been dispatched to our Srikalahasti wash center desk on WhatsApp & Telegram.
           </p>
 
-          <div className="pt-3 flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+          <div className="pt-3 flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
             <a
               href={submittedBooking.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 py-4 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 hover:scale-105 transition-all"
+              className="flex-1 py-4 px-5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 hover:scale-105 transition-all"
             >
               <MessageSquare className="w-4 h-4 fill-current" />
               <span>{t('openWhatsapp')}</span>
             </a>
-            <button
-              type="button"
-              onClick={() => setSubmittedBooking(null)}
-              className="px-6 py-4 rounded-full bg-slate-100 dark:bg-white/10 text-xs font-black text-slate-800 dark:text-slate-200 hover:bg-slate-200 transition-all"
+            <a
+              href="https://maps.app.goo.gl/i8Wa5ef1dZZwnJmF9"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="py-4 px-5 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 font-extrabold text-xs flex items-center justify-center gap-2 border border-amber-500/30 hover:scale-105 transition-all"
             >
-              {t('bookAnother')}
-            </button>
+              <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+              <span>Google Review</span>
+            </a>
           </div>
         </div>
       ) : (
