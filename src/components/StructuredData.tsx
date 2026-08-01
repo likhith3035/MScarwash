@@ -22,8 +22,8 @@ export function StructuredData() {
     },
     geo: {
       '@type': 'GeoCoordinates',
-      latitude: 13.7538202,
-      longitude: 79.6914561,
+      latitude: 13.742436,
+      longitude: 79.683298,
     },
     areaServed: [
       { '@type': 'AdministrativeArea', name: 'Srikalahasti' },
@@ -155,7 +155,7 @@ export function StructuredData() {
       availableLanguage: ['English', 'Telugu', 'Hindi'],
     },
     sameAs: [
-      'https://maps.google.com/?q=Panagal+Srikalahasti+Bharat+Petroleum',
+      'https://maps.google.com/?q=13.742436,79.683298',
     ],
   };
 

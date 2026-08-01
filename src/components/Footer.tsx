@@ -55,7 +55,17 @@ export function Footer() {
             <ul className="space-y-2.5 text-xs font-medium">
               <li className="flex items-start gap-2">
                 <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
-                <span>Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Near Highway Srikalahasti - 517644</span>
+                <div>
+                  <span>Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Near Highway Srikalahasti - 517644</span>
+                  <a
+                    href="https://www.google.com/maps/dir/?api=1&destination=13.742436,79.683298"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[10px] shadow-xs transition-all hover:scale-105"
+                  >
+                    <MapPin className="w-3 h-3" /> Get Directions (Google Maps)
+                  </a>
+                </div>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-emerald-500 shrink-0" />

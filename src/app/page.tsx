@@ -536,7 +536,7 @@ export default function HomePage() {
           <div className="lg:col-span-7 h-[360px] rounded-3xl overflow-hidden border border-black/10 dark:border-white/10 bg-white dark:bg-[#0D131D] shadow-xl relative">
             <iframe
               title="MS Car Wash Srikalahasti Map Location"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15486.294241761895!2d79.6914561!3d13.7538202!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a4d4b1a45a33111%3A0x6b801a2f64126937!2sPanagal%2C%20Srikalahasti%2C%20Andhra%20Pradesh%20517644!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+              src="https://maps.google.com/maps?q=13.742436,79.683298&z=17&output=embed"
               width="100%"
               height="100%"
               style={{ border: 0 }}

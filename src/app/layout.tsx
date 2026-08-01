@@ -43,8 +43,8 @@ export const metadata: Metadata = {
   other: {
     'geo.region': 'IN-AP',
     'geo.placename': 'Srikalahasti',
-    'geo.position': '13.7538202;79.6914561',
-    'ICBM': '13.7538202, 79.6914561',
+    'geo.position': '13.742436;79.683298',
+    'ICBM': '13.742436, 79.683298',
   },
   verification: {
     google: 'Y9Pz6KKF2dRqhHD68hqf5NrUjcpR2ULh8je2rh_8Kyw',
