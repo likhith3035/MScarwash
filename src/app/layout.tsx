@@ -6,6 +6,8 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { FloatingContactButtons } from '@/components/FloatingContactButtons';
 import { StructuredData } from '@/components/StructuredData';
+import { PwaInstallPrompt } from '@/components/PwaInstallPrompt';
+import { MobileBottomNav } from '@/components/MobileBottomNav';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://mscarwash.vercel.app'),
@@ -66,23 +68,23 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_IN',
     url: 'https://mscarwash.vercel.app',
-    title: 'MS Car Wash — Best Car Wash in Srikalahasti (SKHT) | Near Highway',
-    description: 'Top-rated car & bike wash center in Srikalahasti near highway, Panagal. Scratch-free foam wash, doorstep pickup & complimentary water bottle + tissue box.',
+    title: 'MS Car Wash (SKHT) — ⭐ 4.9 Top Rated Water & Car Wash in Srikalahasti',
+    description: '🚘 100% Scratch-Free Foam Wash & Underbody Rinse | Doorstep Pickup & Slot Booking Available | Complimentary Water & Tissue Box | Call 9494829450',
     siteName: 'MS Car Wash Srikalahasti',
     images: [
       {
-        url: '/logo.png',
-        width: 500,
-        height: 500,
-        alt: 'MS Car Wash Srikalahasti Logo',
+        url: 'https://mscarwash.vercel.app/logo.png',
+        width: 1200,
+        height: 630,
+        alt: 'MS Car Wash Srikalahasti Logo & Premium Detailing',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'MS Car Wash — Best Car Wash in Srikalahasti (SKHT)',
-    description: '100% scratch-free foam washing & doorstep vehicle pickup in Srikalahasti near highway. Call 9494829450.',
-    images: ['/logo.png'],
+    title: 'MS Car Wash Srikalahasti — Premium Doorstep & Slot Car Wash',
+    description: '⭐ 4.9 Google Rated | Scratch-free foam wash & underbody pressure wash in Srikalahasti (SKHT). Book your slot online!',
+    images: ['https://mscarwash.vercel.app/logo.png'],
   },
   robots: {
     index: true,
@@ -124,11 +126,13 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <LanguageProvider>
             <Navbar />
-            <main className="flex-1">
+            <main className="flex-1 pb-16 md:pb-0">
               {children}
             </main>
             <Footer />
             <FloatingContactButtons />
+            <PwaInstallPrompt />
+            <MobileBottomNav />
           </LanguageProvider>
         </ThemeProvider>
       </body>

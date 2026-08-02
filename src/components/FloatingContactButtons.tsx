@@ -13,7 +13,7 @@ export function FloatingContactButtons() {
   )}`;
 
   return (
-    <div className="fixed bottom-4 right-4 z-40 flex items-center gap-2 bg-white/90 dark:bg-[#1F1E1C]/90 p-1.5 rounded-full border border-[#E6E4DF] dark:border-[#2E2D29] shadow-lg backdrop-blur-md transition-all">
+    <div className="fixed bottom-20 md:bottom-6 right-4 z-40 flex items-center gap-2 bg-white/90 dark:bg-[#1F1E1C]/90 p-1.5 rounded-full border border-[#E6E4DF] dark:border-[#2E2D29] shadow-lg backdrop-blur-md transition-all">
       {/* WhatsApp Mini Button */}
       <a
         href={whatsappUrl}

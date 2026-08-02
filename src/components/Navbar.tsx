@@ -5,12 +5,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
-import { Sun, Moon, Phone, Menu, X, CalendarCheck, Languages, Sparkles } from 'lucide-react';
+import { Sun, Moon, Phone, CalendarCheck, Languages } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function Navbar() {
   const [mounted, setMounted] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
   const pathname = usePathname();
@@ -133,54 +132,10 @@ export function Navbar() {
               </button>
             )}
 
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2.5 rounded-xl bg-slate-100 dark:bg-[#0D131D] text-slate-800 dark:text-white"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
           </div>
 
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-white/95 dark:bg-[#06090E]/95 backdrop-blur-2xl border-b border-black/[0.08] dark:border-white/[0.08] px-4 py-4 space-y-2 animate-in slide-in-from-top duration-200">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMobileMenuOpen(false)}
-              className={`block px-4 py-2.5 rounded-xl text-sm font-extrabold ${
-                pathname === link.href
-                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
-                  : 'text-slate-600 dark:text-slate-400'
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
-          <div className="pt-2 border-t border-black/[0.08] dark:border-white/[0.08] flex flex-col gap-2">
-            <a
-              href="tel:9494829450"
-              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-100 dark:bg-[#0D131D] text-xs font-bold text-slate-900 dark:text-white"
-            >
-              <Phone className="w-4 h-4 text-emerald-500" />
-              <span>Call 9494829450</span>
-            </a>
-            <Link
-              href="/book"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-emerald-600 text-white font-black text-xs shadow-md shadow-emerald-600/20"
-            >
-              <CalendarCheck className="w-4 h-4" />
-              <span>{t('bookWash')}</span>
-            </Link>
-          </div>
-        </div>
-      )}
     </header>
   );
 }
