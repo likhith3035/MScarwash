@@ -30,7 +30,9 @@ import {
   CheckCircle,
   Volume2,
   VolumeX,
-  BellRing
+  BellRing,
+  Star,
+  MapPin
 } from 'lucide-react';
 import { Booking } from '@/lib/types';
 import { getBookings, updateBookingStatus, saveBooking, clearAllLocalBookings } from '@/lib/supabase';
@@ -47,10 +49,13 @@ export default function AdminPage() {
 
   // Bookings Data State
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [filter, setFilter] = useState<'all' | 'pending' | 'completed' | 'pickup' | 'slot'>('all');
+  const [filter, setFilter] = useState<'all' | 'pending' | 'in_progress' | 'completed' | 'pickup' | 'slot'>('all');
+  const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'yesterday' | 'month'>('all');
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [showAnalytics, setShowAnalytics] = useState(true);
+  const [printingTokenBooking, setPrintingTokenBooking] = useState<Booking | null>(null);
   const prevBookingsCountRef = useRef<number>(0);
 
   // Edit / Invoice Modal State
@@ -64,8 +69,16 @@ export default function AdminPage() {
   const [editBilledBy, setEditBilledBy] = useState<string>('Naveen (Manager)');
   const [editAddOns, setEditAddOns] = useState<string[]>([]);
   const [editStatus, setEditStatus] = useState<Booking['status']>('pending');
-  const [targetWhatsappPhone, setTargetWhatsappPhone] = useState('');
+  const [editBeforePhotoUrl, setEditBeforePhotoUrl] = useState<string>('');
+  const [editAfterPhotoUrl, setEditAfterPhotoUrl] = useState<string>('');
+  const [targetWhatsappPhone, setTargetWhatsappPhone] = useState<string>('');
   const [generatingPdfId, setGeneratingPdfId] = useState<string | null>(null);
+  const [pdfPreviewModal, setPdfPreviewModal] = useState<{
+    booking: Booking;
+    blobUrl: string;
+    download: () => void;
+    fileName: string;
+  } | null>(null);
 
   // Walk-in Manual Entry Modal State
   const [showAddModal, setShowAddModal] = useState(false);
@@ -187,17 +200,38 @@ export default function AdminPage() {
       return;
     }
 
-    const headers = ['Booking ID', 'Exact Time (With Seconds)', 'Customer Name', 'Phone', 'Mode', 'Vehicle Type', 'Vehicle Model', 'Bill Amount (INR)', 'Status'];
+    const headers = [
+      'Booking ID',
+      'Created Time',
+      'Customer Name',
+      'Phone',
+      'Mode',
+      'Vehicle Type',
+      'Vehicle Model',
+      'Slot / Window',
+      'Address',
+      'Add-ons',
+      'Bill Amount (INR)',
+      'Status',
+      'Before Photo URL',
+      'After Photo URL'
+    ];
+
     const rows = bookings.map(b => [
       b.id,
       formatTimestampWithSeconds(b.createdAt),
-      `"${b.name}"`,
+      `"${(b.name || '').replace(/"/g, '""')}"`,
       b.phone,
       b.mode,
       b.vehicleType,
-      `"${b.vehicleModel}"`,
+      `"${(b.vehicleModel || '').replace(/"/g, '""')}"`,
+      `"${(b.timeSlot || b.timeWindow || '').replace(/"/g, '""')}"`,
+      `"${(b.address || '').replace(/"/g, '""')}"`,
+      `"${(b.addOns || []).join('; ')}"`,
       b.totalAmount || getDefaultPrice(b.vehicleType),
-      b.status
+      b.status,
+      `"${b.beforePhotoUrl || ''}"`,
+      `"${b.afterPhotoUrl || ''}"`
     ]);
 
     const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
@@ -231,6 +265,8 @@ export default function AdminPage() {
     setEditBilledBy('Naveen (Manager)');
     setEditAddOns(b.addOns || []);
     setEditStatus(b.status);
+    setEditBeforePhotoUrl(b.beforePhotoUrl || '');
+    setEditAfterPhotoUrl(b.afterPhotoUrl || '');
     setTargetWhatsappPhone(b.phone);
   };
 
@@ -247,6 +283,8 @@ export default function AdminPage() {
           totalAmount: Number(editAmount),
           addOns: editAddOns,
           status: editStatus,
+          beforePhotoUrl: editBeforePhotoUrl,
+          afterPhotoUrl: editAfterPhotoUrl,
         };
       }
       return b;
@@ -257,10 +295,83 @@ export default function AdminPage() {
     setEditingBooking(null);
   };
 
+  // Send Before/After Photo Wash Report to Customer via WhatsApp
+  const sendMediaReportToWhatsApp = (booking: Booking) => {
+    const phoneToUse = targetWhatsappPhone || booking.phone;
+    const cleanPhone = phoneToUse.replace(/\D/g, '');
+    const beforeUrl = editBeforePhotoUrl || booking.beforePhotoUrl || 'Not uploaded';
+    const afterUrl = editAfterPhotoUrl || booking.afterPhotoUrl || 'Not uploaded';
+
+    const text = `✨ MS CAR WASH — VEHICLE WASH COMPLETION REPORT ✨
+-----------------------------------------------
+Booking Ref: ${booking.id}
+Customer: ${booking.name}
+Vehicle: ${booking.vehicleType} - ${booking.vehicleModel}
+
+📸 BEFORE WASH PHOTO:
+${beforeUrl}
+
+✨ AFTER WASH PHOTO:
+${afterUrl}
+
+Thank you for choosing MS Car Wash (Srikalahasti)! Call 9494829450 for your next doorstep or slot wash.`;
+
+    const encoded = encodeURIComponent(text);
+    const waUrl = cleanPhone ? `https://wa.me/91${cleanPhone}?text=${encoded}` : `https://wa.me/?text=${encoded}`;
+    window.open(waUrl, '_blank');
+  };
+
+  // WhatsApp Alert: Wash Started
+  const sendWashStartWhatsApp = (booking: Booking) => {
+    const cleanPhone = booking.phone.replace(/\D/g, '');
+    const text = `🌊 MS CAR WASH — WASH STARTED
+Hi ${booking.name}! We have started cleaning your ${booking.vehicleType} (${booking.vehicleModel}) [Ref: ${booking.id}]. 
+Our team is performing scratch-free foam washing & high-pressure underbody rinse. We will update you once ready!`;
+    window.open(`https://wa.me/91${cleanPhone}?text=${encodeURIComponent(text)}`, '_blank');
+  };
+
+  // WhatsApp Alert: Vehicle Ready for Pickup/Delivery
+  const sendWashReadyWhatsApp = (booking: Booking) => {
+    const cleanPhone = booking.phone.replace(/\D/g, '');
+    const text = `✨ MS CAR WASH — VEHICLE READY!
+Hi ${booking.name}! Great news! Your ${booking.vehicleType} (${booking.vehicleModel}) is clean, polished & ready for pickup/delivery! [Ref: ${booking.id}]
+Thank you for choosing MS Car Wash Srikalahasti. Call 9494829450 for assistance!`;
+    window.open(`https://wa.me/91${cleanPhone}?text=${encodeURIComponent(text)}`, '_blank');
+  };
+
+  // WhatsApp Alert: Google Review Request
+  const sendGoogleReviewWhatsApp = (booking: Booking) => {
+    const cleanPhone = booking.phone.replace(/\D/g, '');
+    const text = `⭐ MS CAR WASH — RATE YOUR WASH EXPERIENCE
+Hi ${booking.name}, thank you for trusting MS Car Wash with your ${booking.vehicleModel}!
+Could you take 10 seconds to leave us a quick 5-star Google review?
+⭐ Review Link: https://maps.app.goo.gl/i8Wa5ef1dZZwnJmF9
+Your feedback helps our team grow!`;
+    window.open(`https://wa.me/91${cleanPhone}?text=${encodeURIComponent(text)}`, '_blank');
+  };
+
+  // Open Google Maps Directions for Pickup Wash Address
+  const openGoogleMapsRoute = (address?: string) => {
+    if (!address) return;
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address + ', Srikalahasti')}`;
+    window.open(mapsUrl, '_blank');
+  };
+
   const handleDownloadInvoice = async (booking: Booking) => {
     setGeneratingPdfId(booking.id);
     try {
-      await generateInvoicePDF(booking, editBilledBy || 'Naveen (Manager)', editPaymentMethod || 'Cash');
+      const res = await generateInvoicePDF(
+        booking,
+        editBilledBy || 'Naveen (Manager)',
+        editPaymentMethod || 'Cash',
+        false // Do NOT auto download
+      );
+      setPdfPreviewModal({
+        booking,
+        blobUrl: res.blobUrl,
+        download: res.download,
+        fileName: res.fileName
+      });
     } catch (e) {
       console.error('PDF generation error:', e);
       alert('Could not generate PDF invoice.');
@@ -381,16 +492,47 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
   // Metrics Calculations
   const totalBookingsCount = bookings.length;
   const pendingCount = bookings.filter(b => b.status === 'pending').length;
+  const inProgressCount = bookings.filter(b => b.status === 'in_progress').length;
   const completedCount = bookings.filter(b => b.status === 'completed').length;
   const totalRevenue = bookings.reduce((sum, b) => sum + (b.totalAmount || getDefaultPrice(b.vehicleType)), 0);
+  const pickupCount = bookings.filter(b => b.mode === 'pickup').length;
+  const slotCount = bookings.filter(b => b.mode === 'slot').length;
+  const avgTicketValue = totalBookingsCount > 0 ? Math.round(totalRevenue / totalBookingsCount) : 0;
+
+  // Repeat Customer Phone Frequency
+  const customerBookingCounts = bookings.reduce((acc, b) => {
+    const clean = (b.phone || '').replace(/\D/g, '');
+    if (clean) acc[clean] = (acc[clean] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const vehicleStats = bookings.reduce((acc, b) => {
+    const v = b.vehicleType || 'Car';
+    acc[v] = (acc[v] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const yesterdayObj = new Date();
+  yesterdayObj.setDate(yesterdayObj.getDate() - 1);
+  const yesterdayStr = yesterdayObj.toISOString().split('T')[0];
+  const monthStr = todayStr.substring(0, 7);
 
   const filteredBookings = bookings.filter(b => {
     const matchesFilter =
       filter === 'all' ||
       (filter === 'pending' && b.status === 'pending') ||
+      (filter === 'in_progress' && b.status === 'in_progress') ||
       (filter === 'completed' && b.status === 'completed') ||
       (filter === 'pickup' && b.mode === 'pickup') ||
       (filter === 'slot' && b.mode === 'slot');
+
+    const createdDateStr = b.createdAt ? b.createdAt.split('T')[0] : '';
+    const matchesDate =
+      dateFilter === 'all' ||
+      (dateFilter === 'today' && createdDateStr === todayStr) ||
+      (dateFilter === 'yesterday' && createdDateStr === yesterdayStr) ||
+      (dateFilter === 'month' && createdDateStr.startsWith(monthStr));
 
     const matchesSearch =
       b.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -398,55 +540,73 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
       b.id.toLowerCase().includes(search.toLowerCase()) ||
       b.vehicleModel.toLowerCase().includes(search.toLowerCase());
 
-    return matchesFilter && matchesSearch;
+    return matchesFilter && matchesDate && matchesSearch;
   });
 
-  // 1. PASSWORD GATE SCREEN
+  // 1. PASSWORD GATE SCREEN (RESTRICTED TO OWNER & ADMIN ONLY)
   if (!isAuthenticated) {
     return (
-      <div className="py-20 bg-[#FBFBFC] dark:bg-[#08080A] text-[#1D1D1F] dark:text-[#FAFAFA] min-h-screen flex items-center justify-center px-4">
-        <div className="w-full max-w-md p-8 rounded-3xl bg-white dark:bg-[#141416] border border-black/[0.08] dark:border-white/[0.08] shadow-2xl space-y-6 text-center">
+      <div className="py-16 sm:py-24 bg-[#FBFBFC] dark:bg-[#08080A] text-[#1D1D1F] dark:text-[#FAFAFA] min-h-screen flex items-center justify-center px-4">
+        <div className="w-full max-w-md p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#141416] border border-black/[0.08] dark:border-white/[0.08] shadow-2xl space-y-6 text-center relative overflow-hidden">
           
-          <div className="w-16 h-16 mx-auto rounded-2xl bg-neutral-100 dark:bg-[#1C1C1F] text-black dark:text-white border border-black/[0.08] dark:border-white/[0.08] flex items-center justify-center">
+          {/* Top Restricted Warning Banner */}
+          <div className="px-3 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-[11px] font-black uppercase tracking-wider inline-flex items-center gap-1.5">
+            <ShieldCheck className="w-4 h-4 text-rose-500" />
+            <span>Restricted — Admin & Owner Access Only</span>
+          </div>
+
+          <div className="w-16 h-16 mx-auto rounded-2xl bg-neutral-100 dark:bg-[#1C1C1F] text-black dark:text-white border border-black/[0.08] dark:border-white/[0.08] flex items-center justify-center shadow-inner">
             <Lock className="w-8 h-8 text-[#D97757]" />
           </div>
 
-          <div className="space-y-1.5">
-            <h1 className="text-2xl font-extrabold tracking-tight">MS Car Wash Admin Gate</h1>
-            <p className="text-xs text-neutral-500 dark:text-neutral-400">
-              Enter the admin desk password to access billing management & invoices.
+          <div className="space-y-2">
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+              MS Car Wash Owner Control Panel
+            </h1>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed max-w-xs mx-auto">
+              This page is <strong className="text-slate-900 dark:text-white font-bold">ONLY for MS Car Wash Owners & Managers</strong>. It is not open to general customers.
             </p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-4 text-left">
+          <form onSubmit={handleLogin} className="space-y-4 text-left pt-2">
             <div className="space-y-1.5">
-              <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500">
-                Admin Password
+              <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                Enter Secret Admin Passcode *
               </label>
               <input
                 type="password"
                 required
-                placeholder="Enter password..."
+                placeholder="Enter admin passcode..."
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.08] dark:border-white/[0.08] text-sm font-medium focus:ring-1 focus:ring-black dark:focus:ring-white focus:outline-none"
+                className="w-full px-4 py-3 rounded-xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.08] dark:border-white/[0.08] text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               />
             </div>
 
             {authError && (
-              <p className="text-xs font-bold text-rose-500 bg-rose-500/10 p-2.5 rounded-xl border border-rose-500/20 text-center">
+              <p className="text-xs font-bold text-rose-500 bg-rose-500/10 p-3 rounded-xl border border-rose-500/20 text-center">
                 {authError}
               </p>
             )}
 
             <button
               type="submit"
-              className="w-full py-3.5 px-4 rounded-full bg-[#1D1D1F] dark:bg-white text-white dark:text-black font-extrabold text-sm shadow-sm hover:opacity-90 transition-all flex items-center justify-center gap-2"
+              className="w-full py-3.5 px-4 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-lg shadow-emerald-600/20 transition-all flex items-center justify-center gap-2"
             >
               <Unlock className="w-4 h-4" />
               <span>Unlock Admin Desk</span>
             </button>
           </form>
+
+          <div className="pt-4 border-t border-black/5 dark:border-white/5 text-center">
+            <p className="text-[11px] text-neutral-400">Are you a customer trying to book a wash?</p>
+            <Link
+              href="/book"
+              className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline mt-0.5 inline-block"
+            >
+              Go to Customer Wash Booking Form →
+            </Link>
+          </div>
 
         </div>
       </div>
@@ -551,9 +711,9 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
 
 
         {/* METRICS SUMMARY CARDS */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
           
-          <div className="bento-card p-5 rounded-3xl space-y-1">
+          <div className="bento-card p-4 sm:p-5 rounded-3xl space-y-1">
             <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">Total Washes</span>
             <div className="text-2xl sm:text-3xl font-extrabold text-[#1D1D1F] dark:text-white">
               {totalBookingsCount}
@@ -561,24 +721,33 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
             <span className="text-[10px] text-neutral-400 block">Recorded in database</span>
           </div>
 
-          <div className="bento-card p-5 rounded-3xl space-y-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-500">Pending Washes</span>
+          <div className="bento-card p-4 sm:p-5 rounded-3xl space-y-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-500">Pending</span>
             <div className="text-2xl sm:text-3xl font-extrabold text-amber-500">
               {pendingCount}
             </div>
-            <span className="text-[10px] text-neutral-400 block">Awaiting completion</span>
+            <span className="text-[10px] text-neutral-400 block">Awaiting start</span>
           </div>
 
-          <div className="bento-card p-5 rounded-3xl space-y-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-500">Completed Washes</span>
+          <div className="bento-card p-4 sm:p-5 rounded-3xl space-y-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-blue-500">In Wash</span>
+            <div className="text-2xl sm:text-3xl font-extrabold text-blue-500 flex items-center gap-1.5">
+              {inProgressCount}
+              {inProgressCount > 0 && <span className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-ping"></span>}
+            </div>
+            <span className="text-[10px] text-neutral-400 block">Currently cleaning</span>
+          </div>
+
+          <div className="bento-card p-4 sm:p-5 rounded-3xl space-y-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-500">Completed</span>
             <div className="text-2xl sm:text-3xl font-extrabold text-emerald-500">
               {completedCount}
             </div>
             <span className="text-[10px] text-neutral-400 block">Finished & delivered</span>
           </div>
 
-          <div className="bento-card p-5 rounded-3xl space-y-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-blue-500">Est. Total Revenue</span>
+          <div className="bento-card p-4 sm:p-5 rounded-3xl space-y-1 col-span-2 lg:col-span-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-teal-500">Est. Total Revenue</span>
             <div className="text-2xl sm:text-3xl font-extrabold text-[#1D1D1F] dark:text-white">
               ₹{totalRevenue}
             </div>
@@ -587,27 +756,143 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
 
         </div>
 
+        {/* VISUAL REVENUE & BOOKING ANALYTICS DASHBOARD */}
+        <div className="rounded-3xl bg-white dark:bg-[#141416] border border-black/[0.08] dark:border-white/[0.08] p-6 shadow-sm space-y-4">
+          <div className="flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] pb-3">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-emerald-500" />
+              <h3 className="text-sm font-extrabold text-[#1D1D1F] dark:text-white uppercase tracking-wider">
+                Sales & Fleet Analytics
+              </h3>
+            </div>
+            <button
+              onClick={() => setShowAnalytics(!showAnalytics)}
+              className="text-xs font-bold text-neutral-500 hover:text-emerald-500 transition-colors"
+            >
+              {showAnalytics ? 'Hide Graph ↑' : 'Show Graph ↓'}
+            </button>
+          </div>
+
+          {showAnalytics && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+              {/* Avg Ticket Value & Pickup vs Slot ratio */}
+              <div className="space-y-3 p-4 rounded-2xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.06] dark:border-white/[0.06]">
+                <span className="text-[11px] font-extrabold uppercase tracking-wider text-neutral-500 block">
+                  Financial Highlights
+                </span>
+                <div className="flex items-baseline justify-between">
+                  <span className="text-xs font-bold text-neutral-600 dark:text-neutral-300">Avg Ticket Value</span>
+                  <span className="text-lg font-black text-emerald-600 dark:text-emerald-400">₹{avgTicketValue}</span>
+                </div>
+                <div className="flex items-baseline justify-between pt-1 border-t border-black/[0.06] dark:border-white/[0.06]">
+                  <span className="text-xs font-bold text-neutral-600 dark:text-neutral-300">Doorstep Pickup</span>
+                  <span className="text-xs font-bold text-amber-500">{pickupCount} washes ({totalBookingsCount > 0 ? Math.round((pickupCount / totalBookingsCount) * 100) : 0}%)</span>
+                </div>
+                <div className="flex items-baseline justify-between pt-1 border-t border-black/[0.06] dark:border-white/[0.06]">
+                  <span className="text-xs font-bold text-neutral-600 dark:text-neutral-300">Center Slot Washes</span>
+                  <span className="text-xs font-bold text-blue-500">{slotCount} washes ({totalBookingsCount > 0 ? Math.round((slotCount / totalBookingsCount) * 100) : 0}%)</span>
+                </div>
+              </div>
+
+              {/* Vehicle Type Breakdown Progress Bars */}
+              <div className="md:col-span-2 space-y-2.5 p-4 rounded-2xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.06] dark:border-white/[0.06]">
+                <span className="text-[11px] font-extrabold uppercase tracking-wider text-neutral-500 block mb-1">
+                  Vehicle Type Breakdown
+                </span>
+                {Object.keys(vehicleStats).length === 0 ? (
+                  <p className="text-xs text-neutral-400">No vehicle stats yet.</p>
+                ) : (
+                  Object.entries(vehicleStats).map(([type, count]) => {
+                    const percent = totalBookingsCount > 0 ? Math.round((count / totalBookingsCount) * 100) : 0;
+                    return (
+                      <div key={type} className="space-y-1">
+                        <div className="flex justify-between text-xs font-bold">
+                          <span className="text-[#1D1D1F] dark:text-white">{type}</span>
+                          <span className="text-neutral-500">{count} washes ({percent}%)</span>
+                        </div>
+                        <div className="w-full h-2 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-500"
+                            style={{ width: `${percent}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
 
         {/* FILTER & SEARCH CONTROLS */}
-        <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
+        <div className="space-y-3">
           
-          {/* Search bar */}
-          <div className="sm:col-span-6 relative">
-            <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-neutral-400" />
-            <input
-              type="text"
-              placeholder="Search by ID, Customer Name, Phone, Vehicle..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white dark:bg-[#141416] border border-black/[0.08] dark:border-white/[0.08] text-xs font-medium focus:ring-1 focus:ring-black dark:focus:ring-white focus:outline-none"
-            />
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            {/* Search bar */}
+            <div className="flex-1 relative">
+              <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-neutral-400" />
+              <input
+                type="text"
+                placeholder="Search by ID, Customer Name, Phone, Vehicle..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white dark:bg-[#141416] border border-black/[0.08] dark:border-white/[0.08] text-xs font-medium focus:ring-1 focus:ring-black dark:focus:ring-white focus:outline-none"
+              />
+            </div>
+
+            {/* Date Range Filter Selector */}
+            <div className="flex items-center gap-1 bg-neutral-200/50 dark:bg-[#1C1C1F]/60 p-1 rounded-2xl border border-black/[0.06] dark:border-white/[0.06] text-xs font-bold shrink-0">
+              <span className="text-[10px] text-neutral-400 uppercase tracking-wider px-2 font-black">Date:</span>
+              <button
+                onClick={() => setDateFilter('all')}
+                className={`py-1.5 px-3 rounded-xl transition-all ${
+                  dateFilter === 'all'
+                    ? 'bg-white dark:bg-[#2C2C30] text-black dark:text-white shadow-xs font-extrabold'
+                    : 'text-neutral-500 hover:text-black dark:hover:text-white'
+                }`}
+              >
+                All Time
+              </button>
+              <button
+                onClick={() => setDateFilter('today')}
+                className={`py-1.5 px-3 rounded-xl transition-all ${
+                  dateFilter === 'today'
+                    ? 'bg-emerald-600 text-white shadow-xs font-extrabold'
+                    : 'text-neutral-500 hover:text-black dark:hover:text-white'
+                }`}
+              >
+                Today
+              </button>
+              <button
+                onClick={() => setDateFilter('yesterday')}
+                className={`py-1.5 px-3 rounded-xl transition-all ${
+                  dateFilter === 'yesterday'
+                    ? 'bg-amber-500 text-white shadow-xs font-extrabold'
+                    : 'text-neutral-500 hover:text-black dark:hover:text-white'
+                }`}
+              >
+                Yesterday
+              </button>
+              <button
+                onClick={() => setDateFilter('month')}
+                className={`py-1.5 px-3 rounded-xl transition-all ${
+                  dateFilter === 'month'
+                    ? 'bg-blue-600 text-white shadow-xs font-extrabold'
+                    : 'text-neutral-500 hover:text-black dark:hover:text-white'
+                }`}
+              >
+                This Month
+              </button>
+            </div>
           </div>
 
           {/* Status Filter Tabs */}
-          <div className="sm:col-span-6 flex items-center gap-1 bg-neutral-200/50 dark:bg-[#1C1C1F]/60 p-1 rounded-2xl border border-black/[0.06] dark:border-white/[0.06] text-xs font-bold">
+          <div className="flex items-center gap-1 bg-neutral-200/50 dark:bg-[#1C1C1F]/60 p-1 rounded-2xl border border-black/[0.06] dark:border-white/[0.06] text-xs font-bold overflow-x-auto">
             <button
               onClick={() => setFilter('all')}
-              className={`flex-1 py-2 rounded-xl transition-all ${
+              className={`flex-1 min-w-[70px] py-2 rounded-xl transition-all ${
                 filter === 'all'
                   ? 'bg-white dark:bg-[#2C2C30] text-black dark:text-white shadow-xs font-extrabold'
                   : 'text-neutral-500 hover:text-black dark:hover:text-white'
@@ -617,7 +902,7 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
             </button>
             <button
               onClick={() => setFilter('pending')}
-              className={`flex-1 py-2 rounded-xl transition-all ${
+              className={`flex-1 min-w-[80px] py-2 rounded-xl transition-all ${
                 filter === 'pending'
                   ? 'bg-amber-500 text-white shadow-xs font-extrabold'
                   : 'text-neutral-500 hover:text-black dark:hover:text-white'
@@ -626,8 +911,18 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
               Pending ({pendingCount})
             </button>
             <button
+              onClick={() => setFilter('in_progress')}
+              className={`flex-1 min-w-[80px] py-2 rounded-xl transition-all ${
+                filter === 'in_progress'
+                  ? 'bg-blue-600 text-white shadow-xs font-extrabold'
+                  : 'text-neutral-500 hover:text-black dark:hover:text-white'
+              }`}
+            >
+              In Wash ({inProgressCount})
+            </button>
+            <button
               onClick={() => setFilter('completed')}
-              className={`flex-1 py-2 rounded-xl transition-all ${
+              className={`flex-1 min-w-[90px] py-2 rounded-xl whitespace-nowrap transition-all ${
                 filter === 'completed'
                   ? 'bg-emerald-600 text-white shadow-xs font-extrabold'
                   : 'text-neutral-500 hover:text-black dark:hover:text-white'
@@ -637,13 +932,23 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
             </button>
             <button
               onClick={() => setFilter('pickup')}
-              className={`flex-1 py-2 rounded-xl transition-all ${
+              className={`flex-1 min-w-[70px] py-2 rounded-xl whitespace-nowrap transition-all ${
                 filter === 'pickup'
                   ? 'bg-black text-white dark:bg-white dark:text-black shadow-xs font-extrabold'
                   : 'text-neutral-500 hover:text-black dark:hover:text-white'
               }`}
             >
-              Pickup
+              Pickup ({pickupCount})
+            </button>
+            <button
+              onClick={() => setFilter('slot')}
+              className={`flex-1 min-w-[70px] py-2 rounded-xl whitespace-nowrap transition-all ${
+                filter === 'slot'
+                  ? 'bg-teal-600 text-white shadow-xs font-extrabold'
+                  : 'text-neutral-500 hover:text-black dark:hover:text-white'
+              }`}
+            >
+              Slots ({slotCount})
             </button>
           </div>
 
@@ -679,8 +984,171 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
               </div>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
+            <>
+              {/* Mobile Card List View (Visible on smartphones < md) */}
+              <div className="block md:hidden divide-y divide-black/10 dark:divide-white/10">
+                {filteredBookings.map((b) => {
+                  const cleanPhone = (b.phone || '').replace(/\D/g, '');
+                  const bookingCountForCustomer = customerBookingCounts[cleanPhone] || 1;
+                  const isRepeatCustomer = bookingCountForCustomer > 1;
+
+                  return (
+                    <div key={b.id} className="p-4 space-y-3 bg-white dark:bg-[#141416]">
+                      {/* Header Row: ID, Time, VIP Badge */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono font-black text-[#D97757] text-sm">{b.id}</span>
+                          {isRepeatCustomer && (
+                            <span className="px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-300 text-[10px] font-black uppercase flex items-center gap-1">
+                              <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                              VIP ({bookingCountForCustomer})
+                            </span>
+                          )}
+                        </div>
+                        <span className="font-mono text-[10px] text-neutral-400">
+                          {formatTimestampWithSeconds(b.createdAt)}
+                        </span>
+                      </div>
+
+                      {/* Customer & Vehicle Info */}
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <div className="font-extrabold text-sm text-[#1D1D1F] dark:text-white flex items-center gap-1.5">
+                            <User className="w-3.5 h-3.5 text-neutral-400" />
+                            <span>{b.name}</span>
+                          </div>
+                          <div className="flex items-center gap-2 mt-1">
+                            <a href={`tel:${b.phone}`} className="text-xs text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
+                              <Phone className="w-3 h-3" />
+                              <span>{b.phone}</span>
+                            </a>
+                            <button
+                              type="button"
+                              onClick={() => openDirectCustomerWhatsApp(b.phone, b.name, b.id)}
+                              className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold"
+                            >
+                              Chat
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="text-right">
+                          <span className="font-extrabold text-emerald-600 dark:text-emerald-400 text-base block">
+                            ₹{b.totalAmount || getDefaultPrice(b.vehicleType)}
+                          </span>
+                          <span className="text-[11px] text-neutral-400 block font-medium">
+                            {b.vehicleType} ({b.vehicleModel})
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Mode, Slot, Address */}
+                      <div className="p-2.5 rounded-xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/5 dark:border-white/5 space-y-1 text-xs">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-neutral-500">Mode / Time:</span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-bold text-[#1D1D1F] dark:text-white">
+                              {b.mode === 'pickup' ? 'Doorstep Pickup' : 'Center Slot'}
+                            </span>
+                            {b.mode === 'pickup' && b.address && (
+                              <button
+                                type="button"
+                                onClick={() => openGoogleMapsRoute(b.address)}
+                                className="text-[10px] px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold flex items-center gap-0.5"
+                              >
+                                <MapPin className="w-3 h-3" /> Maps
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        <p className="text-[11px] text-neutral-400">
+                          {b.mode === 'pickup' ? b.timeWindow || 'Morning' : `${b.date || 'Today'} (${b.timeSlot})`}
+                        </p>
+                      </div>
+
+                      {/* Status Stepper & Quick Action Buttons */}
+                      <div className="flex items-center justify-between gap-2 pt-1 flex-wrap">
+                        <div className="flex items-center gap-1.5">
+                          <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-extrabold ${
+                            b.status === 'completed'
+                              ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/30'
+                              : b.status === 'in_progress'
+                              ? 'bg-blue-500/10 text-blue-600 border border-blue-500/30 animate-pulse'
+                              : 'bg-amber-500/10 text-amber-600 border border-amber-500/30'
+                          }`}>
+                            {b.status === 'completed' ? 'Completed ✓' : b.status === 'in_progress' ? 'In Wash 🧼' : 'Pending ⏳'}
+                          </span>
+
+                          {b.status === 'pending' && (
+                            <button
+                              type="button"
+                              onClick={() => handleStatusChange(b.id, 'in_progress')}
+                              className="px-2 py-1 rounded-lg bg-blue-600 text-white font-bold text-[11px]"
+                            >
+                              Wash ➔
+                            </button>
+                          )}
+                          {(b.status === 'pending' || b.status === 'in_progress') && (
+                            <button
+                              type="button"
+                              onClick={() => handleStatusChange(b.id, 'completed')}
+                              className="px-2 py-1 rounded-lg bg-emerald-600 text-white font-bold text-[11px]"
+                            >
+                              Done ✓
+                            </button>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => sendWashStartWhatsApp(b)}
+                            className="px-2 py-1 rounded-lg bg-blue-500/10 text-blue-600 font-bold text-[10px]"
+                            title="Start Msg"
+                          >
+                            Start
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => sendWashReadyWhatsApp(b)}
+                            className="px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 font-bold text-[10px]"
+                            title="Ready Msg"
+                          >
+                            Ready
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setPrintingTokenBooking(b)}
+                            className="p-1.5 rounded-lg bg-slate-800 text-white text-[10px]"
+                            title="Print Token"
+                          >
+                            <Printer className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => openEditModal(b)}
+                            className="p-1.5 rounded-lg bg-slate-100 dark:bg-[#1C1C1F] text-slate-900 dark:text-white font-bold text-[10px]"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDownloadInvoice(b)}
+                            className="p-1.5 rounded-lg bg-slate-900 text-white font-bold text-[10px]"
+                          >
+                            <FileText className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Desktop Table View (Visible on laptops >= md) */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-left text-xs">
                 <thead className="bg-neutral-50 dark:bg-[#1C1C1F] border-b border-black/[0.08] dark:border-white/[0.08] text-neutral-500 font-bold uppercase tracking-wider">
                   <tr>
                     <th className="py-3.5 px-4">Booking ID</th>
@@ -694,145 +1162,239 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-black/[0.06] dark:divide-white/[0.06] font-medium">
-                  {filteredBookings.map((b) => (
-                    <tr key={b.id} className="hover:bg-neutral-50/80 dark:hover:bg-[#1C1C1F]/50 transition-colors">
-                      
-                      {/* ID */}
-                      <td className="py-4 px-4 font-mono font-bold text-[#D97757]">
-                        {b.id}
-                      </td>
+                  {filteredBookings.map((b) => {
+                    const cleanPhone = (b.phone || '').replace(/\D/g, '');
+                    const bookingCountForCustomer = customerBookingCounts[cleanPhone] || 1;
+                    const isRepeatCustomer = bookingCountForCustomer > 1;
 
-                      {/* Exact Time with Seconds */}
-                      <td className="py-4 px-4 font-mono text-[11px] text-neutral-600 dark:text-neutral-300">
-                        {formatTimestampWithSeconds(b.createdAt)}
-                      </td>
+                    return (
+                      <tr key={b.id} className="hover:bg-neutral-50/80 dark:hover:bg-[#1C1C1F]/50 transition-colors">
+                        
+                        {/* ID */}
+                        <td className="py-4 px-4 font-mono font-bold text-[#D97757]">
+                          {b.id}
+                        </td>
 
-                      {/* Customer Details */}
-                      <td className="py-4 px-4">
-                        <div className="font-bold text-[#1D1D1F] dark:text-white flex items-center gap-1.5">
-                          <User className="w-3.5 h-3.5 text-neutral-400" />
-                          <span>{b.name}</span>
-                        </div>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <a
-                            href={`tel:${b.phone}`}
-                            className="text-xs text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1"
-                          >
-                            <Phone className="w-3 h-3" />
-                            <span>{b.phone}</span>
-                          </a>
-                          <button
-                            type="button"
-                            onClick={() => openDirectCustomerWhatsApp(b.phone, b.name, b.id)}
-                            className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500 hover:text-white font-bold transition-all"
-                            title="Direct 1-tap WhatsApp chat"
-                          >
-                            WA Chat
-                          </button>
-                        </div>
-                      </td>
+                        {/* Exact Time with Seconds */}
+                        <td className="py-4 px-4 font-mono text-[11px] text-neutral-600 dark:text-neutral-300">
+                          {formatTimestampWithSeconds(b.createdAt)}
+                        </td>
 
-                      {/* Mode & Time */}
-                      <td className="py-4 px-4">
-                        <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold uppercase mb-1 ${
-                          b.mode === 'pickup'
-                            ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20'
-                            : 'bg-neutral-100 dark:bg-[#2C2C30] text-neutral-700 dark:text-neutral-300 border border-black/[0.06] dark:border-white/[0.06]'
-                        }`}>
-                          {b.mode === 'pickup' ? 'Doorstep Pickup' : 'Center Slot'}
-                        </span>
-                        <div className="text-xs text-neutral-500">
-                          {b.mode === 'pickup' ? b.timeWindow || 'Morning' : `${b.date || 'Today'} (${b.timeSlot})`}
-                        </div>
-                      </td>
+                        {/* Customer Details & VIP Badge */}
+                        <td className="py-4 px-4">
+                          <div className="font-bold text-[#1D1D1F] dark:text-white flex items-center gap-1.5">
+                            <User className="w-3.5 h-3.5 text-neutral-400" />
+                            <span>{b.name}</span>
+                            {isRepeatCustomer && (
+                              <span className="px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-[10px] font-black uppercase flex items-center gap-1" title={`${bookingCountForCustomer} Total Bookings`}>
+                                <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                                VIP ({bookingCountForCustomer})
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <a
+                              href={`tel:${b.phone}`}
+                              className="text-xs text-emerald-600 dark:text-emerald-400 hover:underline font-bold flex items-center gap-1"
+                            >
+                              <Phone className="w-3 h-3" />
+                              <span>{b.phone}</span>
+                            </a>
+                            <button
+                              type="button"
+                              onClick={() => openDirectCustomerWhatsApp(b.phone, b.name, b.id)}
+                              className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500 hover:text-white font-bold transition-all"
+                              title="Direct 1-tap WhatsApp chat"
+                            >
+                              Chat
+                            </button>
+                          </div>
+                        </td>
 
-                      {/* Vehicle */}
-                      <td className="py-4 px-4">
-                        <span className="font-bold text-[#1D1D1F] dark:text-white block">{b.vehicleType}</span>
-                        <span className="text-xs text-neutral-500 block">{b.vehicleModel}</span>
-                      </td>
+                        {/* Mode & Time / Address Directions */}
+                        <td className="py-4 px-4">
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${
+                              b.mode === 'pickup'
+                                ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20'
+                                : 'bg-neutral-100 dark:bg-[#2C2C30] text-neutral-700 dark:text-neutral-300 border border-black/[0.06] dark:border-white/[0.06]'
+                            }`}>
+                              {b.mode === 'pickup' ? 'Doorstep Pickup' : 'Center Slot'}
+                            </span>
+                            {b.mode === 'pickup' && b.address && (
+                              <button
+                                type="button"
+                                onClick={() => openGoogleMapsRoute(b.address)}
+                                className="text-[10px] px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold hover:bg-amber-500 hover:text-white transition-all flex items-center gap-0.5"
+                                title="Open Google Maps Directions"
+                              >
+                                <MapPin className="w-3 h-3" />
+                                Maps
+                              </button>
+                            )}
+                          </div>
+                          <div className="text-xs text-neutral-500">
+                            {b.mode === 'pickup' ? b.timeWindow || 'Morning' : `${b.date || 'Today'} (${b.timeSlot})`}
+                          </div>
+                        </td>
 
-                      {/* Bill Total */}
-                      <td className="py-4 px-4 font-extrabold text-emerald-600 dark:text-emerald-400 text-sm">
-                        ₹{b.totalAmount || getDefaultPrice(b.vehicleType)}
-                      </td>
+                        {/* Vehicle */}
+                        <td className="py-4 px-4">
+                          <span className="font-bold text-[#1D1D1F] dark:text-white block">{b.vehicleType}</span>
+                          <span className="text-xs text-neutral-500 block">{b.vehicleModel}</span>
+                        </td>
 
-                      {/* Status Badge */}
-                      <td className="py-4 px-4">
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${
-                          b.status === 'completed'
-                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
-                            : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 animate-pulse'
-                        }`}>
-                          {b.status === 'completed' ? (
-                            <>
-                              <CheckCircle2 className="w-3.5 h-3.5" />
-                              <span>Completed</span>
-                            </>
-                          ) : (
-                            <>
-                              <Clock className="w-3.5 h-3.5" />
-                              <span>Pending</span>
-                            </>
-                          )}
-                        </span>
-                      </td>
+                        {/* Bill Total */}
+                        <td className="py-4 px-4 font-extrabold text-emerald-600 dark:text-emerald-400 text-sm">
+                          ₹{b.totalAmount || getDefaultPrice(b.vehicleType)}
+                        </td>
 
-                      {/* Actions */}
-                      <td className="py-4 px-4 text-right space-x-1.5">
-                        {/* Quick Toggle Status */}
-                        {b.status === 'pending' && (
-                          <button
-                            onClick={() => handleStatusChange(b.id, 'completed')}
-                            className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white text-[11px] font-bold transition-all"
-                            title="Mark as completed"
-                          >
-                            Done ✓
-                          </button>
-                        )}
+                        {/* Status Stepper Badge */}
+                        <td className="py-4 px-4">
+                          <div className="space-y-1">
+                            <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-extrabold ${
+                              b.status === 'completed'
+                                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
+                                : b.status === 'in_progress'
+                                ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/30 animate-pulse'
+                                : b.status === 'cancelled'
+                                ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/30'
+                                : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30'
+                            }`}>
+                              {b.status === 'completed' ? (
+                                <>
+                                  <CheckCircle2 className="w-3.5 h-3.5" />
+                                  <span>Completed</span>
+                                </>
+                              ) : b.status === 'in_progress' ? (
+                                <>
+                                  <Sparkles className="w-3.5 h-3.5 text-blue-500" />
+                                  <span>In Wash</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Clock className="w-3.5 h-3.5" />
+                                  <span>Pending</span>
+                                </>
+                              )}
+                            </span>
 
-                        {/* Edit & Preview Button */}
-                        <button
-                          onClick={() => openEditModal(b)}
-                          className="px-3 py-1.5 rounded-full bg-neutral-100 dark:bg-[#1C1C1F] text-black dark:text-white border border-black/[0.08] dark:border-white/[0.08] hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black text-xs font-bold transition-all inline-flex items-center gap-1"
-                        >
-                          <Edit3 className="w-3.5 h-3.5" />
-                          <span>Edit & Bill</span>
-                        </button>
+                            {/* 1-Click Status Advance Stepper */}
+                            <div className="flex gap-1 text-[10px] font-bold pt-0.5">
+                              {b.status === 'pending' && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleStatusChange(b.id, 'in_progress')}
+                                  className="px-2 py-0.5 rounded-md bg-blue-500/10 hover:bg-blue-600 text-blue-600 hover:text-white border border-blue-500/20 transition-all"
+                                  title="Start washing vehicle"
+                                >
+                                  Wash ➔
+                                </button>
+                              )}
+                              {(b.status === 'pending' || b.status === 'in_progress') && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleStatusChange(b.id, 'completed')}
+                                  className="px-2 py-0.5 rounded-md bg-emerald-500/10 hover:bg-emerald-600 text-emerald-600 hover:text-white border border-emerald-500/20 transition-all"
+                                  title="Mark wash completed"
+                                >
+                                  Done ✓
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </td>
 
-                        {/* PDF Download Button */}
-                        <button
-                          onClick={() => handleDownloadInvoice(b)}
-                          disabled={generatingPdfId === b.id}
-                          className="px-3 py-1.5 rounded-full bg-[#1D1D1F] dark:bg-white disabled:bg-neutral-500 text-white dark:text-black text-xs font-bold transition-all shadow-xs inline-flex items-center gap-1"
-                        >
-                          <FileText className="w-3.5 h-3.5" />
-                          <span>{generatingPdfId === b.id ? 'PDF...' : 'PDF'}</span>
-                        </button>
+                        {/* Action Shortcuts */}
+                        <td className="py-4 px-4 text-right space-y-1">
+                          <div className="flex items-center justify-end gap-1 flex-wrap">
+                            
+                            {/* WhatsApp Alert Triggers */}
+                            <button
+                              type="button"
+                              onClick={() => sendWashStartWhatsApp(b)}
+                              className="px-2 py-1 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white font-bold text-[10px] transition-all"
+                              title="Send 'Wash Started' alert on WhatsApp"
+                            >
+                              Start Msg
+                            </button>
 
-                        {/* Delete Button */}
-                        <button
-                          onClick={() => handleDeleteBookingItem(b.id)}
-                          className="p-1.5 rounded-full bg-neutral-100 dark:bg-[#1C1C1F] text-neutral-400 hover:text-rose-500 transition-all inline-flex items-center"
-                          title="Delete booking item"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </td>
+                            <button
+                              type="button"
+                              onClick={() => sendWashReadyWhatsApp(b)}
+                              className="px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-600 hover:text-white font-bold text-[10px] transition-all"
+                              title="Send 'Vehicle Ready' alert on WhatsApp"
+                            >
+                              Ready Msg
+                            </button>
 
-                    </tr>
-                  ))}
+                            <button
+                              type="button"
+                              onClick={() => sendGoogleReviewWhatsApp(b)}
+                              className="px-2 py-1 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500 hover:text-white font-bold text-[10px] transition-all"
+                              title="Send 'Google Review Request' on WhatsApp"
+                            >
+                              ⭐ Review
+                            </button>
+
+                            {/* Job Token Printer Button */}
+                            <button
+                              type="button"
+                              onClick={() => setPrintingTokenBooking(b)}
+                              className="p-1.5 rounded-md bg-neutral-100 dark:bg-[#1C1C1F] text-slate-700 dark:text-slate-300 hover:bg-slate-800 hover:text-white text-[11px] font-bold transition-all"
+                              title="Print Shop-Floor Wash Slip / Token"
+                            >
+                              <Printer className="w-3.5 h-3.5" />
+                            </button>
+
+                            {/* Edit & Bill Button */}
+                            <button
+                              type="button"
+                              onClick={() => openEditModal(b)}
+                              className="px-2.5 py-1 rounded-full bg-neutral-100 dark:bg-[#1C1C1F] text-black dark:text-white border border-black/[0.08] dark:border-white/[0.08] hover:bg-black hover:text-white text-[11px] font-bold transition-all inline-flex items-center gap-1"
+                            >
+                              <Edit3 className="w-3 h-3" />
+                              <span>Edit</span>
+                            </button>
+
+                            {/* PDF Download Button */}
+                            <button
+                              type="button"
+                              onClick={() => handleDownloadInvoice(b)}
+                              disabled={generatingPdfId === b.id}
+                              className="px-2.5 py-1 rounded-full bg-[#1D1D1F] dark:bg-white text-white dark:text-black text-[11px] font-bold transition-all shadow-xs inline-flex items-center gap-1"
+                            >
+                              <FileText className="w-3 h-3" />
+                              <span>{generatingPdfId === b.id ? 'PDF...' : 'PDF'}</span>
+                            </button>
+
+                            {/* Delete Button */}
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteBookingItem(b.id)}
+                              className="p-1.5 rounded-full bg-neutral-100 dark:bg-[#1C1C1F] text-neutral-400 hover:text-rose-500 transition-all inline-flex items-center"
+                              title="Delete booking item"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </td>
+
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
+          </>
           )}
         </div>
 
 
         {/* 3. ADD WALK-IN MANUAL ENTRY MODAL */}
         {showAddModal && (
-          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-            <div className="w-full max-w-md rounded-3xl bg-white dark:bg-[#141416] border border-black/[0.08] dark:border-white/[0.08] shadow-2xl p-6 space-y-5">
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto">
+            <div className="w-full max-w-md rounded-t-3xl sm:rounded-3xl bg-white dark:bg-[#141416] border border-black/[0.08] dark:border-white/[0.08] shadow-2xl p-6 space-y-5">
               
               <div className="flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] pb-3">
                 <div>
@@ -968,8 +1530,8 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
 
         {/* 4. EDIT BILLING & LIVE INVOICE PREVIEW MODAL */}
         {editingBooking && (
-          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-            <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-[#141416] border border-black/[0.08] dark:border-white/[0.08] shadow-2xl p-6 sm:p-8 space-y-6">
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto">
+            <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl bg-white dark:bg-[#141416] border border-black/[0.08] dark:border-white/[0.08] shadow-2xl p-6 sm:p-8 space-y-6">
               
               <div className="flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] pb-4">
                 <div>
@@ -1121,10 +1683,33 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
                     </div>
                   </div>
 
+                  {/* Before & After Photo Attachments */}
+                  <div className="space-y-2 pt-2 border-t border-black/[0.08] dark:border-white/[0.08]">
+                    <label className="block text-xs font-bold uppercase text-neutral-500">
+                      📸 Vehicle Before & After Wash Photos (Image URLs)
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <input
+                        type="url"
+                        value={editBeforePhotoUrl}
+                        onChange={(e) => setEditBeforePhotoUrl(e.target.value)}
+                        placeholder="Before Wash Photo URL..."
+                        className="w-full px-3 py-2 rounded-xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.08] dark:border-white/[0.08] text-xs font-medium"
+                      />
+                      <input
+                        type="url"
+                        value={editAfterPhotoUrl}
+                        onChange={(e) => setEditAfterPhotoUrl(e.target.value)}
+                        placeholder="After Wash Photo URL..."
+                        className="w-full px-3 py-2 rounded-xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.08] dark:border-white/[0.08] text-xs font-medium"
+                      />
+                    </div>
+                  </div>
+
                   {/* Target WhatsApp Number */}
                   <div className="space-y-1.5 pt-2 border-t border-black/[0.08] dark:border-white/[0.08]">
                     <label className="block text-xs font-bold uppercase text-neutral-500">
-                      Target WhatsApp Number for Invoice
+                      Target WhatsApp Number for Invoice & Reports
                     </label>
                     <input
                       type="tel"
@@ -1135,7 +1720,7 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
                     />
                   </div>
 
-                  <div className="flex gap-3 pt-2">
+                  <div className="flex flex-col sm:flex-row gap-2 pt-2">
                     <button
                       type="button"
                       onClick={handleSaveEdit}
@@ -1150,7 +1735,17 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
                       className="flex-1 py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-xs flex items-center justify-center gap-1.5"
                     >
                       <Send className="w-4 h-4" />
-                      <span>Send WhatsApp Bill</span>
+                      <span>Send Bill</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => sendMediaReportToWhatsApp(editingBooking)}
+                      className="py-3 px-4 rounded-full bg-teal-600 hover:bg-teal-500 text-white font-extrabold text-xs shadow-xs flex items-center justify-center gap-1.5"
+                      title="Send Before & After photo report via WhatsApp"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      <span>Photo Report</span>
                     </button>
                   </div>
 
@@ -1261,6 +1856,148 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
 
                 </div>
 
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* 5. PRINTABLE SHOP-FLOOR WASH TOKEN SLIP MODAL */}
+        {printingTokenBooking && (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="w-full max-w-md p-6 rounded-3xl bg-white dark:bg-[#141416] border border-black/10 dark:border-white/10 shadow-2xl space-y-4 font-sans text-xs">
+              
+              {/* Ticket Header */}
+              <div className="text-center border-b border-dashed border-black/20 dark:border-white/20 pb-4 space-y-1">
+                <h3 className="text-base font-black text-[#1D1D1F] dark:text-white uppercase tracking-wider">MS CAR WASH SRIKALAHASTI</h3>
+                <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold uppercase">Shop-Floor Wash Token Slip</p>
+                <span className="font-mono text-sm font-black text-[#D97757] block">Token ID: {printingTokenBooking.id}</span>
+              </div>
+
+              {/* Ticket Details */}
+              <div className="space-y-2 py-2">
+                <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-1">
+                  <span className="text-neutral-500 font-bold">Customer Name:</span>
+                  <span className="font-black text-slate-900 dark:text-white">{printingTokenBooking.name}</span>
+                </div>
+                <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-1">
+                  <span className="text-neutral-500 font-bold">Phone Number:</span>
+                  <span className="font-mono font-bold text-slate-900 dark:text-white">{printingTokenBooking.phone}</span>
+                </div>
+                <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-1">
+                  <span className="text-neutral-500 font-bold">Vehicle:</span>
+                  <span className="font-black text-slate-900 dark:text-white">{printingTokenBooking.vehicleType} ({printingTokenBooking.vehicleModel})</span>
+                </div>
+                <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-1">
+                  <span className="text-neutral-500 font-bold">Wash Type / Slot:</span>
+                  <span className="font-bold text-slate-900 dark:text-white">{printingTokenBooking.mode === 'pickup' ? 'Doorstep Pickup' : printingTokenBooking.timeSlot}</span>
+                </div>
+                {printingTokenBooking.address && (
+                  <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-1">
+                    <span className="text-neutral-500 font-bold">Pickup Address:</span>
+                    <span className="font-medium text-slate-800 dark:text-slate-200 text-right max-w-[200px]">{printingTokenBooking.address}</span>
+                  </div>
+                )}
+                <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-1">
+                  <span className="text-neutral-500 font-bold">Add-on Services:</span>
+                  <span className="font-bold text-amber-600 dark:text-amber-400">{printingTokenBooking.addOns?.length ? printingTokenBooking.addOns.join(', ') : 'Standard Wash'}</span>
+                </div>
+                <div className="flex justify-between pt-1">
+                  <span className="text-neutral-500 font-bold">Billed Total Amount:</span>
+                  <span className="font-black text-emerald-600 dark:text-emerald-400 text-sm">₹{printingTokenBooking.totalAmount || getDefaultPrice(printingTokenBooking.vehicleType)}</span>
+                </div>
+              </div>
+
+              {/* Floor Checklist */}
+              <div className="p-3 rounded-2xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/10 dark:border-white/10 space-y-1 text-[10px] text-neutral-500 font-medium">
+                <p className="font-bold text-slate-900 dark:text-white uppercase">Floor Washer Checklist:</p>
+                <div className="grid grid-cols-2 gap-1 pt-1 font-mono">
+                  <span>[ ] Snow Foam Wash</span>
+                  <span>[ ] Underbody Rinse</span>
+                  <span>[ ] Tyre Polish</span>
+                  <span>[ ] Interior Vacuum</span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-2 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPrintingTokenBooking(null)}
+                  className="flex-1 py-2.5 rounded-full bg-neutral-100 dark:bg-[#1C1C1F] font-bold text-neutral-600 dark:text-neutral-300"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="flex-1 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold shadow-sm flex items-center justify-center gap-1.5"
+                >
+                  <Printer className="w-4 h-4" />
+                  <span>Print Token Slip</span>
+                </button>
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* 6. LIVE PDF INVOICE PREVIEW & DOWNLOAD CONFIRMATION MODAL */}
+        {pdfPreviewModal && (
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+            <div className="w-full max-w-4xl max-h-[95vh] overflow-hidden rounded-3xl bg-[#141416] border border-white/10 shadow-2xl flex flex-col text-white">
+              
+              {/* Modal Header */}
+              <div className="p-5 border-b border-white/10 flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-black text-white flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-emerald-400" />
+                    PDF Tax Invoice Preview — <span className="text-[#D97757] font-mono">{pdfPreviewModal.booking.id}</span>
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Inspect the official invoice document below before downloading it to your device.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setPdfPreviewModal(null)}
+                  className="p-2 rounded-full bg-slate-800 text-slate-400 hover:text-white transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* PDF Document Live Preview Frame */}
+              <div className="flex-1 bg-slate-900 p-2 sm:p-4 overflow-hidden">
+                <iframe
+                  src={pdfPreviewModal.blobUrl}
+                  title={`PDF Preview ${pdfPreviewModal.booking.id}`}
+                  className="w-full h-[55vh] rounded-2xl border border-slate-800 bg-white"
+                />
+              </div>
+
+              {/* Modal Footer with Download Confirmation */}
+              <div className="p-4 bg-[#1C1C1F] border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div className="text-xs text-slate-300">
+                  Customer: <span className="font-bold text-white">{pdfPreviewModal.booking.name}</span> ({pdfPreviewModal.booking.vehicleType} - {pdfPreviewModal.booking.vehicleModel}) — <span className="font-bold text-emerald-400">₹{pdfPreviewModal.booking.totalAmount || 350}</span>
+                </div>
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <button
+                    onClick={() => setPdfPreviewModal(null)}
+                    className="flex-1 sm:flex-none py-2.5 px-5 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition-colors"
+                  >
+                    Cancel / Close
+                  </button>
+                  <button
+                    onClick={() => {
+                      pdfPreviewModal.download();
+                      setPdfPreviewModal(null);
+                    }}
+                    className="flex-1 sm:flex-none py-2.5 px-6 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 transition-all transform active:scale-95"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Confirm & Download PDF</span>
+                  </button>
+                </div>
               </div>
 
             </div>
