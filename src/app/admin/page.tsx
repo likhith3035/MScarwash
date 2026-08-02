@@ -512,10 +512,26 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
     return acc;
   }, {} as Record<string, number>);
 
-  const todayStr = new Date().toISOString().split('T')[0];
-  const yesterdayObj = new Date();
+  const getLocalDateString = (d: Date): string => {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const getLocalDateFromIso = (isoStr?: string): string => {
+    if (!isoStr) return '';
+    const d = new Date(isoStr);
+    if (isNaN(d.getTime())) return isoStr.split('T')[0] || '';
+    return getLocalDateString(d);
+  };
+
+  const now = new Date();
+  const todayStr = getLocalDateString(now);
+
+  const yesterdayObj = new Date(now);
   yesterdayObj.setDate(yesterdayObj.getDate() - 1);
-  const yesterdayStr = yesterdayObj.toISOString().split('T')[0];
+  const yesterdayStr = getLocalDateString(yesterdayObj);
   const monthStr = todayStr.substring(0, 7);
 
   const filteredBookings = bookings.filter(b => {
@@ -527,7 +543,7 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
       (filter === 'pickup' && b.mode === 'pickup') ||
       (filter === 'slot' && b.mode === 'slot');
 
-    const createdDateStr = b.createdAt ? b.createdAt.split('T')[0] : '';
+    const createdDateStr = getLocalDateFromIso(b.createdAt);
     const matchesDate =
       dateFilter === 'all' ||
       (dateFilter === 'today' && createdDateStr === todayStr) ||
