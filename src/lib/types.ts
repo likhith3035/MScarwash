@@ -43,15 +43,15 @@ export const FOUR_WHEELER_PRICING: PricingTier[] = [
 ];
 
 export const VEHICLE_TYPES = [
-  { id: 'Car', name: 'Car / Hatchback / Sedan', desc: 'Hatchback, Sedan & Saloon' },
-  { id: 'SUV', name: 'SUV / MUV', desc: 'Creta, Innova, Fortuner' },
-  { id: 'Bike', name: 'Standard / Heavy Bike', desc: 'Commuter to Superbike' },
-  { id: 'Scooter', name: 'Scooter', desc: 'Gearless Scooters' },
-  { id: 'Truck', name: 'Truck', desc: 'Mini to Heavy Freight' },
-  { id: 'Van', name: 'Van / Commercial', desc: 'Eeco, Omni, Traveler' },
-  { id: 'Tractor', name: 'Tractor', desc: 'Farm & Commercial' },
-  { id: 'Auto', name: 'Auto Rickshaw', desc: 'Passenger & Cargo Auto' },
-  { id: 'JCB', name: 'JCB / Earth Mover', desc: 'Heavy Machinery' },
+  { id: 'Car', name: 'Car / Hatchback / Sedan', desc: 'Hatchback, Sedan & Saloon', basePrice: 350 },
+  { id: 'SUV', name: 'SUV / MUV', desc: 'Creta, Innova, Fortuner', basePrice: 500 },
+  { id: 'Bike', name: 'Standard / Heavy Bike', desc: 'Commuter to Superbike', basePrice: 120 },
+  { id: 'Scooter', name: 'Scooter', desc: 'Gearless Scooters', basePrice: 100 },
+  { id: 'Truck', name: 'Truck', desc: 'Mini to Heavy Freight', basePrice: 800 },
+  { id: 'Van', name: 'Van / Commercial', desc: 'Eeco, Omni, Traveler', basePrice: 450 },
+  { id: 'Tractor', name: 'Tractor', desc: 'Farm & Commercial', basePrice: 600 },
+  { id: 'Auto', name: 'Auto Rickshaw', desc: 'Passenger & Cargo Auto', basePrice: 200 },
+  { id: 'JCB', name: 'JCB / Earth Mover', desc: 'Heavy Machinery', basePrice: 1000 },
 ];
 
 export const TIME_SLOTS = [
@@ -66,7 +66,7 @@ export const TIME_SLOTS = [
 ];
 
 export const ADD_ONS = [
-  { id: 'interior', name: 'Interior Cleaning', desc: 'Deep vacuuming & dashboard wiping' },
-  { id: 'polish', name: 'Polish & Shine', desc: 'Protective gloss wax coating' },
-  { id: 'pressure', name: 'Pressure Wash', desc: 'High-pressure underbody dirt removal' },
+  { id: 'interior', name: 'Interior Deep Clean', desc: 'Vacuuming, upholstery & dashboard polishing', price: 150 },
+  { id: 'polish', name: 'Liquid Wax Polish & Gloss Shine', desc: 'Protective hydrophobic gloss wax coating', price: 100 },
+  { id: 'pressure', name: 'High-Pressure Underbody Wash', desc: 'High-pressure underbody mud & rust removal', price: 100 },
 ];

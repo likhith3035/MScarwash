@@ -126,6 +126,10 @@ export default function AdminPage() {
         setIsAuthenticated(true);
       }
       localStorage.removeItem('ms_car_wash_bookings');
+      const storedLocal = localStorage.getItem('ms_car_wash_bookings_v2');
+      if (storedLocal && (storedLocal.includes('MSCW-TEST') || storedLocal.includes('MSCW-9999') || storedLocal.includes('Suresh Kumar') || storedLocal.includes('Test Customer'))) {
+        localStorage.removeItem('ms_car_wash_bookings_v2');
+      }
     }
   }, []);
 

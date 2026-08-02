@@ -17,7 +17,7 @@ let isSupabaseDisabled = false;
 
 // Convert JS Booking object to Postgres DB row (matching column casing)
 function toDbRow(booking: Booking): Record<string, unknown> {
-  return {
+  const row: Record<string, unknown> = {
     id: booking.id,
     mode: booking.mode,
     name: booking.name,
@@ -33,9 +33,16 @@ function toDbRow(booking: Booking): Record<string, unknown> {
     status: booking.status,
     createdat: booking.createdAt,
     totalamount: booking.totalAmount || 350,
-    beforephotourl: booking.beforePhotoUrl || null,
-    afterphotourl: booking.afterPhotoUrl || null,
   };
+
+  if (booking.beforePhotoUrl) {
+    row.beforephotourl = booking.beforePhotoUrl;
+  }
+  if (booking.afterPhotoUrl) {
+    row.afterphotourl = booking.afterPhotoUrl;
+  }
+
+  return row;
 }
 
 // Convert Postgres DB row to JS Booking object
@@ -73,7 +80,7 @@ export async function saveBooking(bookingData: Omit<Booking, 'id' | 'createdAt' 
 
   let savedBooking = newBooking;
 
-  if (supabase && !isSupabaseDisabled) {
+  if (supabase) {
     try {
       const dbRow = toDbRow(newBooking);
       const { data, error } = await supabase
@@ -85,17 +92,14 @@ export async function saveBooking(bookingData: Omit<Booking, 'id' | 'createdAt' 
       if (!error && data) {
         savedBooking = fromDbRow(data);
       } else if (error) {
-        console.warn('Supabase insert error details:', error.message, error.code);
-        if (error.code === 'PGRST301' || error.code === '401') {
-          isSupabaseDisabled = true;
-        }
+        console.error('Supabase insert error details:', error.message, error.code, error.details);
       }
     } catch (err) {
-      console.warn('Supabase insert exception:', err);
+      console.error('Supabase insert exception:', err);
     }
   }
 
-  // Always keep local storage in sync as local fallback cache
+  // Keep local storage in sync as fallback cache
   if (typeof window !== 'undefined') {
     const existing = getLocalBookings();
     const filtered = existing.filter(b => b.id !== savedBooking.id);
@@ -106,10 +110,16 @@ export async function saveBooking(bookingData: Omit<Booking, 'id' | 'createdAt' 
   return savedBooking;
 }
 
+function isTestBooking(b: Booking): boolean {
+  if (!b) return false;
+  const legacyIds = ['MSCW-TEST-672', 'MSCW-9999', 'MSCW-TEST-162', 'MSCW-5047'];
+  return legacyIds.includes(b.id);
+}
+
 export async function getBookings(): Promise<Booking[]> {
   let dbBookings: Booking[] = [];
 
-  if (supabase && !isSupabaseDisabled) {
+  if (supabase) {
     try {
       const { data, error } = await supabase
         .from('bookings')
@@ -118,13 +128,10 @@ export async function getBookings(): Promise<Booking[]> {
       if (!error && data) {
         dbBookings = data.map(fromDbRow);
       } else if (error) {
-        console.warn('Supabase fetch error:', error.message);
-        if (error.code === 'PGRST301' || error.code === '401') {
-          isSupabaseDisabled = true;
-        }
+        console.error('Supabase fetch error:', error.message, error.code);
       }
     } catch (err) {
-      console.warn('Supabase fetch exception:', err);
+      console.error('Supabase fetch exception:', err);
     }
   }
 
@@ -134,9 +141,10 @@ export async function getBookings(): Promise<Booking[]> {
   const uniqueLocalBookings = localBookings.filter(b => !dbIds.has(b.id));
 
   const allBookings = [...dbBookings, ...uniqueLocalBookings];
+  const cleanBookings = allBookings.filter(b => !isTestBooking(b));
 
   // Sort descending by createdAt
-  return allBookings.sort((a, b) => {
+  return cleanBookings.sort((a, b) => {
     const dateA = new Date(a.createdAt || 0).getTime();
     const dateB = new Date(b.createdAt || 0).getTime();
     return dateB - dateA;
@@ -234,7 +242,16 @@ function getLocalBookings(): Booking[] {
   try {
     const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (!stored) return [];
-    return JSON.parse(stored);
+    const parsed: Booking[] = JSON.parse(stored);
+    
+    // Auto-purge any legacy test/dummy data
+    const cleaned = parsed.filter(b => !isTestBooking(b));
+
+    if (cleaned.length !== parsed.length) {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(cleaned));
+    }
+
+    return cleaned;
   } catch (e) {
     return [];
   }
