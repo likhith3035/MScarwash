@@ -1,5 +1,5 @@
 export type BookingMode = 'pickup' | 'slot';
-export type BookingStatus = 'pending' | 'completed' | 'cancelled';
+export type BookingStatus = 'pending' | 'in_progress' | 'completed' | 'cancelled';
 
 export interface Booking {
   id: string; // e.g. MSCW-1001
@@ -17,6 +17,8 @@ export interface Booking {
   status: BookingStatus;
   createdAt: string; // ISO String
   totalAmount?: number;
+  beforePhotoUrl?: string;
+  afterPhotoUrl?: string;
 }
 
 export interface PricingTier {

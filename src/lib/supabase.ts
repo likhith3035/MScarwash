@@ -1,18 +1,66 @@
 import { createClient } from '@supabase/supabase-js';
 import { Booking } from './types';
 
-// Valid Supabase credentials
-const DEFAULT_SUPABASE_URL = 'https://jvdwosqdkogoizvzxmoz.supabase.co';
-const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2ZHdvc3Fka29nb2l6dnp4bW96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU0MjMyNTcsImV4cCI6MjEwMDk5OTI1N30.vBSwpyT_dukfAnJKrQAu-iGgARMePSHPmHwjfxtOCiA';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || DEFAULT_SUPABASE_ANON_KEY;
+if (!supabaseUrl || !supabaseAnonKey) {
+  if (typeof window !== 'undefined') {
+    console.warn('MS Car Wash: Supabase environment variables are missing. Using local storage fallback.');
+  }
+}
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null;
 
-// New clean key so old mock data cached in browser localStorage is ignored
 const LOCAL_STORAGE_KEY = 'ms_car_wash_bookings_v2';
 let isSupabaseDisabled = false;
+
+// Convert JS Booking object to Postgres DB row (matching column casing)
+function toDbRow(booking: Booking): Record<string, unknown> {
+  return {
+    id: booking.id,
+    mode: booking.mode,
+    name: booking.name,
+    phone: booking.phone,
+    vehicletype: booking.vehicleType,
+    vehiclemodel: booking.vehicleModel,
+    address: booking.address || null,
+    timewindow: booking.timeWindow || null,
+    date: booking.date || null,
+    timeslot: booking.timeSlot || null,
+    notes: booking.notes || null,
+    addons: booking.addOns || [],
+    status: booking.status,
+    createdat: booking.createdAt,
+    totalamount: booking.totalAmount || 350,
+    beforephotourl: booking.beforePhotoUrl || null,
+    afterphotourl: booking.afterPhotoUrl || null,
+  };
+}
+
+// Convert Postgres DB row to JS Booking object
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function fromDbRow(row: any): Booking {
+  return {
+    id: row.id,
+    mode: row.mode,
+    name: row.name,
+    phone: row.phone,
+    vehicleType: row.vehicletype || row.vehicleType || 'Car',
+    vehicleModel: row.vehiclemodel || row.vehicleModel || '',
+    address: row.address || undefined,
+    timeWindow: row.timewindow || row.timeWindow || undefined,
+    date: row.date || undefined,
+    timeSlot: row.timeslot || row.timeSlot || undefined,
+    notes: row.notes || undefined,
+    addOns: row.addons || row.addOns || [],
+    status: row.status || 'pending',
+    createdAt: row.createdat || row.createdAt || new Date().toISOString(),
+    totalAmount: row.totalamount ?? row.totalAmount ?? 350,
+    beforePhotoUrl: row.beforephotourl || row.beforePhotoUrl || undefined,
+    afterPhotoUrl: row.afterphotourl || row.afterPhotoUrl || undefined,
+  };
+}
 
 export async function saveBooking(bookingData: Omit<Booking, 'id' | 'createdAt' | 'status'>): Promise<Booking> {
   const newId = `MSCW-${Math.floor(1000 + Math.random() * 9000)}`;
@@ -23,76 +71,95 @@ export async function saveBooking(bookingData: Omit<Booking, 'id' | 'createdAt' 
     createdAt: new Date().toISOString(),
   };
 
+  let savedBooking = newBooking;
+
   if (supabase && !isSupabaseDisabled) {
     try {
+      const dbRow = toDbRow(newBooking);
       const { data, error } = await supabase
         .from('bookings')
-        .insert([newBooking])
+        .insert([dbRow])
         .select()
         .single();
+
       if (!error && data) {
-        return data as Booking;
-      }
-      if (error && (error.code === 'PGRST301' || error.code === '401' || error.code === '400')) {
-        console.warn('Supabase RLS/400 error. Falling back to local storage.');
-        isSupabaseDisabled = true;
+        savedBooking = fromDbRow(data);
+      } else if (error) {
+        console.warn('Supabase insert error details:', error.message, error.code);
+        if (error.code === 'PGRST301' || error.code === '401') {
+          isSupabaseDisabled = true;
+        }
       }
     } catch (err) {
-      console.warn('Supabase insert error:', err);
+      console.warn('Supabase insert exception:', err);
     }
   }
 
-  // Fallback to local storage
+  // Always keep local storage in sync as local fallback cache
   if (typeof window !== 'undefined') {
     const existing = getLocalBookings();
-    const updated = [newBooking, ...existing];
+    const filtered = existing.filter(b => b.id !== savedBooking.id);
+    const updated = [savedBooking, ...filtered];
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
   }
 
-  return newBooking;
+  return savedBooking;
 }
 
 export async function getBookings(): Promise<Booking[]> {
+  let dbBookings: Booking[] = [];
+
   if (supabase && !isSupabaseDisabled) {
     try {
-      // Fetch select('*') without Postgres column casing order issues
       const { data, error } = await supabase
         .from('bookings')
         .select('*');
 
       if (!error && data) {
-        // Sort by createdAt descending in JS/TS font-safe manner
-        const sorted = (data as Booking[]).sort((a, b) => {
-          const dateA = new Date(a.createdAt || 0).getTime();
-          const dateB = new Date(b.createdAt || 0).getTime();
-          return dateB - dateA;
-        });
-        return sorted;
-      }
-      if (error && (error.code === 'PGRST301' || error.code === '401')) {
-        console.warn('Supabase 401/400 error. Using local storage fallback.');
-        isSupabaseDisabled = true;
+        dbBookings = data.map(fromDbRow);
+      } else if (error) {
+        console.warn('Supabase fetch error:', error.message);
+        if (error.code === 'PGRST301' || error.code === '401') {
+          isSupabaseDisabled = true;
+        }
       }
     } catch (err) {
-      console.warn('Supabase fetch error:', err);
+      console.warn('Supabase fetch exception:', err);
     }
   }
 
-  return getLocalBookings();
+  // Merge with local storage bookings (eliminating duplicates)
+  const localBookings = getLocalBookings();
+  const dbIds = new Set(dbBookings.map(b => b.id));
+  const uniqueLocalBookings = localBookings.filter(b => !dbIds.has(b.id));
+
+  const allBookings = [...dbBookings, ...uniqueLocalBookings];
+
+  // Sort descending by createdAt
+  return allBookings.sort((a, b) => {
+    const dateA = new Date(a.createdAt || 0).getTime();
+    const dateB = new Date(b.createdAt || 0).getTime();
+    return dateB - dateA;
+  });
 }
 
 export async function updateBookingStatus(id: string, status: Booking['status'], totalAmount?: number): Promise<boolean> {
+  let updatedInDb = false;
+
   if (supabase && !isSupabaseDisabled) {
     try {
-      const updatePayload: Partial<Booking> = { status };
-      if (totalAmount !== undefined) updatePayload.totalAmount = totalAmount;
+      const updatePayload: Record<string, unknown> = { status };
+      if (totalAmount !== undefined) {
+        updatePayload.totalamount = totalAmount;
+      }
       const { error } = await supabase.from('bookings').update(updatePayload).eq('id', id);
-      if (!error) return true;
-      if (error && (error.code === 'PGRST301' || error.code === '401')) {
+      if (!error) {
+        updatedInDb = true;
+      } else if (error && (error.code === 'PGRST301' || error.code === '401')) {
         isSupabaseDisabled = true;
       }
     } catch (err) {
-      console.warn('Supabase update error:', err);
+      console.warn('Supabase update exception:', err);
     }
   }
 
@@ -111,7 +178,7 @@ export async function updateBookingStatus(id: string, status: Booking['status'],
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
     return true;
   }
-  return false;
+  return updatedInDb;
 }
 
 export function clearAllLocalBookings(): void {
