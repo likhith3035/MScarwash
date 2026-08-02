@@ -34,16 +34,18 @@ export async function GET() {
 
   // 2. Query Supabase database to add completed local bookings/reviews count dynamically
   let extraCount = 0;
-  try {
-    const { count, error } = await supabase
-      .from('bookings')
-      .select('*', { count: 'exact', head: true });
-    
-    if (!error && typeof count === 'number') {
-      extraCount = count;
+  if (supabase) {
+    try {
+      const { count, error } = await supabase
+        .from('bookings')
+        .select('*', { count: 'exact', head: true });
+      
+      if (!error && typeof count === 'number') {
+        extraCount = count;
+      }
+    } catch (e) {
+      // ignore DB errors
     }
-  } catch (e) {
-    // ignore DB errors
   }
 
   const baseReviews = 128;

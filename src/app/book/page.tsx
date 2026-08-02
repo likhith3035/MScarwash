@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   MapPin,
   Calendar,
@@ -17,9 +17,11 @@ import {
   PhoneCall,
   Star
 } from 'lucide-react';
-import { BookingMode, TIME_SLOTS, VEHICLE_TYPES, ADD_ONS } from '@/lib/types';
-import { saveBooking } from '@/lib/supabase';
+import { BookingMode, TIME_SLOTS, VEHICLE_TYPES, ADD_ONS, Booking } from '@/lib/types';
+import { saveBooking, getBookings } from '@/lib/supabase';
 import { useLanguage } from '@/context/LanguageContext';
+
+const MAX_SLOTS_PER_HOUR = 2;
 
 export default function BookingPage() {
   const { t } = useLanguage();
@@ -36,10 +38,32 @@ export default function BookingPage() {
   const [timeSlot, setTimeSlot] = useState(TIME_SLOTS[1].slot);
   const [notes, setNotes] = useState('');
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
+  const [existingBookings, setExistingBookings] = useState<Booking[]>([]);
 
   // Submission State
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedBooking, setSubmittedBooking] = useState<{ id: string; whatsappUrl: string } | null>(null);
+
+  // Fetch bookings to calculate slot capacity
+  useEffect(() => {
+    async function loadBookings() {
+      try {
+        const data = await getBookings();
+        setExistingBookings(data || []);
+      } catch (err) {
+        console.warn('Could not load existing bookings for slot locking:', err);
+      }
+    }
+    loadBookings();
+  }, []);
+
+  // Compute counts per slot for current date
+  const slotCountsForDate = existingBookings.reduce((acc, b) => {
+    if (b.mode === 'slot' && b.date === date && b.timeSlot && b.status !== 'cancelled') {
+      acc[b.timeSlot] = (acc[b.timeSlot] || 0) + 1;
+    }
+    return acc;
+  }, {} as Record<string, number>);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -334,11 +358,15 @@ Booking ID: ${saved.id}`;
                   onChange={(e) => setTimeSlot(e.target.value)}
                   className="w-full px-4.5 py-3.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/10 dark:border-white/10 text-xs font-black text-slate-900 dark:text-white"
                 >
-                  {TIME_SLOTS.map((ts) => (
-                    <option key={ts.slot} value={ts.slot}>
-                      {ts.slot} {ts.isPeak ? '(Peak Hour)' : ''}
-                    </option>
-                  ))}
+                  {TIME_SLOTS.map((ts) => {
+                    const bookedCount = slotCountsForDate[ts.slot] || 0;
+                    const isLocked = bookedCount >= MAX_SLOTS_PER_HOUR;
+                    return (
+                      <option key={ts.slot} value={ts.slot} disabled={isLocked}>
+                        {ts.slot} {ts.isPeak ? '⚡ (Peak)' : ''} {isLocked ? '🔒 [FULLY BOOKED]' : bookedCount > 0 ? `(${MAX_SLOTS_PER_HOUR - bookedCount} left)` : ''}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
             </div>
