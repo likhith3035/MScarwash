@@ -24,8 +24,9 @@ async function getLogoDataUrl(): Promise<string | null> {
 export async function generateInvoicePDF(
   booking: Booking,
   billedBy: string = 'Naveen (Manager)',
-  paymentMethod: string = 'Cash'
-): Promise<void> {
+  paymentMethod: string = 'Cash',
+  autoSave: boolean = false
+): Promise<{ doc: jsPDF; blobUrl: string; download: () => void; fileName: string }> {
   const doc = new jsPDF({
     orientation: 'portrait',
     unit: 'mm',
@@ -271,8 +272,19 @@ export async function generateInvoicePDF(
   doc.setTextColor(148, 163, 184);
   doc.text('For queries or appointments: Call +91 9494829450, 8309390902 | WhatsApp: +91 8885426155', pageWidth / 2, footerY + 12, { align: 'center' });
 
-  // Save PDF file
-  doc.save(`MSCW_Invoice_${booking.id}.pdf`);
+  const fileName = `MSCW_Invoice_${booking.id}.pdf`;
+  const blob = doc.output('blob');
+  const blobUrl = URL.createObjectURL(blob);
+
+  const download = () => {
+    doc.save(fileName);
+  };
+
+  if (autoSave) {
+    download();
+  }
+
+  return { doc, blobUrl, download, fileName };
 }
 
 function getEstimatedPrice(type: string): number {
