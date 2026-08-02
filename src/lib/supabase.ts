@@ -181,6 +181,47 @@ export async function updateBookingStatus(id: string, status: Booking['status'],
   return updatedInDb;
 }
 
+export async function deleteBooking(id: string): Promise<boolean> {
+  let deletedInDb = false;
+
+  if (supabase && !isSupabaseDisabled) {
+    try {
+      const { error } = await supabase.from('bookings').delete().eq('id', id);
+      if (!error) {
+        deletedInDb = true;
+      }
+    } catch (err) {
+      console.warn('Supabase delete exception:', err);
+    }
+  }
+
+  if (typeof window !== 'undefined') {
+    const existing = getLocalBookings();
+    const updated = existing.filter(b => b.id !== id);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+  }
+
+  return deletedInDb;
+}
+
+export async function deleteAllBookings(): Promise<boolean> {
+  let deletedInDb = false;
+
+  if (supabase && !isSupabaseDisabled) {
+    try {
+      const { error } = await supabase.from('bookings').delete().neq('id', 'NONE_RESERVED');
+      if (!error) {
+        deletedInDb = true;
+      }
+    } catch (err) {
+      console.warn('Supabase delete all exception:', err);
+    }
+  }
+
+  clearAllLocalBookings();
+  return deletedInDb;
+}
+
 export function clearAllLocalBookings(): void {
   if (typeof window !== 'undefined') {
     localStorage.removeItem(LOCAL_STORAGE_KEY);

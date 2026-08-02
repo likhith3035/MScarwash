@@ -30,6 +30,7 @@ DROP POLICY IF EXISTS "Allow public insert" ON public.bookings;
 DROP POLICY IF EXISTS "Allow public read and update" ON public.bookings;
 DROP POLICY IF EXISTS "Allow public read" ON public.bookings;
 DROP POLICY IF EXISTS "Allow public update" ON public.bookings;
+DROP POLICY IF EXISTS "Allow public delete" ON public.bookings;
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE public.bookings ENABLE ROW LEVEL SECURITY;
@@ -38,3 +39,4 @@ ALTER TABLE public.bookings ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow public insert" ON public.bookings FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow public read" ON public.bookings FOR SELECT USING (true);
 CREATE POLICY "Allow public update" ON public.bookings FOR UPDATE USING (true);
+CREATE POLICY "Allow public delete" ON public.bookings FOR DELETE USING (true);

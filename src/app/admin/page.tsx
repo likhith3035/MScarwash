@@ -35,7 +35,7 @@ import {
   MapPin
 } from 'lucide-react';
 import { Booking } from '@/lib/types';
-import { getBookings, updateBookingStatus, saveBooking, clearAllLocalBookings } from '@/lib/supabase';
+import { getBookings, updateBookingStatus, saveBooking, clearAllLocalBookings, deleteBooking, deleteAllBookings } from '@/lib/supabase';
 import { generateInvoicePDF } from '@/lib/invoice-generator';
 
 const ADMIN_PASSWORD = 'naveen@2026';
@@ -180,16 +180,17 @@ export default function AdminPage() {
     }
   }, [isAuthenticated, soundEnabled]);
 
-  const handleClearLocalData = () => {
-    if (confirm('Clear local cache? This will reset local test items.')) {
-      clearAllLocalBookings();
+  const handleClearLocalData = async () => {
+    if (confirm('Are you sure you want to delete ALL test bookings from the database and local cache?')) {
+      await deleteAllBookings();
       setBookings([]);
     }
   };
 
-  const handleDeleteBookingItem = (id: string) => {
-    if (confirm(`Are you sure you want to remove booking #${id}?`)) {
+  const handleDeleteBookingItem = async (id: string) => {
+    if (confirm(`Are you sure you want to permanently delete booking #${id}?`)) {
       setBookings(prev => prev.filter(b => b.id !== id));
+      await deleteBooking(id);
     }
   };
 
