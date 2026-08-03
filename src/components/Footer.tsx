@@ -48,48 +48,51 @@ export function Footer() {
           </div>
 
           {/* Contact */}
-          <div>
-            <h4 className="text-slate-900 dark:text-white font-extrabold text-xs uppercase tracking-wider mb-4">
+          <div className="space-y-3">
+            <h4 className="text-slate-900 dark:text-white font-extrabold text-xs uppercase tracking-wider mb-2">
               Contact & Location
             </h4>
-            <ul className="space-y-2.5 text-xs font-medium">
-              <li className="flex items-start gap-2">
-                <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
-                <div>
-                  <span>Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Near Highway Srikalahasti - 517644</span>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    <a
-                      href="https://maps.app.goo.gl/i8Wa5ef1dZZwnJmF9"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[10px] shadow-xs transition-all hover:scale-105"
-                    >
-                      <MapPin className="w-3 h-3" /> Get Directions
-                    </a>
-                    <a
-                      href="https://maps.app.goo.gl/i8Wa5ef1dZZwnJmF9"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 font-extrabold text-[10px] border border-amber-500/30 transition-all hover:scale-105"
-                    >
-                      <Star className="w-3 h-3 text-amber-500 fill-amber-500" /> Review Us
-                    </a>
-                  </div>
-                </div>
-              </li>
-              <li className="flex items-center gap-2">
-                <Phone className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                <a href="tel:9494829450" className="hover:text-slate-900 dark:hover:text-white font-bold text-slate-800 dark:text-slate-200">9494829450 / 8309390902</a>
-              </li>
-              <li className="flex items-center gap-2">
-                <MessageSquare className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                <a href="https://wa.me/918885426155" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-500 font-bold text-emerald-600 dark:text-emerald-400">WhatsApp: 8885426155</a>
-              </li>
-              <li className="flex items-center gap-2">
-                <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                <span>7:00 AM – 10:00 PM Daily</span>
-              </li>
-            </ul>
+            <div className="text-xs text-slate-600 dark:text-slate-400 space-y-2">
+              <div className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                <span>Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Srikalahasti - 517644</span>
+              </div>
+              <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+                <Clock className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                <span>Open 7:00 AM – 10:00 PM Daily</span>
+              </div>
+            </div>
+
+            {/* 1-Tap Direct Action Pills */}
+            <div className="pt-2 flex flex-col gap-2">
+              <a
+                href="tel:9494829450"
+                className="w-full py-2.5 px-3.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-black text-xs flex items-center justify-center gap-2 shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all"
+              >
+                <Phone className="w-3.5 h-3.5 text-emerald-400 dark:text-emerald-600" />
+                <span>Call Desk: 9494829450</span>
+              </a>
+              <div className="flex gap-2">
+                <a
+                  href="https://wa.me/918885426155"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] flex items-center justify-center gap-1.5 shadow-sm transition-all"
+                >
+                  <MessageSquare className="w-3 h-3 fill-current" />
+                  <span>WhatsApp</span>
+                </a>
+                <a
+                  href="https://maps.app.goo.gl/i8Wa5ef1dZZwnJmF9"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 py-2 px-3 rounded-xl bg-slate-200/80 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/15 text-slate-800 dark:text-white font-bold text-[11px] flex items-center justify-center gap-1.5 border border-black/5 dark:border-white/5 transition-all"
+                >
+                  <MapPin className="w-3 h-3 text-emerald-500" />
+                  <span>Directions</span>
+                </a>
+              </div>
+            </div>
           </div>
 
           {/* Perks */}
