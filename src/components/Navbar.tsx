@@ -49,10 +49,10 @@ export function Navbar() {
             </div>
             <div className="flex flex-col leading-none">
               <div className="flex items-center gap-1.5">
-                <span className="font-black text-base sm:text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                <span className="font-bold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                   MS CAR WASH
                 </span>
-                <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold tracking-wider uppercase border border-emerald-500/20">
+                <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold tracking-wider uppercase border border-emerald-500/20">
                   SKHT
                 </span>
               </div>
@@ -63,14 +63,14 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Nav Pills */}
-          <nav className="hidden md:flex items-center gap-1 bg-slate-200/50 dark:bg-[#0D131D]/80 p-1.5 rounded-full border border-black/[0.06] dark:border-white/[0.06] shadow-inner backdrop-blur-md">
+          <nav className="hidden md:flex items-center gap-1 bg-slate-200/50 dark:bg-[#0E1420]/80 p-1.5 rounded-full border border-black/[0.06] dark:border-white/[0.06] shadow-inner backdrop-blur-md">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-4 py-1.5 rounded-full text-xs font-extrabold transition-all duration-200 relative ${
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 relative ${
                     isActive
                       ? 'bg-white dark:bg-emerald-600 text-black dark:text-white shadow-sm scale-[1.02]'
                       : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5'
