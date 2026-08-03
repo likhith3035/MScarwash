@@ -138,10 +138,10 @@ export function QuickPriceEstimator() {
           </div>
 
           <Link
-            href="/book"
+            href={`/book?vehicle=${selectedCategory === 'bike' ? 'Bike' : 'Car'}`}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs shadow-md shadow-emerald-600/30 transition-all hover:scale-105 active:scale-95"
           >
-            <span>Book Wash Slot</span>
+            <span>Book {currentItem.segment} Wash</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

@@ -241,7 +241,7 @@ export default function HomePage() {
       </section>
 
       {/* STATS METRICS BAR */}
-      <section className="py-8 bg-slate-900 dark:bg-[#04060A] text-white border-y border-black/10 dark:border-white/10 shadow-lg">
+      <section className="py-8 bg-[#070B12] dark:bg-[#04060A] text-white border-y border-black/10 dark:border-white/10 shadow-lg">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {stats.map((st, idx) => {
@@ -250,7 +250,7 @@ export default function HomePage() {
                 <div key={idx} className="space-y-1.5 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
                   <IconComp className="w-5 h-5 text-emerald-400 mx-auto" />
                   <span className="text-2xl sm:text-3xl font-black block tracking-tight text-white">{st.value}</span>
-                  <span className="text-xs text-slate-400 font-extrabold uppercase tracking-wider block">{st.label}</span>
+                  <span className="text-xs text-slate-400 font-bold uppercase tracking-wider block">{st.label}</span>
                 </div>
               );
             })}
@@ -258,6 +258,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      <div className="gradient-divider max-w-6xl mx-auto my-4" />
 
       {/* INSTANT PRICE ESTIMATOR WIDGET */}
       <section className="py-8 px-4 sm:px-6">
