@@ -1,121 +1,71 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import {
   MapPin,
   Calendar,
-  AlertCircle,
   CheckCircle2,
-  ExternalLink,
   MessageSquare,
-  Gift,
   Car,
   Clock,
   Sparkles,
-  ShieldCheck,
   User,
   PhoneCall,
-  Star
+  Star,
+  ChevronDown,
+  Gift,
+  Building2,
+  Compass,
 } from 'lucide-react';
 import { BookingMode, TIME_SLOTS, VEHICLE_TYPES, ADD_ONS, Booking } from '@/lib/types';
 import { saveBooking, getBookings } from '@/lib/supabase';
 import { useLanguage } from '@/context/LanguageContext';
-import MapPinPickerModal from '@/components/MapPinPickerModal';
 
 const MAX_SLOTS_PER_HOUR = 2;
 
-export default function BookingPage() {
+function BookingForm() {
   const { t } = useLanguage();
+  const searchParams = useSearchParams();
+
+  // Mode
   const [mode, setMode] = useState<BookingMode>('pickup');
 
   // Form Fields
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [vehicleType, setVehicleType] = useState('car');
+  const [vehicleType, setVehicleType] = useState('Car');
   const [vehicleModel, setVehicleModel] = useState('');
+
+  // Handle URL vehicle pre-selection
+  useEffect(() => {
+    const param = searchParams.get('vehicle');
+    if (param && VEHICLE_TYPES.some((v) => v.id === param)) {
+      setVehicleType(param);
+    }
+  }, [searchParams]);
   const [address, setAddress] = useState('');
   const [timeWindow, setTimeWindow] = useState('10:00 AM – 12:00 PM');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [timeSlot, setTimeSlot] = useState('9:00 AM – 11:00 AM');
   const [notes, setNotes] = useState('');
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
+  const [showAddOns, setShowAddOns] = useState(false);
 
-  // Rapido-style GPS & Interactive Map Modal States
-  const [isLocating, setIsLocating] = useState(false);
-  const [locationSuccess, setLocationSuccess] = useState(false);
-  const [gpsError, setGpsError] = useState<string | null>(null);
-  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
-
-  // Rapido / Uber Style High-Accuracy GPS Location Detector
-  const handleDetectLocation = () => {
-    if (typeof window === 'undefined' || !navigator.geolocation) {
-      setGpsError('Geolocation is not supported by your browser.');
-      return;
-    }
-
-    setIsLocating(true);
-    setLocationSuccess(false);
-    setGpsError(null);
-
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude, accuracy } = position.coords;
-        const latStr = latitude.toFixed(6);
-        const lngStr = longitude.toFixed(6);
-        const mapsUrl = `https://maps.google.com/?q=${latStr},${lngStr}`;
-
-        let areaText = '';
-        try {
-          const res = await fetch(
-            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
-          );
-          const data = await res.json();
-          const locality = data.locality || data.city || '';
-          const state = data.principalSubdivision || '';
-          areaText = [locality, state].filter(Boolean).join(', ');
-        } catch (err) {
-          // silent fallback
-        }
-
-        const gpsHeader = `📍 [Exact GPS]: ${latStr}, ${lngStr} (±${Math.round(accuracy || 10)}m)`;
-        const areaLine = areaText ? `\n🏢 Locality: ${areaText}` : '';
-        const mapsLine = `\n🗺️ Google Maps Pin: ${mapsUrl}`;
-
-        setAddress(`${gpsHeader}${areaLine}${mapsLine}`);
-        setLocationSuccess(true);
-        setIsLocating(false);
-      },
-      (error) => {
-        setIsLocating(false);
-        if (error.code === error.PERMISSION_DENIED) {
-          setGpsError('Location permission denied. Please enable location in your browser or select an area chip below.');
-        } else {
-          setGpsError('Unable to detect GPS location. Please tap an area chip below or type address manually.');
-        }
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-    );
-  };
+  // Existing bookings for slot limits
   const [existingBookings, setExistingBookings] = useState<Booking[]>([]);
-
-  // Submission State
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submittedBooking, setSubmittedBooking] = useState<{ id: string; whatsappUrl: string } | null>(null);
-
-  // Fetch bookings to calculate slot capacity
   useEffect(() => {
     async function loadBookings() {
       try {
         const data = await getBookings();
         setExistingBookings(data || []);
       } catch (err) {
-        console.warn('Could not load existing bookings for slot locking:', err);
+        console.warn('Could not load bookings:', err);
       }
     }
     loadBookings();
   }, []);
 
-  // Compute counts per slot for current date
   const slotCountsForDate = existingBookings.reduce((acc, b) => {
     if (b.mode === 'slot' && b.date === date && b.timeSlot && b.status !== 'cancelled') {
       acc[b.timeSlot] = (acc[b.timeSlot] || 0) + 1;
@@ -123,14 +73,14 @@ export default function BookingPage() {
     return acc;
   }, {} as Record<string, number>);
 
-  // Live Price Calculation
-  const selectedVehicleObj = VEHICLE_TYPES.find(v => v.id === vehicleType) || VEHICLE_TYPES[0];
+  // Live Price
+  const selectedVehicleObj = VEHICLE_TYPES.find((v) => v.id === vehicleType) || VEHICLE_TYPES[0];
   const vehicleBasePrice = selectedVehicleObj.basePrice || 350;
-  const addOnsTotalPrice = selectedAddOns.reduce((sum, addOnId) => {
-    const found = ADD_ONS.find(a => a.id === addOnId);
-    return sum + (found?.price || 0);
-  }, 0);
-  const calculatedTotalAmount = vehicleBasePrice + addOnsTotalPrice;
+  const totalAmount = vehicleBasePrice;
+
+  // Submission State
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submittedBooking, setSubmittedBooking] = useState<{ id: string; whatsappUrl: string } | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -142,7 +92,6 @@ export default function BookingPage() {
     setIsSubmitting(true);
 
     try {
-      // 1. Save to Database
       const saved = await saveBooking({
         mode,
         name,
@@ -155,10 +104,9 @@ export default function BookingPage() {
         timeSlot: mode === 'slot' ? timeSlot : undefined,
         notes,
         addOns: selectedAddOns,
-        totalAmount: calculatedTotalAmount,
+        totalAmount,
       });
 
-      // 2. Trigger Automated Telegram Bot Notification in Background
       try {
         await fetch('/api/notify', {
           method: 'POST',
@@ -169,27 +117,24 @@ export default function BookingPage() {
         console.log('Telegram API call error:', err);
       }
 
-      // 3. Prepare WhatsApp Direct Alert
-      const waText = mode === 'pickup'
-        ? `New Booking Request — MS Car Wash
-Type: Pickup Wash (Doorstep)
+      const waText =
+        mode === 'pickup'
+          ? `New Booking — MS Car Wash
+Mode: Doorstep Pickup
 Name: ${name}
 Phone: ${phone}
 Vehicle: ${vehicleType} - ${vehicleModel}
-Pickup Address: ${address || 'Provided on call'}
-Preferred Time: ${timeWindow}
+Address: ${address || 'Srikalahasti'}
+Time: ${timeWindow}
 Add-ons: ${selectedAddOns.length > 0 ? selectedAddOns.join(', ') : 'None'}
-Notes: ${notes || 'None'}
 Booking ID: ${saved.id}`
-        : `New Booking Request — MS Car Wash
-Type: Slot Booking (Wash Center)
+          : `New Booking — MS Car Wash
+Mode: Center Slot
 Name: ${name}
 Phone: ${phone}
 Vehicle: ${vehicleType} - ${vehicleModel}
-Date: ${date}
-Preferred Slot: ${timeSlot}
+Date: ${date} (${timeSlot})
 Add-ons: ${selectedAddOns.length > 0 ? selectedAddOns.join(', ') : 'None'}
-Notes: ${notes || 'None'}
 Booking ID: ${saved.id}`;
 
       const whatsappUrl = `https://wa.me/918885426155?text=${encodeURIComponent(waText)}`;
@@ -198,10 +143,7 @@ Booking ID: ${saved.id}`;
         window.open(whatsappUrl, '_blank');
       }
 
-      setSubmittedBooking({
-        id: saved.id,
-        whatsappUrl,
-      });
+      setSubmittedBooking({ id: saved.id, whatsappUrl });
     } catch (error) {
       console.error('Error saving booking:', error);
       alert('Something went wrong. Please call or WhatsApp us directly.');
@@ -210,258 +152,178 @@ Booking ID: ${saved.id}`;
     }
   };
 
+  const toggleAddOn = (id: string) => {
+    setSelectedAddOns((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  };
+
   return (
-    <div className="py-12 max-w-3xl mx-auto px-4 sm:px-6 w-full space-y-8">
-      
-      {/* Header */}
-      <div className="text-center space-y-2">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-black uppercase tracking-wider border border-emerald-500/20">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>{t('easyBooking')}</span>
-        </div>
-        <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white">{t('bookVehicleWash')}</h1>
-        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium max-w-lg mx-auto">
-          {t('selectModeDesc')}
+    <div className="py-8 sm:py-12 max-w-lg mx-auto px-4 w-full space-y-6">
+      {/* ── Title Header ── */}
+      <div className="text-center space-y-1.5">
+        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+          {t('bookVehicleWash')}
+        </h1>
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          Fast & easy booking • Free water bottle + tissue box
         </p>
       </div>
 
-      {/* MODE TOGGLE BUTTONS */}
-      <div className="p-2 rounded-2xl bg-slate-200/80 dark:bg-[#0D131D] grid grid-cols-2 gap-2 text-xs sm:text-sm font-black shadow-inner border border-black/5 dark:border-white/5">
-        <button
-          type="button"
-          onClick={() => setMode('pickup')}
-          className={`py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2.5 ${
-            mode === 'pickup'
-              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 scale-[1.01]'
-              : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-          }`}
-        >
-          <MapPin className="w-4.5 h-4.5 shrink-0" />
-          <span>{t('doorstepPickup')}</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setMode('slot')}
-          className={`py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2.5 ${
-            mode === 'slot'
-              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 scale-[1.01]'
-              : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-          }`}
-        >
-          <Calendar className="w-4.5 h-4.5 shrink-0" />
-          <span>{t('centerDriveIn')}</span>
-        </button>
-      </div>
-
-      {/* Slot Warning Banner */}
-      {mode === 'slot' && (
-        <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs font-medium flex items-start gap-3 shadow-xs">
-          <AlertCircle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-          <span>
-            <strong className="font-black">Center Slot Note:</strong> {t('slotRule')}
-          </span>
-        </div>
-      )}
-
-      {/* SUCCESS CONFIRMATION */}
+      {/* ── Success Confirmation Screen ── */}
       {submittedBooking ? (
-        <div className="p-8 sm:p-10 rounded-3xl bg-white dark:bg-[#0D131D] border border-black/10 dark:border-white/10 text-center space-y-6 shadow-xl relative overflow-hidden">
-          <div className="w-16 h-16 mx-auto rounded-full bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 flex items-center justify-center shadow-lg shadow-emerald-500/20 animate-bounce">
-            <CheckCircle2 className="w-9 h-9" />
+        <div className="p-8 rounded-3xl bg-white dark:bg-[#0D131D] border border-black/10 dark:border-white/10 text-center space-y-5 shadow-xl">
+          <div className="w-14 h-14 mx-auto rounded-full bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 flex items-center justify-center">
+            <CheckCircle2 className="w-7 h-7" />
           </div>
           <div>
-            <h2 className="text-3xl font-black text-slate-900 dark:text-white">{t('bookingReceived')}</h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">Booking Reference ID: <span className="font-mono font-black text-slate-900 dark:text-white bg-slate-100 dark:bg-white/10 px-2 py-0.5 rounded-md">{submittedBooking.id}</span></p>
+            <h2 className="text-2xl font-black text-slate-900 dark:text-white">Booking Confirmed!</h2>
+            <p className="text-xs text-slate-500 mt-1">
+              Ref ID: <span className="font-mono font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-white/10 px-2 py-0.5 rounded">{submittedBooking.id}</span>
+            </p>
           </div>
-          <p className="text-xs text-slate-600 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
-            Your wash slot request has been generated. Notifications have been dispatched to our Srikalahasti wash center desk on WhatsApp & Telegram.
-          </p>
-
-          <div className="pt-3 flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
-            <a
-              href={submittedBooking.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 py-4 px-5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 hover:scale-105 transition-all"
-            >
-              <MessageSquare className="w-4 h-4 fill-current" />
-              <span>{t('openWhatsapp')}</span>
-            </a>
-            <a
-              href="https://maps.app.goo.gl/i8Wa5ef1dZZwnJmF9"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="py-4 px-5 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 font-extrabold text-xs flex items-center justify-center gap-2 border border-amber-500/30 hover:scale-105 transition-all"
-            >
-              <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-              <span>Google Review</span>
-            </a>
-          </div>
+          <a
+            href={submittedBooking.whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="py-3.5 px-5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/25 transition-all"
+          >
+            <MessageSquare className="w-4 h-4 fill-current" />
+            <span>Open WhatsApp Chat</span>
+          </a>
+          <button
+            type="button"
+            onClick={() => setSubmittedBooking(null)}
+            className="text-xs font-bold text-slate-400 hover:text-slate-600 underline block mx-auto"
+          >
+            Book Another Wash
+          </button>
         </div>
       ) : (
-        /* EASY FORM CARD */
-        <form onSubmit={handleSubmit} className="p-6 sm:p-9 rounded-3xl bg-white dark:bg-[#0D131D] border border-black/10 dark:border-white/10 shadow-lg space-y-6">
+        /* ── Minimalist Single-Card Form ── */
+        <form onSubmit={handleSubmit} className="p-6 rounded-3xl bg-white dark:bg-[#0D131D] border border-black/8 dark:border-white/8 shadow-xl space-y-4">
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            
-            {/* Name Input */}
-            <div className="space-y-1.5">
-              <label className="block text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
-                {t('yourName')}
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="e.g. Ramesh Kumar"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full px-4.5 py-3.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/10 dark:border-white/10 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
-              />
-            </div>
-
-            {/* Phone Input */}
-            <div className="space-y-1.5">
-              <label className="block text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
-                {t('phoneNumber')}
-              </label>
-              <input
-                type="tel"
-                required
-                placeholder="e.g. 9494829450"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="w-full px-4.5 py-3.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/10 dark:border-white/10 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
-              />
-            </div>
-
-            {/* Vehicle Type */}
-            <div className="space-y-1.5">
-              <label className="block text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
-                {t('vehicleType')}
-              </label>
-              <select
-                value={vehicleType}
-                onChange={(e) => setVehicleType(e.target.value)}
-                className="w-full px-4.5 py-3.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/10 dark:border-white/10 text-xs font-black text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
-              >
-                {VEHICLE_TYPES.map((v) => (
-                  <option key={v.id} value={v.id}>{v.name}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Vehicle Model */}
-            <div className="space-y-1.5">
-              <label className="block text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
-                {t('vehicleModel')}
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="e.g. Swift, Creta, Bullet, Activa"
-                value={vehicleModel}
-                onChange={(e) => setVehicleModel(e.target.value)}
-                className="w-full px-4.5 py-3.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/10 dark:border-white/10 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
-              />
-            </div>
-
+          {/* Mode Switcher */}
+          <div className="p-1 rounded-xl bg-slate-100 dark:bg-[#151D2A] grid grid-cols-2 gap-1 text-xs font-bold">
+            <button
+              type="button"
+              onClick={() => setMode('pickup')}
+              className={`py-2.5 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                mode === 'pickup'
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <MapPin className="w-3.5 h-3.5" />
+              <span>Doorstep Pickup</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('slot')}
+              className={`py-2.5 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                mode === 'slot'
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <Calendar className="w-3.5 h-3.5" />
+              <span>Center Drive-In</span>
+            </button>
           </div>
 
-          {/* Conditional Mode Fields */}
+          {/* Name & Phone */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Name *
+              </label>
+              <div className="relative">
+                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Ramesh"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/8 dark:border-white/8 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Phone *
+              </label>
+              <div className="relative">
+                <PhoneCall className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  type="tel"
+                  required
+                  placeholder="e.g. 9494829450"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/8 dark:border-white/8 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Vehicle Type & Model */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Vehicle Type
+              </label>
+              <div className="relative">
+                <Car className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <select
+                  value={vehicleType}
+                  onChange={(e) => setVehicleType(e.target.value)}
+                  className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/8 dark:border-white/8 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none appearance-none"
+                >
+                  {VEHICLE_TYPES.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.name.split('/')[0]} (₹{v.basePrice})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div>
+              <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Model Name *
+              </label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. Swift, Creta, Activa"
+                value={vehicleModel}
+                onChange={(e) => setVehicleModel(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/8 dark:border-white/8 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              />
+            </div>
+          </div>
+
+          {/* Pickup Details OR Slot Booking */}
           {mode === 'pickup' ? (
-            <div className="space-y-5 pt-4 border-t border-black/10 dark:border-white/10">
-              <div className="space-y-2">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <label className="block text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
-                    {t('pickupAddress')}
-                  </label>
-                  
-                  <div className="flex flex-wrap items-center gap-2">
-                    {/* RAPIDO / UBER STYLE GPS BUTTON */}
-                    <button
-                      type="button"
-                      onClick={handleDetectLocation}
-                      disabled={isLocating}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[11px] font-black border border-emerald-500/30 transition-all active:scale-95 disabled:opacity-50 shadow-sm"
-                    >
-                      <MapPin className={`w-3.5 h-3.5 ${isLocating ? 'animate-bounce text-emerald-500' : ''}`} />
-                      {isLocating ? '📡 Locating GPS...' : '📍 My Live GPS'}
-                    </button>
-
-                    {/* RAPIDO / UBER STYLE INTERACTIVE DRAGGABLE MAP BUTTON */}
-                    <button
-                      type="button"
-                      onClick={() => setIsMapModalOpen(true)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 text-[11px] font-black border border-blue-500/30 transition-all active:scale-95 shadow-sm"
-                    >
-                      <Sparkles className="w-3.5 h-3.5 text-blue-500" />
-                      <span>🗺️ Adjust Pin on Interactive Map</span>
-                    </button>
-                  </div>
-                </div>
-
-                {locationSuccess && (
-                  <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-bold flex items-center gap-2 animate-fadeIn">
-                    <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-500" />
-                    <span>✓ Exact GPS location & Google Maps pin captured!</span>
-                  </div>
-                )}
-
-                {gpsError && (
-                  <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-xs font-medium flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 shrink-0 text-amber-500" />
-                    <span>{gpsError}</span>
-                  </div>
-                )}
-
-                <textarea
-                  rows={3}
-                  placeholder="Door No., Street name, Landmark in Srikalahasti (or tap 'Use My Live GPS Location' above for pinpoint accuracy)"
+            <div className="space-y-3 pt-1">
+              <div>
+                <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  Pickup Address / Landmark in Srikalahasti
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Panagal, near Swarnamukhi Bank"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className="w-full px-4.5 py-3.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/10 dark:border-white/10 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/8 dark:border-white/8 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
-
-                {/* 1-Tap Popular Srikalahasti Area Chips */}
-                <div className="space-y-1.5 pt-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                    ⚡ 1-Tap Select Popular Srikalahasti Areas:
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {[
-                      'Panagal',
-                      'Car Street (Near Temple)',
-                      'RTC Bus Stand Road',
-                      'Railway Station Road',
-                      'Bapuji Nagar',
-                      'Swarnamukhi Bank Area',
-                      'Tirupati Road Bunk',
-                    ].map((area) => (
-                      <button
-                        key={area}
-                        type="button"
-                        onClick={() => {
-                          const formatted = `${area}, Srikalahasti`;
-                          setAddress((prev) => (prev ? `${prev}\n📍 Landmark: ${formatted}` : `📍 Area: ${formatted}`));
-                        }}
-                        className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-[#1A2332] hover:bg-emerald-500/10 hover:text-emerald-500 text-slate-700 dark:text-slate-300 text-[11px] font-bold border border-black/5 dark:border-white/5 transition-all active:scale-95"
-                      >
-                        📍 {area}
-                      </button>
-                    ))}
-                  </div>
-                </div>
               </div>
-
-              <div className="space-y-1.5">
-                <label className="block text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
-                  {t('pickupWindow')}
+              <div>
+                <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  Preferred Time Window
                 </label>
                 <select
                   value={timeWindow}
                   onChange={(e) => setTimeWindow(e.target.value)}
-                  className="w-full px-4.5 py-3.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/10 dark:border-white/10 text-xs font-black text-slate-900 dark:text-white"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/8 dark:border-white/8 text-xs font-bold text-slate-900 dark:text-white"
                 >
                   <option value="8:00 AM – 10:00 AM">8:00 AM – 10:00 AM</option>
                   <option value="10:00 AM – 12:00 PM">10:00 AM – 12:00 PM</option>
@@ -469,39 +331,37 @@ Booking ID: ${saved.id}`;
                   <option value="2:00 PM – 4:00 PM">2:00 PM – 4:00 PM</option>
                   <option value="4:00 PM – 6:00 PM">4:00 PM – 6:00 PM</option>
                   <option value="6:00 PM – 8:00 PM">6:00 PM – 8:00 PM</option>
-                  <option value="8:00 PM – 10:00 PM">8:00 PM – 10:00 PM</option>
                 </select>
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-4 border-t border-black/10 dark:border-white/10">
-              <div className="space-y-1.5">
-                <label className="block text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
-                  {t('preferredDate')}
+            <div className="grid grid-cols-2 gap-3 pt-1">
+              <div>
+                <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  Wash Date
                 </label>
                 <input
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full px-4.5 py-3.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/10 dark:border-white/10 text-xs font-black text-slate-900 dark:text-white"
+                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/8 dark:border-white/8 text-xs font-bold text-slate-900 dark:text-white"
                 />
               </div>
-
-              <div className="space-y-1.5">
-                <label className="block text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
-                  {t('timeSlot')}
+              <div>
+                <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  Time Slot
                 </label>
                 <select
                   value={timeSlot}
                   onChange={(e) => setTimeSlot(e.target.value)}
-                  className="w-full px-4.5 py-3.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/10 dark:border-white/10 text-xs font-black text-slate-900 dark:text-white"
+                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/8 dark:border-white/8 text-xs font-bold text-slate-900 dark:text-white"
                 >
                   {TIME_SLOTS.map((ts) => {
                     const bookedCount = slotCountsForDate[ts.slot] || 0;
                     const isLocked = bookedCount >= MAX_SLOTS_PER_HOUR;
                     return (
                       <option key={ts.slot} value={ts.slot} disabled={isLocked}>
-                        {ts.slot} {ts.isPeak ? '⚡ (Peak)' : ''} {isLocked ? '🔒 [FULLY BOOKED]' : bookedCount > 0 ? `(${MAX_SLOTS_PER_HOUR - bookedCount} left)` : ''}
+                        {ts.slot} {isLocked ? '🔒 [Full]' : ''}
                       </option>
                     );
                   })}
@@ -510,38 +370,81 @@ Booking ID: ${saved.id}`;
             </div>
           )}
 
-          {/* Included Free Perks Banner */}
-          <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between text-xs font-bold text-amber-800 dark:text-amber-300 shadow-xs">
-            <span className="flex items-center gap-2">
-              <Gift className="w-4.5 h-4.5 text-amber-500 animate-pulse" /> 
-              <span>{t('freePerks')} (Free Water Bottle + Car Tissue Box Included)</span>
-            </span>
+          {/* Optional Add-Ons Expandable */}
+          <div className="border-t border-black/5 dark:border-white/5 pt-3">
+            <button
+              type="button"
+              onClick={() => setShowAddOns(!showAddOns)}
+              className="w-full flex items-center justify-between text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+            >
+              <span className="flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <span>Add Services / Extras ({selectedAddOns.length} selected)</span>
+              </span>
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showAddOns ? 'rotate-180' : ''}`} />
+            </button>
+            {showAddOns && (
+              <div className="mt-2.5 space-y-1.5 animate-fade-in-up">
+                {ADD_ONS.map((addon) => {
+                  const isActive = selectedAddOns.includes(addon.id);
+                  return (
+                    <button
+                      key={addon.id}
+                      type="button"
+                      onClick={() => toggleAddOn(addon.id)}
+                      className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-xs text-left transition-all ${
+                        isActive
+                          ? 'border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold'
+                          : 'border-black/5 dark:border-white/5 bg-slate-50 dark:bg-white/5 text-slate-700 dark:text-slate-300 font-medium'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className={`w-4 h-4 rounded border flex items-center justify-center ${isActive ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-300 dark:border-slate-600'}`}>
+                          {isActive && <CheckCircle2 className="w-3.5 h-3.5" />}
+                        </div>
+                        <span>{addon.name}</span>
+                      </div>
+                      <span className="text-[10px] text-slate-400 font-normal">{addon.desc}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full py-4.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm sm:text-base shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2.5 hover:scale-[1.01] active:scale-[0.98]"
-          >
-            <MessageSquare className="w-5 h-5 fill-current" />
-            <span>{isSubmitting ? 'Saving Request...' : t('submitWhatsapp')}</span>
-          </button>
+          {/* Price Bar & Submit */}
+          <div className="border-t border-black/8 dark:border-white/8 pt-3 space-y-3">
+            <div className="flex justify-between items-center text-xs">
+              <span className="font-bold text-slate-500">Estimated Total:</span>
+              <span className="text-lg font-black text-emerald-600 dark:text-emerald-400">
+                ₹{totalAmount} <span className="text-[10px] text-amber-500 font-bold ml-1">(Free Perks Included)</span>
+              </span>
+            </div>
 
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-60"
+            >
+              <MessageSquare className="w-4 h-4 fill-current" />
+              <span>{isSubmitting ? 'Saving Request...' : 'Book Wash via WhatsApp'}</span>
+            </button>
+          </div>
         </form>
       )}
 
-      {/* RAPIDO-STYLE INTERACTIVE VISUAL MAP PIN PICKER MODAL */}
-      <MapPinPickerModal
-        isOpen={isMapModalOpen}
-        onClose={() => setIsMapModalOpen(false)}
-        onConfirm={(confirmedText) => {
-          setAddress(confirmedText);
-          setLocationSuccess(true);
-        }}
-      />
-
+      {/* Trust Line */}
+      <p className="text-center text-[10px] font-bold text-slate-400 dark:text-slate-500">
+        ⚡ 100% Scratch Free • Free Mineral Water Bottle + Car Tissue Box Included
+      </p>
     </div>
   );
 }
 
+export default function BookingPage() {
+  return (
+    <Suspense fallback={<div className="py-12 text-center text-xs text-slate-400 font-bold">Loading booking form...</div>}>
+      <BookingForm />
+    </Suspense>
+  );
+}
