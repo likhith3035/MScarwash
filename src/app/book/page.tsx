@@ -24,12 +24,26 @@ import { useLanguage } from '@/context/LanguageContext';
 
 const MAX_SLOTS_PER_HOUR = 2;
 
+const REPAIR_OPTIONS = [
+  { id: 'Engine Oil Change', label: '🛢️ Engine Oil Change & Service' },
+  { id: 'Brake Pad Replacement', label: '🛑 Brake Pad & Disc Repair' },
+  { id: 'Clutch & Gearbox Work', label: '⚙️ Clutch & Gearbox Fix' },
+  { id: 'Car AC Gas Top-Up', label: '❄️ Car AC Servicing & Gas Refill' },
+  { id: 'Electrical & Battery Work', label: '⚡ Electrical & Battery Work' },
+  { id: 'Suspension Noise Fix', label: '🔧 Suspension & Steering Work' },
+  { id: 'Breakdown Assist', label: '🚨 Highway Breakdown & Towing Help' },
+  { id: 'General Mechanic Checkup', label: '🛠️ General Mechanic Checkup' },
+];
+
 function BookingForm() {
   const { t } = useLanguage();
   const searchParams = useSearchParams();
 
-  // Mode
+  // Mode & Service Category
   const [mode, setMode] = useState<BookingMode>('pickup');
+  const [serviceCategory, setServiceCategory] = useState<'wash' | 'repair' | 'combo'>('wash');
+  const [selectedRepairs, setSelectedRepairs] = useState<string[]>([]);
+  const [customRepairNote, setCustomRepairNote] = useState('');
 
   // Form Fields
   const [name, setName] = useState('');
@@ -37,13 +51,27 @@ function BookingForm() {
   const [vehicleType, setVehicleType] = useState('Car');
   const [vehicleModel, setVehicleModel] = useState('');
 
-  // Handle URL vehicle pre-selection
+  // Handle URL vehicle & repair pre-selection
   useEffect(() => {
     const param = searchParams.get('vehicle');
     if (param && VEHICLE_TYPES.some((v) => v.id === param)) {
       setVehicleType(param);
     }
+    const serviceParam = searchParams.get('service');
+    if (serviceParam === 'Repair' || serviceParam === 'repair') {
+      setServiceCategory('repair');
+    }
+    const typeParam = searchParams.get('type');
+    if (typeParam) {
+      setSelectedRepairs([typeParam]);
+    }
   }, [searchParams]);
+
+  const toggleRepairOption = (id: string) => {
+    setSelectedRepairs((prev) =>
+      prev.includes(id) ? prev.filter((r) => r !== id) : [...prev, id]
+    );
+  };
   const [address, setAddress] = useState('');
   const [timeWindow, setTimeWindow] = useState('10:00 AM – 12:00 PM');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
@@ -76,7 +104,7 @@ function BookingForm() {
   // Live Price
   const selectedVehicleObj = VEHICLE_TYPES.find((v) => v.id === vehicleType) || VEHICLE_TYPES[0];
   const vehicleBasePrice = selectedVehicleObj.basePrice || 350;
-  const totalAmount = vehicleBasePrice;
+  const totalAmount = serviceCategory === 'repair' ? 999 : serviceCategory === 'combo' ? vehicleBasePrice + 850 : vehicleBasePrice;
 
   // Submission State
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -92,6 +120,16 @@ function BookingForm() {
     setIsSubmitting(true);
 
     try {
+      const repairListStr = selectedRepairs.length > 0 ? selectedRepairs.join(', ') : 'General Mechanic Work';
+      const customNoteStr = customRepairNote ? ` (${customRepairNote})` : '';
+      
+      const categoryTitle =
+        serviceCategory === 'wash'
+          ? 'Water Wash & Detailing'
+          : serviceCategory === 'repair'
+          ? `Car Repair: ${repairListStr}${customNoteStr}`
+          : `Combo (Water Wash + Repair: ${repairListStr}${customNoteStr})`;
+
       const saved = await saveBooking({
         mode,
         name,
@@ -102,7 +140,7 @@ function BookingForm() {
         timeWindow: mode === 'pickup' ? timeWindow : undefined,
         date: mode === 'slot' ? date : undefined,
         timeSlot: mode === 'slot' ? timeSlot : undefined,
-        notes,
+        notes: `${categoryTitle}${notes ? ` | Notes: ${notes}` : ''}`,
         addOns: selectedAddOns,
         totalAmount,
       });
@@ -119,7 +157,8 @@ function BookingForm() {
 
       const waText =
         mode === 'pickup'
-          ? `New Booking — MS Car Wash
+          ? `New Booking — MS Car Wash & Car Services
+Service: ${categoryTitle}
 Mode: Doorstep Pickup
 Name: ${name}
 Phone: ${phone}
@@ -128,8 +167,9 @@ Address: ${address || 'Srikalahasti'}
 Time: ${timeWindow}
 Add-ons: ${selectedAddOns.length > 0 ? selectedAddOns.join(', ') : 'None'}
 Booking ID: ${saved.id}`
-          : `New Booking — MS Car Wash
-Mode: Center Slot
+          : `New Booking — MS Car Wash & Car Services
+Service: ${categoryTitle}
+Mode: Center Drive-In
 Name: ${name}
 Phone: ${phone}
 Vehicle: ${vehicleType} - ${vehicleModel}
@@ -198,7 +238,6 @@ Booking ID: ${saved.id}`;
           </button>
         </div>
       ) : (
-        /* ── Minimalist Single-Card Form ── */
         <form onSubmit={handleSubmit} className="p-6 rounded-3xl bg-white dark:bg-[#0D131D] border border-black/8 dark:border-white/8 shadow-xl space-y-4">
           
           {/* Mode Switcher */}
@@ -228,6 +267,94 @@ Booking ID: ${saved.id}`;
               <span>Center Drive-In</span>
             </button>
           </div>
+
+          {/* Service Category Switcher */}
+          <div className="space-y-1">
+            <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300">
+              Select Required Service *
+            </label>
+            <div className="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-[#151D2A] text-[11px] font-bold">
+              <button
+                type="button"
+                onClick={() => setServiceCategory('wash')}
+                className={`py-2 px-1 rounded-lg transition-all text-center ${
+                  serviceCategory === 'wash'
+                    ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-950 shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400'
+                }`}
+              >
+                Water Wash
+              </button>
+              <button
+                type="button"
+                onClick={() => setServiceCategory('repair')}
+                className={`py-2 px-1 rounded-lg transition-all text-center ${
+                  serviceCategory === 'repair'
+                    ? 'bg-indigo-600 text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400'
+                }`}
+              >
+                Car Repair
+              </button>
+              <button
+                type="button"
+                onClick={() => setServiceCategory('combo')}
+                className={`py-2 px-1 rounded-lg transition-all text-center ${
+                  serviceCategory === 'combo'
+                    ? 'bg-amber-500 text-slate-950 shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400'
+                }`}
+              >
+                Wash + Repair
+              </button>
+            </div>
+          </div>
+
+          {(serviceCategory === 'repair' || serviceCategory === 'combo') && (
+            <div className="space-y-3 pt-1 border-t border-black/5 dark:border-white/5">
+              <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300">
+                Select Required Car Repairs / Services (No Fixed Prices - Quoted on Inspection)
+              </label>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {REPAIR_OPTIONS.map((opt) => {
+                  const isSelected = selectedRepairs.includes(opt.id);
+                  return (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => toggleRepairOption(opt.id)}
+                      className={`p-2.5 rounded-xl border text-xs text-left transition-all flex items-center justify-between font-bold ${
+                        isSelected
+                          ? 'border-indigo-600 bg-indigo-600/10 text-indigo-700 dark:text-indigo-300 shadow-xs'
+                          : 'border-black/8 dark:border-white/8 bg-slate-50 dark:bg-[#151D2A] text-slate-700 dark:text-slate-300 hover:border-indigo-500/50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className={`w-4 h-4 rounded border flex items-center justify-center ${isSelected ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-slate-300 dark:border-slate-600'}`}>
+                          {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
+                        </div>
+                        <span>{opt.label}</span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  Other Repair Issue / Custom Details (Optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Engine noise, steering vibration, clutch hard"
+                  value={customRepairNote}
+                  onChange={(e) => setCustomRepairNote(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/8 dark:border-white/8 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                />
+              </div>
+            </div>
+          )}
 
           {/* Name & Phone */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -417,7 +544,11 @@ Booking ID: ${saved.id}`;
             <div className="flex justify-between items-center text-xs">
               <span className="font-bold text-slate-500">Estimated Total:</span>
               <span className="text-lg font-black text-emerald-600 dark:text-emerald-400">
-                ₹{totalAmount} <span className="text-[10px] text-amber-500 font-bold ml-1">(Free Perks Included)</span>
+                {serviceCategory === 'repair' ? (
+                  <span className="text-sm font-extrabold text-indigo-600 dark:text-indigo-400">Quote on Inspection</span>
+                ) : (
+                  <>₹{totalAmount} <span className="text-[10px] text-amber-500 font-bold ml-1">(Free Perks Included)</span></>
+                )}
               </span>
             </div>
 
