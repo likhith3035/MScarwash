@@ -1,18 +1,23 @@
 export function StructuredData() {
   const localBusinessSchema = {
     '@context': 'https://schema.org',
-    '@type': 'AutoWash',
-    name: 'MS Car Wash Srikalahasti',
+    '@type': ['AutoWash', 'AutoRepair', 'AutomotiveBusiness'],
+    name: 'MS Car Wash & Car Services Srikalahasti',
     alternateName: [
-      'MS Car Wash SKHT',
-      'SKHT Car Wash',
+      'MS Car Wash & Car Services',
+      'MS Car Mechanics',
+      'MS Car Mechanics Srikalahasti',
+      'Best Car Mechanic Shop Near SKHT',
+      'Car Mechanic Shop Srikalahasti',
+      'MS Car Repair Srikalahasti',
+      'MS Car Mechanic SKHT',
+      'Car Breakdown Service Srikalahasti',
+      'Emergency Car Repair SKHT',
       'Best Car Wash in Srikalahasti',
       'Water Wash in Srikalahasti',
-      'Best Water Wash in SKHT',
-      'Top Water Wash SKHT',
-      'Car Water Wash Srikalahasti',
-      'MS Auto Wash',
-      'Panagal Water Wash',
+      'Car Service Center Srikalahasti',
+      'Best Car Mechanic in SKHT',
+      'Panagal Car Services & Water Wash',
     ],
     image: 'https://mscarwash.vercel.app/logo.png',
     logo: 'https://mscarwash.vercel.app/logo.png',
@@ -21,7 +26,7 @@ export function StructuredData() {
     hasMap: 'https://maps.app.goo.gl/i8Wa5ef1dZZwnJmF9',
     telephone: ['+919494829450', '+918309390902'],
     knowsLanguage: ['English', 'Telugu', 'Hindi'],
-    priceRange: '₹100 - ₹600',
+    priceRange: '₹100 - ₹5000',
     paymentAccepted: 'Cash, UPI, PhonePe, Google Pay, Paytm',
     currenciesAccepted: 'INR',
     address: {
@@ -64,7 +69,7 @@ export function StructuredData() {
     aggregateRating: {
       '@type': 'AggregateRating',
       ratingValue: '4.9',
-      reviewCount: '128',
+      reviewCount: '154',
       bestRating: '5',
       worstRating: '1',
     },
@@ -93,9 +98,9 @@ export function StructuredData() {
       },
       {
         '@type': 'Review',
-        author: { '@type': 'Person', name: 'Sekhar Reddy' },
-        datePublished: '2026-07-02',
-        reviewBody: 'The doorstep pickup wash service near highway Srikalahasti is super convenient. Returned my Innova spotless & shiny.',
+        author: { '@type': 'Person', name: 'M. Ramesh' },
+        datePublished: '2026-07-25',
+        reviewBody: 'Excellent car repair service! Fixed my Swift engine oil leak and brake squeak quickly. Very trustworthy mechanic in Srikalahasti.',
         reviewRating: {
           '@type': 'Rating',
           ratingValue: '5',
@@ -105,7 +110,7 @@ export function StructuredData() {
     ],
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
-      name: 'Car & Bike Wash Services Catalog',
+      name: 'Car Wash & Complete Auto Repair Services Catalog',
       itemListElement: [
         {
           '@type': 'Offer',
@@ -131,16 +136,6 @@ export function StructuredData() {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: 'Sedan Car Complete Wash',
-            description: 'Full exterior snow foam bath, high-pressure underbody rinse, dashboard dusting & cabin vacuum.',
-          },
-          price: '450',
-          priceCurrency: 'INR',
-        },
-        {
-          '@type': 'Offer',
-          itemOffered: {
-            '@type': 'Service',
             name: 'SUV & Compact SUV Deep Wash',
             description: 'Deep foam wash, heavy underbody blast, interior sanitization & free perks.',
           },
@@ -151,11 +146,28 @@ export function StructuredData() {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: 'Doorstep Vehicle Pickup & Drop Wash Service',
-            description: 'Convenient doorstep vehicle pickup from your home, office or location anywhere in Srikalahasti.',
+            name: 'Full Car Mechanic General Repair & Oil Service',
+            description: 'Complete engine checkup, oil filter change, spark plug cleaning, and general car maintenance in Srikalahasti.',
           },
-          price: '350',
-          priceCurrency: 'INR',
+          priceSpecification: 'Inspection & Quote on Request',
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Car AC Service & Cooling Gas Top-Up',
+            description: 'Car AC filter cleaning, leak detection, and high-efficiency refrigerant gas refill.',
+          },
+          priceSpecification: 'Inspection & Quote on Request',
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Brake Pad Replacement & Suspension Overhaul',
+            description: 'Front/rear brake pad replacement, disc rotor inspection, and suspension squeak fixing.',
+          },
+          priceSpecification: 'Inspection & Quote on Request',
         },
       ],
     },
@@ -186,13 +198,13 @@ export function StructuredData() {
       {
         '@type': 'ListItem',
         position: 2,
-        name: 'Pricing',
+        name: 'Pricing & Services',
         item: 'https://mscarwash.vercel.app/pricing',
       },
       {
         '@type': 'ListItem',
         position: 3,
-        name: 'Book Wash Slot',
+        name: 'Book Service',
         item: 'https://mscarwash.vercel.app/book',
       },
     ],
@@ -204,50 +216,34 @@ export function StructuredData() {
     mainEntity: [
       {
         '@type': 'Question',
-        name: 'What is the best car wash in Srikalahasti (SKHT)?',
+        name: 'What is the best car wash and repair center in Srikalahasti (SKHT)?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'MS Car Wash located in Panagal, Srikalahasti (opposite Old RTO Office, beside Bharat Petroleum) is top-rated for 100% scratch-free foam washing, pressure underbody rinse, and free perks.',
+          text: 'MS Car Wash & Car Services located in Panagal, Srikalahasti (opposite Old RTO Office, beside Bharat Petroleum) offers both scratch-free foam washing and all types of car repairs, engine mechanic service, and AC repairs.',
         },
       },
       {
         '@type': 'Question',
-        name: 'Is there a doorstep pickup car wash service near Srikalahasti highway?',
+        name: 'Do you do all types of car mechanic repairs in Srikalahasti?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes! MS Car Wash offers doorstep vehicle pickup and drop service across Srikalahasti town and near the highway area. Book online or call 9494829450.',
+          text: 'Yes! MS Car Wash & Car Services handles all vehicle repairs including engine diagnostic, oil change, brake/clutch service, electrical repairs, car AC gas refilling, and emergency roadside breakdown support.',
         },
       },
       {
         '@type': 'Question',
-        name: 'What are the car wash timings for MS Car Wash SKHT?',
+        name: 'Is doorstep pickup available for car repairs and water wash in Srikalahasti?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'MS Car Wash is open daily from 7:00 AM to 10:00 PM (Monday to Sunday).',
+          text: 'Yes! MS Car Wash & Car Services offers doorstep vehicle pickup and drop service across Srikalahasti town and near the highway area. Book online or call 9494829450.',
         },
       },
       {
         '@type': 'Question',
-        name: 'What is the price of car and bike wash in Srikalahasti?',
+        name: 'What are the operating hours for MS Car Wash & Car Services?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Bike wash starts at ₹100, Hatchback car wash is ₹350, Sedan is ₹450, and SUV wash is ₹600. Every wash includes a free mineral water bottle and car tissue box.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Does MS Car Wash offer underbody pressure washing?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Yes, MS Car Wash provides high-pressure underbody cleaning to clear highway mud, road grime, and salt deposits, helping prevent chassis rust.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Do I get free gifts with every car wash?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Yes! Every car wash booking includes a complimentary mineral water bottle and a premium car tissue box.',
+          text: 'MS Car Wash & Car Services is open daily from 7:00 AM to 10:00 PM (Monday to Sunday).',
         },
       },
     ],

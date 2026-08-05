@@ -12,17 +12,29 @@ import { MobileBottomNav } from '@/components/MobileBottomNav';
 export const metadata: Metadata = {
   metadataBase: new URL('https://mscarwash.vercel.app'),
   title: {
-    default: 'MS Car Wash — Best Car & Water Wash in Srikalahasti (SKHT) | Near Highway',
-    template: '%s | MS Car Wash Srikalahasti',
+    default: 'MS Car Wash & Car Services — Best Water Wash & Car Maintenance in Srikalahasti (SKHT)',
+    template: '%s | MS Car Wash & Car Services Srikalahasti',
   },
-  description: 'MS Car Wash (SKHT) — Top-rated car & water wash in Srikalahasti near highway & Panagal. 100% scratch-free foam washing, pressure underbody rinse, doorstep pickup & slot booking for cars, SUVs, bikes & commercial vehicles. Call 9494829450.',
+  description: 'MS Car Wash & Car Services (SKHT) — Top-rated water wash, scratch-free foam washing, engine repairs, brake service, AC gas top-up, oil change & doorstep pickup in Srikalahasti. Call 9494829450.',
   keywords: [
     'MS Car Wash',
+    'MS Car Wash & Car Services',
     'MS Car Wash Srikalahasti',
-    'ms car wash skht',
-    'best car wash in srikalahasti',
-    'best car wash skht',
-    'car wash srikalahasti',
+    'ms car mechanics',
+    'ms car mechanics srikalahasti',
+    'best car mechanic shop near skht',
+    'car mechanic shop near skht',
+    'car mechanic srikalahasti',
+    'best car mechanic in skht',
+    'car repair srikalahasti',
+    'car service center srikalahasti',
+    'car breakdown service srikalahasti',
+    'emergency car repair skht',
+    'car breakdown assistance srikalahasti',
+    'car engine service srikalahasti',
+    'car ac repair srikalahasti',
+    'car brake repair srikalahasti',
+    'car oil change srikalahasti',
     'water wash in srikalahasti',
     'best water wash in skht',
     'top water wash skht',
@@ -34,26 +46,26 @@ export const metadata: Metadata = {
     'near highway car wash srikalahasti',
     'highway car wash srikalahasti',
     'panagal car wash srikalahasti',
-    'panagal water wash',
+    'panagal car repair',
     'doorstep car wash srikalahasti',
     'foam car wash srikalahasti',
     'car pressure wash srikalahasti',
     'underbody wash srikalahasti',
     'bike wash srikalahasti',
-    'bike water wash srikalahasti',
     'suv wash srikalahasti',
     'car polish srikalahasti',
     'auto detailing srikalahasti',
     'car cleaning services srikalahasti',
     'శ్రీకాళహస్తి కార్ వాష్',
+    'శ్రీకాళహస్తి కార్ రిపేర్',
+    'శ్రీకాళహస్తి కార్ మెకానిక్',
     'శ్రీకాళహస్తి వాటర్ వాష్',
     'srikalahasti temple car wash',
     'tirupati srikalahasti car wash',
-    'naidupeta road water wash',
   ],
-  authors: [{ name: 'MS Car Wash Srikalahasti', url: 'https://mscarwash.vercel.app' }],
+  authors: [{ name: 'MS Car Wash & Car Services Srikalahasti', url: 'https://mscarwash.vercel.app' }],
   creator: 'MS Car Wash Team',
-  publisher: 'MS Car Wash Srikalahasti',
+  publisher: 'MS Car Wash & Car Services Srikalahasti',
   manifest: '/manifest.webmanifest',
   other: {
     'geo.region': 'IN-AP',
@@ -73,22 +85,22 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_IN',
     url: 'https://mscarwash.vercel.app',
-    title: 'MS Car Wash (SKHT) — ⭐ 4.9 Top Rated Water & Car Wash in Srikalahasti',
-    description: '🚘 100% Scratch-Free Foam Wash & Underbody Rinse | Doorstep Pickup & Slot Booking Available | Complimentary Water & Tissue Box | Call 9494829450',
-    siteName: 'MS Car Wash Srikalahasti',
+    title: 'MS Car Wash & Car Services (SKHT) — ⭐ 4.9 Water Wash & Full Car Service Center',
+    description: '🚘 Scratch-Free Foam Wash, Pressure Underbody Rinse & All Types of Car Repairs (Engine, Brakes, AC & Electrical) | Doorstep Pickup & Slot Booking | Call 9494829450',
+    siteName: 'MS Car Wash & Car Services Srikalahasti',
     images: [
       {
         url: 'https://mscarwash.vercel.app/logo.png',
         width: 1200,
         height: 630,
-        alt: 'MS Car Wash Srikalahasti Logo & Premium Detailing',
+        alt: 'MS Car Wash & Car Services Srikalahasti Logo',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'MS Car Wash Srikalahasti — Premium Doorstep & Slot Car Wash',
-    description: '⭐ 4.9 Google Rated | Scratch-free foam wash & underbody pressure wash in Srikalahasti (SKHT). Book your slot online!',
+    title: 'MS Car Wash & Car Services — Water Wash & Complete Car Mechanic Services',
+    description: '⭐ 4.9 Rated Water Wash & All Types of Car Repairs in Srikalahasti (SKHT). Foam wash, engine repair, AC gas top-up, brake service & doorstep pickup!',
     images: ['https://mscarwash.vercel.app/logo.png'],
   },
   robots: {
@@ -127,11 +139,11 @@ export default function RootLayout({
       <head>
         <StructuredData />
       </head>
-      <body className="min-h-screen flex flex-col bg-[#FBFBFC] dark:bg-[#08080A] text-[#1D1D1F] dark:text-white antialiased transition-colors duration-200">
+      <body className="min-h-screen flex flex-col bg-[#FAFCFA] dark:bg-[#05080D] text-slate-900 dark:text-white antialiased transition-colors duration-200">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <LanguageProvider>
             <Navbar />
-            <main className="flex-1 pb-16 md:pb-0">
+            <main className="flex-1 pb-20 md:pb-0">
               {children}
             </main>
             <Footer />
