@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Bike, Car, Gift, HelpCircle, Phone, MessageSquare, Check, Sparkles, ShieldCheck, ArrowRight } from 'lucide-react';
+import { Bike, Car, Gift, HelpCircle, Phone, MessageSquare, Check, Sparkles, ShieldCheck, ArrowRight, Wrench } from 'lucide-react';
 import { TWO_WHEELER_PRICING, FOUR_WHEELER_PRICING, ADD_ONS } from '@/lib/types';
 
 export const metadata: Metadata = {
@@ -97,14 +97,14 @@ export default function PricingPage() {
         {packages.map((pkg, idx) => (
           <div
             key={idx}
-            className={`bento-card p-7 rounded-3xl flex flex-col justify-between relative transition-all duration-300 ${
+            className={`p-6 rounded-2xl flex flex-col justify-between relative transition-all duration-300 ${
               pkg.popular
-                ? 'border-2 border-emerald-500 dark:border-emerald-400 shadow-xl shadow-emerald-500/10 scale-[1.03] bg-white dark:bg-[#0D131D]'
-                : 'border border-black/10 dark:border-white/10'
+                ? 'border-2 border-emerald-500 shadow-lg bg-slate-50 dark:bg-[#0E1420]'
+                : 'border border-black/8 dark:border-white/8 bg-slate-50/50 dark:bg-[#0E1420]/50'
             }`}
           >
             {pkg.popular && (
-              <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-emerald-600 text-white text-[10px] font-black uppercase tracking-wider shadow-md">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-black uppercase tracking-wider shadow-sm">
                 ★ {pkg.tag} ★
               </span>
             )}
@@ -112,30 +112,30 @@ export default function PricingPage() {
             <div className="space-y-4">
               <div>
                 <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">{pkg.tag}</span>
-                <h3 className="font-black text-2xl text-slate-900 dark:text-white mt-1">{pkg.name}</h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-medium mt-1.5">{pkg.desc}</p>
+                <h3 className="font-extrabold text-xl text-slate-900 dark:text-white mt-1">{pkg.name}</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium mt-1">{pkg.desc}</p>
               </div>
 
-              <div className="pt-3 border-t border-black/10 dark:border-white/10">
-                <span className="text-3xl font-black text-slate-900 dark:text-white block tracking-tight">{pkg.price}</span>
+              <div className="pt-3 border-t border-black/8 dark:border-white/8">
+                <span className="text-2xl font-black text-slate-900 dark:text-white block tracking-tight">{pkg.price}</span>
               </div>
 
-              <ul className="space-y-2.5 pt-2 text-xs">
+              <ul className="space-y-2 pt-1 text-xs">
                 {pkg.features.map((feat, fIdx) => (
                   <li key={fIdx} className="flex items-center gap-2 text-slate-700 dark:text-slate-300 font-bold">
-                    <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                    <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                     <span>{feat}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="pt-6 mt-6 border-t border-black/10 dark:border-white/10">
+            <div className="pt-5 mt-5 border-t border-black/8 dark:border-white/8">
               <Link
                 href="/book"
-                className={`w-full py-3.5 rounded-full text-center font-black text-xs block transition-all hover:scale-105 shadow-md ${
+                className={`w-full py-3 rounded-xl text-center font-black text-xs block transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xs ${
                   pkg.popular
-                    ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-600/30'
+                    ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
                     : 'bg-slate-900 dark:bg-white text-white dark:text-slate-950'
                 }`}
               >
@@ -202,6 +202,25 @@ export default function PricingPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      {/* Car Repairs & Mechanic Work - Inspection & Quote on Request */}
+      <div className="p-7 rounded-3xl bg-indigo-500/5 dark:bg-indigo-500/10 border border-indigo-500/20 space-y-4 text-xs shadow-md">
+        <div className="flex items-center gap-2 font-black text-slate-900 dark:text-white text-base">
+          <Wrench className="w-5 h-5 text-indigo-500" />
+          <span>Car Repairs & Mechanic Work — Inspection & Quote</span>
+        </div>
+        <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium max-w-2xl text-xs">
+          Repair charges for engine, brakes, AC gas, electrical, and suspension work depend on your vehicle model and spare parts needed. We provide a <strong>Comprehensive Vehicle Inspection & Upfront Quote</strong> before starting any repair.
+        </p>
+        <div className="pt-2 flex flex-wrap gap-3">
+          <a href="tel:9494829450" className="px-5 py-3 rounded-full bg-indigo-600 text-white font-black flex items-center gap-2 shadow-md hover:bg-indigo-500 hover:scale-105 transition-all">
+            <Phone className="w-4 h-4" /> Call Mechanic Desk: 9494829450
+          </a>
+          <a href="https://wa.me/918885426155?text=Hi%20MS%20Car%20Services,%20I%20need%20a%20car%20repair%20quote%20for%20my%20vehicle." target="_blank" rel="noopener noreferrer" className="px-5 py-3 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-black flex items-center gap-2 shadow-xs hover:scale-105 transition-all">
+            <MessageSquare className="w-4 h-4 text-indigo-500" /> Request Repair Quote
+          </a>
         </div>
       </div>
 
