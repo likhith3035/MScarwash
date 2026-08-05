@@ -15,222 +15,197 @@ import {
   Zap,
   Truck,
   ChevronRight,
-  Heart,
   Sparkles,
-  ArrowUpRight,
   Star,
-  UserCheck,
-  CheckCircle2,
   ThumbsUp,
-  Map
+  Sliders,
+  CheckCircle2,
+  Wrench,
+  Gauge,
+  BatteryCharging,
+  Wind,
 } from 'lucide-react';
-import { VEHICLE_TYPES } from '@/lib/types';
 import { QuickPriceEstimator } from '@/components/QuickPriceEstimator';
 import { GallerySection } from '@/components/GallerySection';
 import { FaqSection } from '@/components/FaqSection';
 
 export default function HomePage() {
-  const servicesList = [
+  const precisionFeatures = [
     {
-      title: 'Snow Foam Wash',
-      desc: 'Rich, thick snow-foam bath that safely dissolves road grime and mud without harsh scrubbing.',
+      title: '100% Scratch-Free Foam',
+      desc: 'Rich, thick snow-foam bath that safely dissolves road mud without scrubbing.',
       icon: Droplets,
-      tag: 'Most Popular',
-      color: 'from-emerald-500/20 to-teal-500/20 text-emerald-500',
+      color: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+    },
+    {
+      title: 'Doorstep Pickup & Drop',
+      desc: 'Our wash boy picks up your car/bike from home or office in Srikalahasti.',
+      icon: MapPin,
+      color: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400',
+    },
+    {
+      title: 'Full Mechanic Repairs',
+      desc: 'Engine diagnostic, oil change, brake repair & complete auto service by expert mechanics.',
+      icon: Wrench,
+      color: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400',
     },
     {
       title: 'Underbody Pressure Blast',
-      desc: 'High-pressure underbody rinse removing mud buildup, salts and preventing rust formation.',
+      desc: 'High-pressure rinse removing mud buildup & preventing chassis rust.',
       icon: Zap,
-      tag: 'Deep Protection',
-      color: 'from-cyan-500/20 to-blue-500/20 text-cyan-500',
+      color: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
+    },
+  ];
+
+  const repairServices = [
+    {
+      title: 'Engine Checkup & Synthetic Oil Change',
+      desc: 'Complete engine diagnostics, oil filter replacement, spark plug cleaning & fluid top-up.',
+      icon: Gauge,
+      badge: 'POPULAR SERVICE',
+      price: 'Inspection & Quote',
+      color: 'border-indigo-500/30 text-indigo-600 dark:text-indigo-400 bg-indigo-500/5',
     },
     {
-      title: 'Interior Hygiene & Vacuum',
-      desc: 'Thorough cabin vacuuming, mat wash, AC vent dusting, and premium dashboard wiping.',
+      title: 'Brake Pad & Suspension Overhaul',
+      desc: 'Brake pad replacement, disc rotor inspection, clutch adjustment & suspension noise fix.',
       icon: ShieldCheck,
-      tag: 'Sanitized Cabin',
-      color: 'from-purple-500/20 to-indigo-500/20 text-purple-500',
+      badge: 'SAFETY ESSENTIAL',
+      price: 'Quote on Request',
+      color: 'border-red-500/30 text-red-600 dark:text-red-400 bg-red-500/5',
     },
     {
-      title: 'Body Polish & Gloss Layer',
-      desc: 'Protective gloss coating that restores metallic shine and shields paint against sun & rain.',
-      icon: Award,
-      tag: 'Super Shine',
-      color: 'from-amber-500/20 to-orange-500/20 text-amber-500',
+      title: 'Car AC Service & Cooling Gas Top-Up',
+      desc: 'AC cabin filter cleaning, leak detection, & high-efficiency refrigerant gas refilling.',
+      icon: Wind,
+      badge: 'COOLING SPECIAL',
+      price: 'Diagnosis & Quote',
+      color: 'border-cyan-500/30 text-cyan-600 dark:text-cyan-400 bg-cyan-500/5',
     },
     {
-      title: 'Bike & Scooter Detailing',
-      desc: 'Dedicated 2-wheeler foam bath, engine degreasing, and chain lube protection.',
-      icon: Bike,
-      tag: 'Fast 20-Min',
-      color: 'from-emerald-500/20 to-lime-500/20 text-emerald-500',
-    },
-    {
-      title: 'Commercial & Heavy Wash',
-      desc: 'Heavy-duty washing for Trucks, Vans, Tractors, Autos, and JCB heavy machinery.',
-      icon: Truck,
-      tag: 'Heavy Duty',
-      color: 'from-blue-500/20 to-slate-500/20 text-blue-500',
+      title: 'Electrical Repairs & Battery Care',
+      desc: 'Wiring diagnosis, battery health test, alternator check, headlights & fuse replacement.',
+      icon: BatteryCharging,
+      badge: 'FAST REPAIR',
+      price: 'Quote on Request',
+      color: 'border-amber-500/30 text-amber-600 dark:text-amber-400 bg-amber-500/5',
     },
   ];
 
-  const reviews = [
+  const customizeServices = [
     {
-      name: 'Subba Rao K.',
-      location: 'Panagal, Srikalahasti',
-      vehicle: 'Hyundai Creta (SUV)',
-      quote: 'Best car wash in Srikalahasti! Completely scratch-free snow foam and the underbody pressure washing removed all highway mud.',
-      rating: 5,
-      avatar: 'SR',
+      title: 'Snow Foam Wash',
+      subtitle: 'Rich, thick snow-foam bath that safely dissolves road grime & mud.',
+      price: 'Starting at ₹100',
+      tag: 'MOST POPULAR',
+      image: '/logo.png',
+      href: '/book?vehicle=Car',
     },
     {
-      name: 'V. Naresh',
-      location: 'RTO Office Area',
-      vehicle: 'Royal Enfield Bullet',
-      quote: 'Quick 20-minute bike foam wash with chain lube. MS Car Wash SKHT is definitely the top choice for daily commuters.',
-      rating: 5,
-      avatar: 'VN',
+      title: 'Underbody Pressure Blast',
+      subtitle: 'High-pressure underbody rinse removing mud buildup & chassis salts.',
+      price: 'Deep Protection',
+      tag: 'HIGHWAY SPECIAL',
+      image: '/logo.png',
+      href: '/book?vehicle=Car',
     },
     {
-      name: 'Sekhar Reddy',
-      location: 'Bypass Road, SKHT',
-      vehicle: 'Toyota Innova Crysta',
-      quote: 'The doorstep pickup wash service near highway Srikalahasti is super convenient. Returned my Innova spotless & shiny.',
-      rating: 5,
-      avatar: 'SR',
+      title: 'Complete Mechanic Repair',
+      subtitle: 'All types of car engine, brake, AC, oil change & electrical repairs.',
+      price: 'Full Car Service',
+      tag: 'MECHANIC SPECIAL',
+      image: '/logo.png',
+      href: '/book?service=Repair',
     },
-  ];
-
-  const stats = [
-    { label: 'Vehicles Washed', value: '5,000+', icon: Car },
-    { label: 'Customer Rating', value: '4.9 ★', icon: Star },
-    { label: 'Scratch-Free Wash', value: '100%', icon: ShieldCheck },
-    { label: 'Turnaround Time', value: '20 Min', icon: Clock },
-  ];
-
-  const brandLogos = [
-    'Maruti Suzuki',
-    'Hyundai',
-    'Tata Motors',
-    'Mahindra',
-    'Toyota',
-    'Honda',
-    'Kia',
-    'Volkswagen',
-    'BMW',
-    'Royal Enfield',
   ];
 
   return (
-    <div className="flex flex-col min-h-screen relative overflow-hidden">
+    <div className="flex flex-col min-h-screen relative overflow-hidden bg-white dark:bg-[#05080D]">
       
-      {/* BACKGROUND AMBIENT GLOW ORBS */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-emerald-500/10 dark:bg-emerald-500/15 blur-[120px] rounded-full pointer-events-none -z-10 animate-glow-float"></div>
-      <div className="absolute top-[600px] right-0 w-[500px] h-[500px] bg-cyan-500/10 dark:bg-cyan-500/15 blur-[140px] rounded-full pointer-events-none -z-10"></div>
-      <div className="absolute top-[1400px] left-0 w-[600px] h-[600px] bg-amber-500/10 dark:bg-amber-500/10 blur-[150px] rounded-full pointer-events-none -z-10"></div>
-
-      {/* HERO SECTION */}
-      <section className="pt-12 pb-16 lg:pt-20 lg:pb-24 px-4 sm:px-6 max-w-6xl mx-auto w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      {/* DRIVEU STYLE HERO SECTION WITH MS CAR WASH DATA */}
+      <section className="pt-8 pb-14 lg:pt-16 lg:pb-20 px-4 sm:px-6 max-w-6xl mx-auto w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           
           {/* Left Column: Headline & Action Buttons */}
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
             
-            {/* Pulsing Live Status Pill */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/5 dark:bg-white/10 text-xs font-extrabold text-slate-900 dark:text-white border border-slate-900/10 dark:border-white/15 backdrop-blur-md shadow-xs">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-sm shadow-emerald-500"></span>
-              <span>OPEN NOW • 7 AM to 10 PM • Srikalahasti Center</span>
+            {/* DriveU Green Pill Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-black tracking-widest uppercase border border-emerald-500/20">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>OPEN NOW • WATER WASH & ALL CAR REPAIRS • SRIKALAHASTI</span>
             </div>
 
-            {/* Main SEO Headline */}
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.05]">
-              <span className="text-slate-900 dark:text-white block">MS CAR WASH</span>
-              <span className="text-gradient-emerald block mt-1">
-                Best Car Wash in Srikalahasti
-              </span>
+            {/* Main MS Car Wash SEO Headline */}
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.1]">
+              MS CAR WASH & CAR SERVICES — Best Water Wash & Car Service in Srikalahasti
             </h1>
 
-            {/* Subtitle */}
-            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-              Top-rated water wash & car wash in Srikalahasti (SKHT). 100% scratch-free snow foam bath, high-pressure underbody rinse, cabin sanitization, and doorstep pickup near Panagal & highway Srikalahasti.
+            {/* Subtitle with MS Car Wash Data */}
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
+              Top-rated water wash, 100% scratch-free foam washing, and <strong className="text-slate-900 dark:text-white font-black">all types of car mechanic repairs</strong> in Srikalahasti (Panagal, near highway). Engine service, AC repair, brake work & doorstep pickup, <strong className="text-slate-900 dark:text-white font-extrabold">starting at ₹100.</strong>
             </p>
 
-            {/* CTA Buttons */}
+            {/* DriveU Solid Action Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
               <Link
                 href="/book"
-                className="w-full sm:w-auto px-8 py-4 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm transition-all shadow-lg shadow-emerald-600/30 hover:scale-[1.03] active:scale-[0.98] flex items-center justify-center gap-2.5 group"
+                className="w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-black text-sm transition-all shadow-lg hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
               >
-                <CalendarCheck className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-                <span>Book Pickup or Slot</span>
+                <CalendarCheck className="w-4 h-4 text-emerald-400 dark:text-emerald-600" />
+                <span>Book Wash or Car Repair</span>
               </Link>
 
               <Link
                 href="/pricing"
-                className="w-full sm:w-auto px-6 py-4 rounded-full bg-white dark:bg-[#0D131D] text-slate-900 dark:text-white border border-black/10 dark:border-white/10 text-xs font-extrabold hover:bg-slate-100 dark:hover:bg-white/10 transition-all flex items-center justify-center gap-2 shadow-xs"
+                className="w-full sm:w-auto px-6 py-4 rounded-xl bg-slate-100 dark:bg-[#0E1420] text-slate-900 dark:text-white border border-black/8 dark:border-white/10 text-xs font-extrabold hover:bg-slate-200 dark:hover:bg-white/10 transition-all flex items-center justify-center gap-2"
               >
-                <span>View Rates (From ₹100)</span>
-                <ChevronRight className="w-4 h-4 text-emerald-500" />
+                <span>View All Services & Rates</span>
               </Link>
-
-              <a
-                href="https://maps.app.goo.gl/i8Wa5ef1dZZwnJmF9"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto px-6 py-4 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30 text-xs font-extrabold transition-all flex items-center justify-center gap-2 hover:scale-[1.03]"
-              >
-                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                <span>Google Reviews</span>
-              </a>
             </div>
 
-            {/* Feature Highlights Badges */}
-            <div className="pt-6 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs text-slate-600 dark:text-slate-300 border-t border-black/10 dark:border-white/10 font-bold">
+            {/* Feature Perks Strip */}
+            <div className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-5 text-xs text-slate-600 dark:text-slate-400 font-bold border-t border-black/8 dark:border-white/8">
               <span className="flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 text-emerald-500" /> 100% Scratch Free
               </span>
               <span className="flex items-center gap-1.5">
-                <Gift className="w-4 h-4 text-amber-500 animate-pulse" /> Free Water + Tissue Box
+                <Wrench className="w-4 h-4 text-indigo-500" /> All Car Repairs
               </span>
               <span className="flex items-center gap-1.5">
-                <ThumbsUp className="w-4 h-4 text-cyan-500" /> Doorstep Pickup Available
+                <Gift className="w-4 h-4 text-amber-500 animate-pulse" /> Free Water + Tissue Box
               </span>
             </div>
 
           </div>
 
-          {/* Right Column: Emblem Showcase Card */}
+          {/* Right Column: MS Car Wash Emblem Card */}
           <div className="lg:col-span-5 flex justify-center">
-            <div className="p-8 rounded-3xl bg-white/80 dark:bg-[#0D131D]/90 border border-black/10 dark:border-white/10 shadow-2xl backdrop-blur-xl flex flex-col items-center text-center space-y-6 max-w-sm w-full transition-all hover:border-emerald-500/40 relative overflow-hidden group">
+            <div className="w-full max-w-md p-6 rounded-3xl bg-slate-50 dark:bg-[#0E1420] border border-black/8 dark:border-white/8 shadow-xl flex flex-col items-center text-center space-y-5 relative overflow-hidden group">
               
-              {/* Subtle top glow line */}
-              <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-500 via-cyan-500 to-amber-500"></div>
-
-              <div className="p-4 rounded-2xl bg-slate-100 dark:bg-[#151D2A] border border-black/5 dark:border-white/5 shadow-inner group-hover:scale-105 transition-transform duration-300">
+              <div className="relative w-48 h-48 flex items-center justify-center p-4 bg-white dark:bg-[#141C2B] rounded-2xl border border-black/5 dark:border-white/5 shadow-inner">
                 <Image
                   src="/logo.png"
-                  alt="MS Car Wash Srikalahasti Logo"
+                  alt="MS Car Wash & Car Services Srikalahasti Logo"
                   width={180}
                   height={180}
-                  className="w-40 h-40 object-contain drop-shadow-md"
+                  className="w-40 h-40 object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"
                   priority
                 />
               </div>
 
               <div>
-                <h3 className="font-black text-2xl tracking-tight text-slate-900 dark:text-white">MS CAR WASH SKHT</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 font-medium leading-relaxed">
-                  Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Near Highway Srikalahasti
+                <h3 className="font-black text-xl text-slate-900 dark:text-white">MS CAR WASH & CAR SERVICES</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium leading-relaxed">
+                  Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Near Highway Srikalahasti - 517644
                 </p>
               </div>
 
-              <div className="w-full pt-4 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-xs font-black">
+              <div className="w-full pt-3 border-t border-black/8 dark:border-white/8 flex items-center justify-between text-xs font-bold">
                 <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Open 7 AM – 10 PM
                 </span>
-                <span className="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-300">
-                  All Vehicles
+                <span className="px-2.5 py-1 rounded-full bg-slate-200/70 dark:bg-white/10 text-slate-800 dark:text-slate-200">
+                  Wash & Full Mechanic Service
                 </span>
               </div>
 
@@ -240,204 +215,107 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* STATS METRICS BAR */}
-      <section className="py-8 bg-[#070B12] dark:bg-[#04060A] text-white border-y border-black/10 dark:border-white/10 shadow-lg">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            {stats.map((st, idx) => {
-              const IconComp = st.icon;
-              return (
-                <div key={idx} className="space-y-1.5 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                  <IconComp className="w-5 h-5 text-emerald-400 mx-auto" />
-                  <span className="text-2xl sm:text-3xl font-black block tracking-tight text-white">{st.value}</span>
-                  <span className="text-xs text-slate-400 font-bold uppercase tracking-wider block">{st.label}</span>
+      {/* DRIVEU STYLE "PRECISION CAR CLEANING" SECTION WITH MS CAR WASH FEATURES */}
+      <section className="py-12 px-4 sm:px-6 max-w-6xl mx-auto w-full border-t border-black/8 dark:border-white/8">
+        <div className="text-left mb-8 space-y-1">
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+            Complete Auto Care & Wash Features
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
+            Car Wash & Mechanic Service trusted by 5,000+ Vehicle Owners in Srikalahasti
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+          {precisionFeatures.map((feat, idx) => {
+            const IconComp = feat.icon;
+            return (
+              <div
+                key={idx}
+                className="p-5 rounded-2xl bg-slate-50 dark:bg-[#0E1420] border border-black/8 dark:border-white/8 space-y-3 hover:border-emerald-500/30 transition-all shadow-xs"
+              >
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${feat.color}`}>
+                  <IconComp className="w-5 h-5" />
                 </div>
-              );
-            })}
-          </div>
+                <div>
+                  <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">
+                    {feat.title}
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium leading-normal">
+                    {feat.desc}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
-      <div className="gradient-divider max-w-6xl mx-auto my-4" />
-
-      {/* INSTANT PRICE ESTIMATOR WIDGET */}
-      <section className="py-8 px-4 sm:px-6">
-        <QuickPriceEstimator />
-      </section>
-
-      {/* COMPLIMENTARY PERKS SECTION WITH REAL PRODUCT PHOTOS */}
-      <section className="py-16 bg-white dark:bg-[#06090E] border-y border-black/10 dark:border-white/10 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-10">
-          
-          <div className="text-center sm:text-left space-y-2">
-            <div className="inline-flex items-center gap-1.5 text-rose-500 text-xs font-black uppercase tracking-wider">
-              <Heart className="w-4 h-4 fill-rose-500 animate-pulse" />
-              <span>Complimentary Gifts</span>
-            </div>
-            <h2 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
-              Complimentary Perks With Every Wash
+      {/* NEW SECTION: ALL TYPES OF CAR REPAIRS & MECHANIC WORK */}
+      <section className="py-14 px-4 sm:px-6 max-w-6xl mx-auto w-full border-t border-black/8 dark:border-white/8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+          <div className="space-y-1">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-black uppercase tracking-wider border border-indigo-500/20">
+              <Wrench className="w-3.5 h-3.5" /> EXPERT MECHANIC WORK
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+              All Types of Car Repairs in Srikalahasti
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium max-w-xl">
-              Every single vehicle wash at MS Car Wash Srikalahasti includes a sealed mineral water bottle & car tissue box at zero extra cost.
+            <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">
+              From engine oil changes to complex mechanical & electrical fixes by expert mechanics.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            
-            {/* Perk 1: Mineral Water Bottle */}
-            <div className="overflow-hidden rounded-3xl bg-slate-50 dark:bg-[#0D131D] border border-black/10 dark:border-white/10 flex flex-col sm:flex-row items-center group shadow-md hover:border-emerald-500/40 transition-all duration-300">
-              <div className="relative w-full sm:w-56 h-56 bg-white dark:bg-[#151D2A] shrink-0 overflow-hidden">
-                <Image
-                  src="/water-bottle.png"
-                  alt="Free Mineral Water Bottle Perk — MS Car Wash SKHT"
-                  fill
-                  className="object-cover group-hover:scale-108 transition-transform duration-500"
-                />
-                <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-blue-600 text-white text-[10px] font-black uppercase tracking-wider shadow-md">
-                  Gift #1
-                </span>
-              </div>
-              <div className="p-7 space-y-3">
-                <h3 className="font-black text-xl text-slate-900 dark:text-white">Chilled Mineral Water Bottle</h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                  Refreshing, sealed drinking water handed over to every customer upon completion of vehicle wash.
-                </p>
-                <div className="pt-2 flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>100% Free with Every Service</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Perk 2: Car Tissue Box */}
-            <div className="overflow-hidden rounded-3xl bg-slate-50 dark:bg-[#0D131D] border border-black/10 dark:border-white/10 flex flex-col sm:flex-row items-center group shadow-md hover:border-amber-500/40 transition-all duration-300">
-              <div className="relative w-full sm:w-56 h-56 bg-white dark:bg-[#151D2A] shrink-0 overflow-hidden">
-                <Image
-                  src="/tissue-box.png"
-                  alt="Free Car Tissue Paper Box Perk — Best Car Wash in Srikalahasti"
-                  fill
-                  className="object-cover group-hover:scale-108 transition-transform duration-500"
-                />
-                <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-amber-600 text-white text-[10px] font-black uppercase tracking-wider shadow-md">
-                  Gift #2
-                </span>
-              </div>
-              <div className="p-7 space-y-3">
-                <h3 className="font-black text-xl text-slate-900 dark:text-white">Dashboard Tissue Box</h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                  A premium dashboard car tissue paper box included free with every car & SUV detailing package.
-                </p>
-                <div className="pt-2 flex items-center gap-2 text-xs font-bold text-amber-600 dark:text-amber-400">
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Dashboard Gift Included</span>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-      </section>
-
-      {/* VERIFIED CUSTOMER REVIEWS */}
-      <section className="py-16 max-w-6xl mx-auto px-4 sm:px-6 w-full">
-        <div className="text-center max-w-xl mx-auto mb-12 space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-black uppercase tracking-wider border border-amber-500/20">
-            <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
-            <span>Top Rated Car Wash SKHT</span>
-          </div>
-          <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white">
-            Loved By Local Car Owners
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium">
-            Real customer feedback for MS Car Wash SKHT from Panagal, Highway & Srikalahasti residents.
-          </p>
+          <Link
+            href="/book?service=Repair"
+            className="self-start md:self-auto px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs transition-all shadow-md flex items-center gap-2"
+          >
+            <span>Book Mechanic Service</span>
+            <ChevronRight className="w-4 h-4" />
+          </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {reviews.map((rev, idx) => (
-            <div key={idx} className="bento-card p-7 rounded-3xl space-y-5 flex flex-col justify-between hover:border-emerald-500/40 shadow-md">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1 text-amber-500">
-                    {[...Array(rev.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-amber-500" />
-                    ))}
-                  </div>
-                  <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                    Verified Customer
-                  </span>
-                </div>
-                <p className="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-medium italic">
-                  &ldquo;{rev.quote}&rdquo;
-                </p>
-              </div>
-
-              <div className="pt-4 border-t border-black/10 dark:border-white/10 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-emerald-600 text-white font-black text-xs flex items-center justify-center shadow-xs">
-                    {rev.avatar}
-                  </div>
-                  <div>
-                    <span className="font-black text-xs text-slate-900 dark:text-white block">{rev.name}</span>
-                    <span className="text-[10px] text-slate-400 font-semibold block">{rev.location}</span>
-                  </div>
-                </div>
-                <span className="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-white/10 text-[10px] font-bold text-slate-700 dark:text-slate-300">
-                  {rev.vehicle}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* SERVICES BENTO GRID */}
-      <section className="py-16 max-w-6xl mx-auto px-4 sm:px-6 w-full">
-        <div className="text-center max-w-xl mx-auto mb-12 space-y-3">
-          <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white">
-            Wash & Detailing Services
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium">
-            High-pressure water washing, snow foam detailing, and interior hygiene treatment in SKHT.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {servicesList.map((service, index) => {
-            const IconComp = service.icon;
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {repairServices.map((rep, idx) => {
+            const IconComponent = rep.icon;
             return (
               <div
-                key={index}
-                className="p-7 rounded-3xl bg-white dark:bg-[#0D131D] border border-black/10 dark:border-white/10 shadow-md hover:border-emerald-500/50 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
+                key={idx}
+                className={`p-6 rounded-3xl bg-slate-50 dark:bg-[#0E1420] border ${rep.color} transition-all hover:shadow-lg flex flex-col justify-between space-y-4`}
               >
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className={`p-3.5 rounded-2xl bg-gradient-to-br ${service.color} border border-white/10`}>
-                      <IconComp className="w-6 h-6" />
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-2xl bg-slate-900/5 dark:bg-white/5 flex items-center justify-center">
+                      <IconComponent className="w-6 h-6" />
                     </div>
-                    <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-300">
-                      {service.tag}
-                    </span>
+                    <div>
+                      <span className="text-[10px] font-black tracking-wider uppercase opacity-80">
+                        {rep.badge}
+                      </span>
+                      <h3 className="font-extrabold text-base text-slate-900 dark:text-white leading-tight">
+                        {rep.title}
+                      </h3>
+                    </div>
                   </div>
-
-                  <h3 className="font-black text-xl text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                    {service.title}
-                  </h3>
-
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                    {service.desc}
-                  </p>
+                  <span className="font-black text-xs px-2.5 py-1 rounded-full bg-slate-900/10 dark:bg-white/10 text-slate-900 dark:text-white shrink-0">
+                    {rep.price}
+                  </span>
                 </div>
 
-                <div className="pt-4 mt-6 border-t border-black/10 dark:border-white/10 flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-400">Fast turnaround</span>
+                <p className="text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
+                  {rep.desc}
+                </p>
+
+                <div className="pt-2 border-t border-black/5 dark:border-white/5 flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Genuine Spare Parts Used
+                  </span>
                   <Link
-                    href="/book"
-                    className="text-xs font-black text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1"
+                    href={`/book?service=Repair&type=${encodeURIComponent(rep.title)}`}
+                    className="text-xs font-black text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
                   >
-                    <span>Book Service</span>
-                    <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                    <span>Request Quote</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
               </div>
@@ -446,118 +324,65 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* VEHICLES SERVED */}
-      <section className="py-12 bg-white dark:bg-[#06090E] border-y border-black/10 dark:border-white/10">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-black text-slate-900 dark:text-white">Vehicles We Service Daily</h2>
-            <Link href="/pricing" className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400 hover:underline">
-              View All Tiers &rarr;
-            </Link>
-          </div>
+      {/* DRIVEU STYLE "CUSTOMISE YOUR CAR WASH" GRID WITH MS CAR WASH SERVICES */}
+      <section className="py-12 px-4 sm:px-6 max-w-6xl mx-auto w-full border-t border-black/8 dark:border-white/8">
+        <div className="text-left mb-8 space-y-1">
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+            Customise your vehicle service
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
+            Explore foam washing & car repair packages
+          </p>
+        </div>
 
-          <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-9 gap-3 text-center text-xs">
-            {VEHICLE_TYPES.map((v) => (
-              <div key={v.id} className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#0D131D] border border-black/10 dark:border-white/10 font-extrabold text-slate-900 dark:text-white shadow-xs hover:border-emerald-500/40 transition-colors">
-                {v.id}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {customizeServices.map((srv, idx) => (
+            <div
+              key={idx}
+              className="rounded-3xl bg-slate-50 dark:bg-[#0E1420] border border-black/8 dark:border-white/8 overflow-hidden shadow-sm hover:shadow-md transition-all group flex flex-col justify-between"
+            >
+              <div className="p-6 space-y-3">
+                <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-wider border border-emerald-500/20">
+                  {srv.tag}
+                </span>
+                <h3 className="font-extrabold text-lg text-slate-900 dark:text-white">
+                  {srv.title}
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
+                  {srv.subtitle}
+                </p>
               </div>
-            ))}
-          </div>
+
+              <div className="p-6 pt-0 flex items-center justify-between border-t border-black/5 dark:border-white/5 mt-4">
+                <span className="font-black text-sm text-slate-900 dark:text-white">
+                  {srv.price}
+                </span>
+                <Link
+                  href={srv.href}
+                  className="px-4 py-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-extrabold text-xs hover:bg-slate-800 dark:hover:bg-slate-100 transition-all flex items-center gap-1"
+                >
+                  <span>Book Now</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* WORK SHOWCASE PHOTO GALLERY */}
-      <section className="py-16 bg-white/50 dark:bg-[#080C14]/50 border-y border-black/5 dark:border-white/5">
+      {/* QUICK PRICE ESTIMATOR & CALCULATOR */}
+      <section className="py-12 px-4 sm:px-6 max-w-6xl mx-auto w-full border-t border-black/8 dark:border-white/8">
+        <QuickPriceEstimator />
+      </section>
+
+      {/* BEFORE / AFTER PHOTO GALLERY */}
+      <section className="py-12 px-4 sm:px-6 max-w-6xl mx-auto w-full border-t border-black/8 dark:border-white/8">
         <GallerySection />
       </section>
 
-      {/* FAQ SECTION */}
-      <section className="py-16 max-w-6xl mx-auto px-4 sm:px-6 w-full">
+      {/* FREQUENTLY ASKED QUESTIONS */}
+      <section className="py-12 px-4 sm:px-6 max-w-6xl mx-auto w-full border-t border-black/8 dark:border-white/8">
         <FaqSection />
-      </section>
-
-      {/* CAR BRANDS */}
-      <section className="py-10 bg-slate-100/70 dark:bg-[#04060A] border-b border-black/10 dark:border-white/10">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <p className="text-center text-xs font-black uppercase tracking-widest text-slate-400 mb-6">
-            All Automobile Brands Serviced Daily in Srikalahasti
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-3 text-xs font-extrabold text-slate-700 dark:text-slate-300">
-            {brandLogos.map((brand) => (
-              <span key={brand} className="px-4 py-2 rounded-full bg-white dark:bg-[#0D131D] border border-black/10 dark:border-white/10 shadow-xs hover:border-emerald-500/30 transition-all">
-                {brand}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* LOCATION & GOOGLE MAP */}
-      <section className="py-16 max-w-6xl mx-auto px-4 sm:px-6 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          
-          <div className="lg:col-span-5 space-y-6 text-xs">
-            <div>
-              <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest block">Panagal & Near Highway</span>
-              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mt-1">Visit MS Car Wash SKHT</h2>
-            </div>
-            
-            <div className="space-y-4 text-slate-700 dark:text-slate-300 font-medium">
-              <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 shrink-0 text-emerald-500 mt-0.5" />
-                <span>Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Near Highway, Srikalahasti - 517644</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Phone className="w-5 h-5 shrink-0 text-emerald-500" />
-                <a href="tel:9494829450" className="font-black text-slate-900 dark:text-white hover:underline text-sm">9494829450 / 8309390902</a>
-              </div>
-              <div className="flex items-center gap-3">
-                <MessageSquare className="w-5 h-5 shrink-0 text-emerald-500" />
-                <a href="https://wa.me/918885426155" target="_blank" rel="noopener noreferrer" className="font-black text-emerald-600 dark:text-emerald-400 hover:underline text-sm">WhatsApp: 8885426155</a>
-              </div>
-              <div className="flex items-center gap-3">
-                <Clock className="w-5 h-5 shrink-0 text-slate-400" />
-                <span>7:00 AM – 10:00 PM (Monday to Sunday)</span>
-              </div>
-            </div>
-
-            <div className="pt-2 flex flex-wrap gap-3">
-              <a
-                href="https://maps.app.goo.gl/i8Wa5ef1dZZwnJmF9"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-black text-xs shadow-md hover:scale-105 transition-all"
-              >
-                <MapPin className="w-4 h-4 text-emerald-500" />
-                <span>Open in Google Maps</span>
-              </a>
-
-              <a
-                href="https://wa.me/918885426155"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs shadow-md shadow-emerald-600/30 transition-all hover:scale-105"
-              >
-                <MessageSquare className="w-4 h-4" />
-                <span>WhatsApp Instant Chat</span>
-              </a>
-            </div>
-          </div>
-
-          <div className="lg:col-span-7 h-[360px] rounded-3xl overflow-hidden border border-black/10 dark:border-white/10 bg-white dark:bg-[#0D131D] shadow-xl relative">
-            <iframe
-              title="MS Car Wash Srikalahasti Map Location"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3876.8436!2d79.6805988!3d13.7424099!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a4d3f22350a7173%3A0x32f5cae534cb0429!2sMS%20Car%20Wash%20Srikalahasti!5e0!3m2!1sen!2sin!4v1722527000000!5m2!1sen!2sin"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen={false}
-              loading="lazy"
-              className="w-full h-full opacity-90 hover:opacity-100 transition-all duration-500"
-            ></iframe>
-          </div>
-
-        </div>
       </section>
 
     </div>

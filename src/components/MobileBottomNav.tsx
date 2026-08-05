@@ -18,7 +18,7 @@ export function MobileBottomNav() {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-[#0D131D]/90 backdrop-blur-xl border-t border-white/10 shadow-2xl px-2 py-1.5 transition-all">
+    <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white/95 dark:bg-[#0E1420]/95 backdrop-blur-xl border-t border-black/8 dark:border-white/10 shadow-2xl px-2 py-1.5 transition-all">
       <div className="flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -29,12 +29,12 @@ export function MobileBottomNav() {
               <a
                 key={item.href}
                 href={item.href}
-                className="flex flex-col items-center justify-center py-1.5 px-3 rounded-2xl text-emerald-400 hover:text-emerald-300 transition-colors active:scale-95"
+                className="flex flex-col items-center justify-center py-1.5 px-3 rounded-2xl text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 transition-colors active:scale-95"
               >
                 <div className="relative p-1 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-                  <Icon className="w-5 h-5 text-emerald-400" />
+                  <Icon className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                 </div>
-                <span className="text-[10px] font-extrabold uppercase mt-1 tracking-tight text-emerald-400">
+                <span className="text-[10px] font-extrabold uppercase mt-1 tracking-tight text-emerald-600 dark:text-emerald-400">
                   {item.label}
                 </span>
               </a>
@@ -47,12 +47,12 @@ export function MobileBottomNav() {
               href={item.href}
               className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-2xl transition-all active:scale-95 ${
                 isActive
-                  ? 'text-emerald-400 font-bold'
-                  : 'text-slate-400 hover:text-white font-medium'
+                  ? 'text-emerald-600 dark:text-emerald-400 font-bold'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium'
               }`}
             >
               <div className="relative">
-                <Icon className={`w-5 h-5 ${isActive ? 'text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'text-slate-400'}`} />
+                <Icon className={`w-5 h-5 ${isActive ? 'text-emerald-600 dark:text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'text-slate-500 dark:text-slate-400'}`} />
                 {item.badge && (
                   <span className="absolute -top-1.5 -right-2 px-1 py-0.2 bg-emerald-500 text-slate-950 text-[8px] font-black rounded-full uppercase tracking-tighter">
                     {item.badge}
