@@ -2,9 +2,9 @@ import { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'MS Car Wash Srikalahasti',
-    short_name: 'MS Car Wash',
-    description: 'Top-rated car wash in Srikalahasti (SKHT). Scratch-free snow foam wash, pressure underbody rinse, doorstep pickup & slot booking.',
+    name: 'MS Car Mechanic & Car Wash Srikalahasti',
+    short_name: 'MS Car Mechanic & Wash',
+    description: 'Top-rated car mechanic & car wash in Srikalahasti (SKHT). Full vehicle repairs, engine diagnostics, scratch-free foam wash, underbody rinse & doorstep pickup.',
     start_url: '/',
     display: 'standalone',
     background_color: '#08080A',

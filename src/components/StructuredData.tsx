@@ -2,8 +2,10 @@ export function StructuredData() {
   const localBusinessSchema = {
     '@context': 'https://schema.org',
     '@type': ['AutoWash', 'AutoRepair', 'AutomotiveBusiness'],
-    name: 'MS Car Wash & Car Services Srikalahasti',
+    name: 'MS Car Mechanic & Car Wash Srikalahasti',
     alternateName: [
+      'MS Car Mechanic & Car Wash',
+      'MS Car mechanic & Car Wash Srikalahasti',
       'MS Car Wash & Car Services',
       'MS Car Mechanics',
       'MS Car Mechanics Srikalahasti',
@@ -24,7 +26,7 @@ export function StructuredData() {
     '@id': 'https://mscarwash.vercel.app/#autowash',
     url: 'https://mscarwash.vercel.app',
     hasMap: 'https://maps.app.goo.gl/i8Wa5ef1dZZwnJmF9',
-    telephone: ['+919494829450', '+918309390902'],
+    telephone: ['+918309390902'],
     knowsLanguage: ['English', 'Telugu', 'Hindi'],
     priceRange: '₹100 - ₹5000',
     paymentAccepted: 'Cash, UPI, PhonePe, Google Pay, Paytm',
@@ -69,43 +71,31 @@ export function StructuredData() {
     aggregateRating: {
       '@type': 'AggregateRating',
       ratingValue: '4.9',
-      reviewCount: '154',
+      reviewCount: '128',
       bestRating: '5',
       worstRating: '1',
     },
     review: [
       {
         '@type': 'Review',
-        author: { '@type': 'Person', name: 'Subba Rao K.' },
-        datePublished: '2026-06-15',
+        author: { '@type': 'Person', name: 'Kishore Reddy' },
+        datePublished: '2025-01-15',
+        reviewRating: { '@type': 'Rating', ratingValue: '5' },
         reviewBody: 'Best car wash in Srikalahasti! Completely scratch-free snow foam and the underbody pressure washing removed all highway mud.',
-        reviewRating: {
-          '@type': 'Rating',
-          ratingValue: '5',
-          bestRating: '5',
-        },
       },
       {
         '@type': 'Review',
-        author: { '@type': 'Person', name: 'V. Naresh' },
-        datePublished: '2026-06-20',
-        reviewBody: 'Quick 20-minute bike foam wash with chain lube. MS Car Wash SKHT is definitely the top choice for daily commuters.',
-        reviewRating: {
-          '@type': 'Rating',
-          ratingValue: '5',
-          bestRating: '5',
-        },
+        author: { '@type': 'Person', name: 'Venkatesh Babu' },
+        datePublished: '2025-01-20',
+        reviewRating: { '@type': 'Rating', ratingValue: '5' },
+        reviewBody: 'Quick 20-minute bike foam wash with chain lube. MS Car Mechanic & Car Wash SKHT is definitely the top choice for daily commuters.',
       },
       {
         '@type': 'Review',
-        author: { '@type': 'Person', name: 'M. Ramesh' },
-        datePublished: '2026-07-25',
-        reviewBody: 'Excellent car repair service! Fixed my Swift engine oil leak and brake squeak quickly. Very trustworthy mechanic in Srikalahasti.',
-        reviewRating: {
-          '@type': 'Rating',
-          ratingValue: '5',
-          bestRating: '5',
-        },
+        author: { '@type': 'Person', name: 'Ravi Kumar' },
+        datePublished: '2025-02-02',
+        reviewRating: { '@type': 'Rating', ratingValue: '5' },
+        reviewBody: 'Pickup and drop service was seamless. Car returned spotless inside and out. Mineral water bottle and tissue box were a wonderful free touch!',
       },
     ],
     hasOfferCatalog: {
@@ -116,8 +106,8 @@ export function StructuredData() {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: 'Two-Wheeler Bike & Scooter Foam Wash',
-            description: 'Scratch-free snow foam wash, pressure cleaning & chain lube for bikes and scooters.',
+            name: 'Bike & Scooter Snow Foam Wash',
+            description: 'High pressure foam wash, degreasing, microfiber wipe down, chain cleaning and lubrication in Srikalahasti.',
           },
           price: '100',
           priceCurrency: 'INR',
@@ -126,8 +116,8 @@ export function StructuredData() {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: 'Hatchback Car Foam & Underbody Wash',
-            description: 'Foam wash, high-pressure underbody rinse, cabin vacuum, free water bottle & tissue box.',
+            name: 'Hatchback & Compact Car Foam Wash',
+            description: 'Scratch-free snow foam bath, high-pressure underbody rinse, mat wash, tire dressing, and dashboard wipe.',
           },
           price: '350',
           priceCurrency: 'INR',
@@ -136,8 +126,18 @@ export function StructuredData() {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: 'SUV & Compact SUV Deep Wash',
-            description: 'Deep foam wash, heavy underbody blast, interior sanitization & free perks.',
+            name: 'Sedan Complete Pressure & Foam Wash',
+            description: 'Premium exterior snow foam wash, underbody mud removal, interior cabin vacuuming, and dashboard polish.',
+          },
+          price: '450',
+          priceCurrency: 'INR',
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'SUV & MUV Full Deep Wash & Detailing',
+            description: 'Complete SUV snow foam detailing, deep underbody pressure blast, full vacuuming, body wax shine.',
           },
           price: '600',
           priceCurrency: 'INR',
@@ -146,7 +146,7 @@ export function StructuredData() {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: 'Full Car Mechanic General Repair & Oil Service',
+            name: 'Car Engine Diagnostic & Periodic Oil Service',
             description: 'Complete engine checkup, oil filter change, spark plug cleaning, and general car maintenance in Srikalahasti.',
           },
           priceSpecification: 'Inspection & Quote on Request',
@@ -173,7 +173,7 @@ export function StructuredData() {
     },
     contactPoint: {
       '@type': 'ContactPoint',
-      telephone: '+919494829450',
+      telephone: '+918309390902',
       contactType: 'customer service',
       areaServed: 'IN',
       availableLanguage: ['English', 'Telugu', 'Hindi'],
@@ -216,10 +216,10 @@ export function StructuredData() {
     mainEntity: [
       {
         '@type': 'Question',
-        name: 'What is the best car wash and repair center in Srikalahasti (SKHT)?',
+        name: 'What is the best car mechanic and wash center in Srikalahasti (SKHT)?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'MS Car Wash & Car Services located in Panagal, Srikalahasti (opposite Old RTO Office, beside Bharat Petroleum) offers both scratch-free foam washing and all types of car repairs, engine mechanic service, and AC repairs.',
+          text: 'MS Car Mechanic & Car Wash located in Panagal, Srikalahasti (opposite Old RTO Office, beside Bharat Petroleum) offers both complete car repairs, engine mechanic service, AC repairs, and scratch-free foam washing.',
         },
       },
       {
@@ -227,7 +227,7 @@ export function StructuredData() {
         name: 'Do you do all types of car mechanic repairs in Srikalahasti?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes! MS Car Wash & Car Services handles all vehicle repairs including engine diagnostic, oil change, brake/clutch service, electrical repairs, car AC gas refilling, and emergency roadside breakdown support.',
+          text: 'Yes! MS Car Mechanic & Car Wash handles all vehicle repairs including engine diagnostic, oil change, brake/clutch service, electrical repairs, car AC gas refilling, and emergency roadside breakdown support.',
         },
       },
       {
@@ -235,15 +235,15 @@ export function StructuredData() {
         name: 'Is doorstep pickup available for car repairs and water wash in Srikalahasti?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes! MS Car Wash & Car Services offers doorstep vehicle pickup and drop service across Srikalahasti town and near the highway area. Book online or call 9494829450.',
+          text: 'Yes! MS Car Mechanic & Car Wash offers doorstep vehicle pickup and drop service across Srikalahasti town and near the highway area. Book online or call 8309390902.',
         },
       },
       {
         '@type': 'Question',
-        name: 'What are the operating hours for MS Car Wash & Car Services?',
+        name: 'What are the operating hours for MS Car Mechanic & Car Wash?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'MS Car Wash & Car Services is open daily from 7:00 AM to 10:00 PM (Monday to Sunday).',
+          text: 'MS Car Mechanic & Car Wash is open daily from 7:00 AM to 10:00 PM (Monday to Sunday).',
         },
       },
     ],

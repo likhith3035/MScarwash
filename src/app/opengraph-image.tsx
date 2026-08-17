@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'MS Car Wash Srikalahasti — Best Water & Car Wash';
+export const alt = 'MS Car Mechanic & Car Wash Srikalahasti — Best Mechanic & Water Wash';
 export const size = {
   width: 1200,
   height: 630,
@@ -76,7 +76,7 @@ export default async function Image() {
         {/* Main Title */}
         <div
           style={{
-            fontSize: '64px',
+            fontSize: '56px',
             fontWeight: 900,
             letterSpacing: '-2px',
             textAlign: 'center',
@@ -86,20 +86,20 @@ export default async function Image() {
             color: 'transparent',
           }}
         >
-          MS CAR WASH
+          MS CAR MECHANIC & CAR WASH
         </div>
 
         {/* Subtitle */}
         <div
           style={{
-            fontSize: '28px',
+            fontSize: '26px',
             fontWeight: 700,
             color: '#10B981',
             textAlign: 'center',
             marginBottom: '24px',
           }}
         >
-          #1 Water Wash & Car Detailing Center in Srikalahasti (SKHT)
+          #1 Car Mechanic & Water Wash Center in Srikalahasti (SKHT)
         </div>
 
         {/* Feature Badges Grid */}
