@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Calendar, Tag, ShieldCheck, PhoneCall } from 'lucide-react';
+import { Home, Calendar, Tag, ShieldCheck, PhoneCall, Search } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function MobileBottomNav() {
@@ -12,9 +12,10 @@ export function MobileBottomNav() {
   const navItems = [
     { label: t('home') || 'Home', href: '/', icon: Home },
     { label: t('book') || 'Book Wash', href: '/book', icon: Calendar, badge: 'Book' },
+    { label: t('trackStatus') || 'Track', href: '/track', icon: Search },
     { label: t('pricing') || 'Pricing', href: '/pricing', icon: Tag },
     { label: 'Admin', href: '/admin', icon: ShieldCheck },
-    { label: 'Call Us', href: 'tel:9494829450', icon: PhoneCall, isExternal: true },
+    { label: 'Call', href: 'tel:8309390902', icon: PhoneCall, isExternal: true },
   ];
 
   return (

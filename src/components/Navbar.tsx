@@ -7,9 +7,11 @@ import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { Sun, Moon, Phone, CalendarCheck, Languages } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import { EmergencySosModal } from './EmergencySosModal';
 
 export function Navbar() {
   const [mounted, setMounted] = useState(false);
+  const [showSosModal, setShowSosModal] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
   const pathname = usePathname();
@@ -21,6 +23,7 @@ export function Navbar() {
   const navLinks = [
     { href: '/', label: t('home') },
     { href: '/book', label: t('bookWash') },
+    { href: '/track', label: t('trackStatus') },
     { href: '/pricing', label: t('pricing') },
     { href: '/admin', label: t('adminDesk') },
   ];
@@ -39,18 +42,19 @@ export function Navbar() {
             <div className="relative p-1.5 rounded-2xl bg-white dark:bg-[#0D131D] border border-black/[0.08] dark:border-white/[0.08] shadow-sm group-hover:scale-105 group-hover:border-emerald-500/40 transition-all duration-300">
               <Image
                 src="/logo.png"
-                alt="MS Car Wash"
+                alt="MS Car Mechanic & Car Wash"
                 width={40}
                 height={40}
                 className="w-9 h-9 sm:w-10 sm:h-10 object-contain"
+                style={{ width: 'auto', height: 'auto' }}
                 priority
               />
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-[#06090E] animate-pulse"></span>
             </div>
             <div className="flex flex-col leading-none">
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                  MS CAR WASH
+                <span className="font-bold text-sm sm:text-base tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                  MS CAR MECHANIC & CAR WASH
                 </span>
                 <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold tracking-wider uppercase border border-emerald-500/20">
                   SKHT
@@ -99,13 +103,24 @@ export function Navbar() {
               </span>
             </button>
 
+            {/* SOS Roadside Assistance Trigger */}
+            <button
+              type="button"
+              onClick={() => setShowSosModal(true)}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-black bg-rose-600 hover:bg-rose-500 text-white shadow-sm shadow-rose-600/30 transition-all hover:scale-105 active:scale-95 animate-pulse"
+              title="24/7 Roadside & Highway Breakdown SOS"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
+              <span>SOS</span>
+            </button>
+
             {/* Phone Call CTA */}
             <a
-              href="tel:9494829450"
+              href="tel:8309390902"
               className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-slate-100 dark:bg-[#0D131D] text-slate-900 dark:text-white border border-black/[0.08] dark:border-white/[0.08] hover:bg-slate-200 dark:hover:bg-white/10 transition-all shadow-xs"
             >
               <Phone className="w-3.5 h-3.5 text-emerald-500" />
-              <span>9494829450</span>
+              <span>8309390902</span>
             </a>
 
             {/* Book Now Button with Glow Accent */}
@@ -136,6 +151,7 @@ export function Navbar() {
 
         </div>
       </div>
+      <EmergencySosModal isOpen={showSosModal} onClose={() => setShowSosModal(false)} />
     </header>
   );
 }
