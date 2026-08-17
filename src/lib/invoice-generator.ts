@@ -55,9 +55,9 @@ export async function generateInvoicePDF(
   const textStartX = logoData ? margin + 32 : margin;
 
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(22);
+  doc.setFontSize(19);
   doc.setTextColor(255, 255, 255);
-  doc.text('MS CAR WASH', textStartX, 18);
+  doc.text('MS CAR MECHANIC & CAR WASH', textStartX, 18);
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9);
@@ -68,7 +68,7 @@ export async function generateInvoicePDF(
   doc.setFontSize(8);
   doc.setTextColor(203, 213, 225); // Light slate text
   doc.text('Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Srikalahasti - 517644', textStartX, 30);
-  doc.text('Phone: +91 9494829450, 8309390902 | WhatsApp: +91 8885426155', textStartX, 35);
+  doc.text('Phone & WhatsApp: +91 8309390902', textStartX, 35);
 
   // 2. INVOICE META ROW (BELOW HEADER)
   let currentY = 50;
@@ -265,12 +265,12 @@ export async function generateInvoicePDF(
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10);
   doc.setTextColor(16, 185, 129);
-  doc.text('Thank you for choosing MS Car Wash — Clean Car, Happy Ride!', pageWidth / 2, footerY + 7, { align: 'center' });
+  doc.text('Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!', pageWidth / 2, footerY + 7, { align: 'center' });
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8);
   doc.setTextColor(148, 163, 184);
-  doc.text('For queries or appointments: Call +91 9494829450, 8309390902 | WhatsApp: +91 8885426155', pageWidth / 2, footerY + 12, { align: 'center' });
+  doc.text('For queries or appointments: Call / WhatsApp +91 8309390902', pageWidth / 2, footerY + 12, { align: 'center' });
 
   const fileName = `MSCW_Invoice_${booking.id}.pdf`;
   const blob = doc.output('blob');

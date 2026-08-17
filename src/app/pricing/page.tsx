@@ -4,9 +4,12 @@ import { Bike, Car, Gift, HelpCircle, Phone, MessageSquare, Check, Sparkles, Shi
 import { TWO_WHEELER_PRICING, FOUR_WHEELER_PRICING, ADD_ONS } from '@/lib/types';
 
 export const metadata: Metadata = {
-  title: 'Car & Bike Wash Package Pricing | MS Car Wash Srikalahasti',
-  description: 'Transparent car & bike wash rates in Srikalahasti. Bike wash ₹100, Hatchback ₹350, Sedan ₹450, SUV ₹600. Includes free mineral water bottle + tissue box.',
+  title: 'Car & Bike Wash & Mechanic Pricing | MS Car Mechanic & Car Wash Srikalahasti',
+  description: 'Transparent car & bike wash and mechanic rates in Srikalahasti. Bike wash ₹100, Hatchback ₹350, Sedan ₹450, SUV ₹600. Car mechanic inspection on request. Free water bottle + tissue box. Call 8309390902.',
   keywords: [
+    'ms car mechanic & car wash srikalahasti',
+    'ms car mechanic pricing',
+    'car repair price srikalahasti',
     'car wash price srikalahasti',
     'bike wash price srikalahasti',
     'foam wash cost skht',
@@ -18,16 +21,16 @@ export const metadata: Metadata = {
     canonical: 'https://mscarwash.vercel.app/pricing',
   },
   openGraph: {
-    title: 'Car & Bike Wash Package Rates | MS Car Wash Srikalahasti',
-    description: 'Upfront rates for bikes, scooters, hatchbacks, sedans & SUVs in Panagal, Srikalahasti. Free perks with every wash.',
+    title: 'Car & Bike Wash Package Rates & Mechanic Services | MS Car Mechanic & Car Wash Srikalahasti',
+    description: 'Upfront rates for bikes, scooters, hatchbacks, sedans, SUVs & full vehicle repairs in Panagal, Srikalahasti. Free perks with every wash.',
     url: 'https://mscarwash.vercel.app/pricing',
-    siteName: 'MS Car Wash Srikalahasti',
-    images: [{ url: '/logo.png', width: 500, height: 500, alt: 'MS Car Wash Pricing' }],
+    siteName: 'MS Car Mechanic & Car Wash Srikalahasti',
+    images: [{ url: '/logo.png', width: 500, height: 500, alt: 'MS Car Mechanic & Car Wash Pricing' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Car & Bike Wash Pricing | MS Car Wash Srikalahasti',
-    description: 'Clear pricing from ₹100 for bikes & ₹350 for cars in Srikalahasti. Call 9494829450.',
+    title: 'Car & Bike Wash & Repair Pricing | MS Car Mechanic & Car Wash Srikalahasti',
+    description: 'Clear pricing from ₹100 for bikes & ₹350 for cars in Srikalahasti. Full car mechanic services. Call 8309390902.',
     images: ['/logo.png'],
   },
 };
@@ -215,10 +218,10 @@ export default function PricingPage() {
           Repair charges for engine, brakes, AC gas, electrical, and suspension work depend on your vehicle model and spare parts needed. We provide a <strong>Comprehensive Vehicle Inspection & Upfront Quote</strong> before starting any repair.
         </p>
         <div className="pt-2 flex flex-wrap gap-3">
-          <a href="tel:9494829450" className="px-5 py-3 rounded-full bg-indigo-600 text-white font-black flex items-center gap-2 shadow-md hover:bg-indigo-500 hover:scale-105 transition-all">
-            <Phone className="w-4 h-4" /> Call Mechanic Desk: 9494829450
+          <a href="tel:8309390902" className="px-5 py-3 rounded-full bg-indigo-600 text-white font-black flex items-center gap-2 shadow-md hover:bg-indigo-500 hover:scale-105 transition-all">
+            <Phone className="w-4 h-4" /> Call Mechanic Desk: 8309390902
           </a>
-          <a href="https://wa.me/918885426155?text=Hi%20MS%20Car%20Services,%20I%20need%20a%20car%20repair%20quote%20for%20my%20vehicle." target="_blank" rel="noopener noreferrer" className="px-5 py-3 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-black flex items-center gap-2 shadow-xs hover:scale-105 transition-all">
+          <a href="https://wa.me/918309390902?text=Hi%20MS%20Car%20Mechanic%20%26%20Car%20Wash,%20I%20need%20a%20car%20repair%20quote%20for%20my%20vehicle." target="_blank" rel="noopener noreferrer" className="px-5 py-3 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-black flex items-center gap-2 shadow-xs hover:scale-105 transition-all">
             <MessageSquare className="w-4 h-4 text-indigo-500" /> Request Repair Quote
           </a>
         </div>
@@ -234,10 +237,10 @@ export default function PricingPage() {
           Washing charges vary depending on machinery size and mud accumulation. Contact our Srikalahasti wash center desk directly for instant quotes.
         </p>
         <div className="pt-2 flex flex-wrap gap-3">
-          <a href="tel:9494829450" className="px-5 py-3 rounded-full bg-white dark:bg-[#151D2A] border border-black/10 dark:border-white/10 text-slate-900 dark:text-white font-black flex items-center gap-2 shadow-xs hover:scale-105 transition-all">
-            <Phone className="w-4 h-4 text-emerald-500" /> Call 9494829450
+          <a href="tel:8309390902" className="px-5 py-3 rounded-full bg-white dark:bg-[#151D2A] border border-black/10 dark:border-white/10 text-slate-900 dark:text-white font-black flex items-center gap-2 shadow-xs hover:scale-105 transition-all">
+            <Phone className="w-4 h-4 text-emerald-500" /> Call 8309390902
           </a>
-          <a href="https://wa.me/918885426155?text=Hi%20MS%20Car%20Wash,%20I%20need%20a%20price%20quote%20for%20heavy%20vehicle%20wash." target="_blank" rel="noopener noreferrer" className="px-5 py-3 rounded-full bg-emerald-600 text-white font-black flex items-center gap-2 shadow-md shadow-emerald-600/30 hover:bg-emerald-500 hover:scale-105 transition-all">
+          <a href="https://wa.me/918309390902?text=Hi%20MS%20Car%20Mechanic%20%26%20Car%20Wash,%20I%20need%20a%20price%20quote%20for%20heavy%20vehicle%20wash." target="_blank" rel="noopener noreferrer" className="px-5 py-3 rounded-full bg-emerald-600 text-white font-black flex items-center gap-2 shadow-md shadow-emerald-600/30 hover:bg-emerald-500 hover:scale-105 transition-all">
             <MessageSquare className="w-4 h-4" /> WhatsApp Quote Request
           </a>
         </div>

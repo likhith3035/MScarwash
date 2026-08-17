@@ -157,7 +157,7 @@ function BookingForm() {
 
       const waText =
         mode === 'pickup'
-          ? `New Booking — MS Car Wash & Car Services
+          ? `New Booking — MS Car Mechanic & Car Wash Srikalahasti
 Service: ${categoryTitle}
 Mode: Doorstep Pickup
 Name: ${name}
@@ -167,7 +167,7 @@ Address: ${address || 'Srikalahasti'}
 Time: ${timeWindow}
 Add-ons: ${selectedAddOns.length > 0 ? selectedAddOns.join(', ') : 'None'}
 Booking ID: ${saved.id}`
-          : `New Booking — MS Car Wash & Car Services
+          : `New Booking — MS Car Mechanic & Car Wash Srikalahasti
 Service: ${categoryTitle}
 Mode: Center Drive-In
 Name: ${name}
@@ -177,7 +177,7 @@ Date: ${date} (${timeSlot})
 Add-ons: ${selectedAddOns.length > 0 ? selectedAddOns.join(', ') : 'None'}
 Booking ID: ${saved.id}`;
 
-      const whatsappUrl = `https://wa.me/918885426155?text=${encodeURIComponent(waText)}`;
+      const whatsappUrl = `https://wa.me/918309390902?text=${encodeURIComponent(waText)}`;
 
       if (typeof window !== 'undefined') {
         window.open(whatsappUrl, '_blank');
@@ -383,7 +383,7 @@ Booking ID: ${saved.id}`;
                 <input
                   type="tel"
                   required
-                  placeholder="e.g. 9494829450"
+                  placeholder="e.g. 8309390902"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/8 dark:border-white/8 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"

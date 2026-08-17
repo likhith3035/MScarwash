@@ -14,19 +14,20 @@ export function Footer() {
               <div className="p-1 rounded-xl bg-white dark:bg-[#0D131D] border border-black/[0.08] dark:border-white/[0.08] shadow-xs">
                 <Image
                   src="/logo.png"
-                  alt="MS Car Wash"
+                  alt="MS Car Mechanic & Car Wash"
                   width={36}
                   height={36}
                   className="w-9 h-9 object-contain"
+                  style={{ width: 'auto', height: 'auto' }}
                 />
               </div>
               <div>
-                <span className="text-slate-900 dark:text-white font-black text-base tracking-tight block">MS CAR WASH</span>
+                <span className="text-slate-900 dark:text-white font-black text-sm sm:text-base tracking-tight block">MS CAR MECHANIC & CAR WASH</span>
                 <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-extrabold tracking-widest uppercase">Srikalahasti</span>
               </div>
             </div>
             <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
-              Srikalahasti’s #1 premium vehicle wash center. High-pressure foam wash, underbody blast, interior detailing & doorstep pickup service.
+              Srikalahasti’s #1 premium car mechanic & vehicle wash center. Complete car repairs, engine mechanics, high-pressure foam wash, underbody blast & doorstep pickup service.
             </p>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[11px] font-bold border border-emerald-500/20">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -66,15 +67,15 @@ export function Footer() {
             {/* 1-Tap Direct Action Pills */}
             <div className="pt-2 flex flex-col gap-2">
               <a
-                href="tel:9494829450"
+                href="tel:8309390902"
                 className="w-full py-2.5 px-3.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-black text-xs flex items-center justify-center gap-2 shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all"
               >
                 <Phone className="w-3.5 h-3.5 text-emerald-400 dark:text-emerald-600" />
-                <span>Call Desk: 9494829450</span>
+                <span>Call Desk: 8309390902</span>
               </a>
               <div className="flex gap-2">
                 <a
-                  href="https://wa.me/918885426155"
+                  href="https://wa.me/918309390902"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] flex items-center justify-center gap-1.5 shadow-sm transition-all"
@@ -109,7 +110,7 @@ export function Footer() {
         </div>
 
         <div className="pt-6 border-t border-black/[0.08] dark:border-white/[0.08] flex flex-col md:flex-row items-center justify-between text-xs gap-3">
-          <p>&copy; {new Date().getFullYear()} MS Car Wash Srikalahasti. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} MS Car Mechanic & Car Wash Srikalahasti. All rights reserved.</p>
           
           <span className="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300">
             <ShieldCheck className="w-4 h-4 text-emerald-500" /> 100% Scratch-Free Snow Foam Technology
