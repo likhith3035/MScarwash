@@ -28,6 +28,7 @@ import {
 import { QuickPriceEstimator } from '@/components/QuickPriceEstimator';
 import { GallerySection } from '@/components/GallerySection';
 import { FaqSection } from '@/components/FaqSection';
+import { HomeEmergencySosBanner } from '@/components/HomeEmergencySosBanner';
 
 export default function HomePage() {
   const precisionFeatures = [
@@ -137,7 +138,7 @@ export default function HomePage() {
 
             {/* Main MS Car Wash SEO Headline */}
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.1]">
-              MS CAR WASH & CAR SERVICES — Best Water Wash & Car Service in Srikalahasti
+              MS CAR MECHANIC & CAR WASH — Best Car Repair & Water Wash in Srikalahasti
             </h1>
 
             {/* Subtitle with MS Car Wash Data */}
@@ -185,16 +186,17 @@ export default function HomePage() {
               <div className="relative w-48 h-48 flex items-center justify-center p-4 bg-white dark:bg-[#141C2B] rounded-2xl border border-black/5 dark:border-white/5 shadow-inner">
                 <Image
                   src="/logo.png"
-                  alt="MS Car Wash & Car Services Srikalahasti Logo"
-                  width={180}
-                  height={180}
+                  alt="MS Car Mechanic & Car Wash Srikalahasti Logo"
+                  width={160}
+                  height={160}
                   className="w-40 h-40 object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"
+                  style={{ width: 'auto', height: 'auto' }}
                   priority
                 />
               </div>
 
               <div>
-                <h3 className="font-black text-xl text-slate-900 dark:text-white">MS CAR WASH & CAR SERVICES</h3>
+                <h3 className="font-black text-xl text-slate-900 dark:text-white">MS CAR MECHANIC & CAR WASH</h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium leading-relaxed">
                   Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Near Highway Srikalahasti - 517644
                 </p>
@@ -213,6 +215,11 @@ export default function HomePage() {
           </div>
 
         </div>
+      </section>
+
+      {/* 24/7 HIGHWAY EMERGENCY BREAKDOWN SOS BANNER */}
+      <section className="py-6 px-4 sm:px-6 max-w-6xl mx-auto w-full">
+        <HomeEmergencySosBanner />
       </section>
 
       {/* DRIVEU STYLE "PRECISION CAR CLEANING" SECTION WITH MS CAR WASH FEATURES */}
