@@ -32,11 +32,15 @@ import {
   VolumeX,
   BellRing,
   Star,
-  MapPin
+  MapPin,
+  ClipboardList,
+  TrendingUp,
+  Banknote
 } from 'lucide-react';
 import { Booking } from '@/lib/types';
 import { getBookings, updateBookingStatus, saveBooking, clearAllLocalBookings, deleteBooking, deleteAllBookings } from '@/lib/supabase';
 import { generateInvoicePDF } from '@/lib/invoice-generator';
+import { JobCardModal } from '@/components/JobCardModal';
 
 const ADMIN_PASSWORD = 'naveen@2026';
 const AUTH_KEY = 'ms_car_wash_admin_authenticated';
@@ -79,6 +83,7 @@ export default function AdminPage() {
     download: () => void;
     fileName: string;
   } | null>(null);
+  const [jobCardBooking, setJobCardBooking] = useState<Booking | null>(null);
 
   // Walk-in Manual Entry Modal State
   const [showAddModal, setShowAddModal] = useState(false);
@@ -307,19 +312,19 @@ export default function AdminPage() {
     const beforeUrl = editBeforePhotoUrl || booking.beforePhotoUrl || 'Not uploaded';
     const afterUrl = editAfterPhotoUrl || booking.afterPhotoUrl || 'Not uploaded';
 
-    const text = `✨ MS CAR WASH — VEHICLE WASH COMPLETION REPORT ✨
+    const text = `✨ MS CAR MECHANIC & CAR WASH — SERVICE COMPLETION REPORT ✨
 -----------------------------------------------
 Booking Ref: ${booking.id}
 Customer: ${booking.name}
 Vehicle: ${booking.vehicleType} - ${booking.vehicleModel}
 
-📸 BEFORE WASH PHOTO:
+📸 BEFORE WASH/SERVICE PHOTO:
 ${beforeUrl}
 
-✨ AFTER WASH PHOTO:
+✨ AFTER WASH/SERVICE PHOTO:
 ${afterUrl}
 
-Thank you for choosing MS Car Wash (Srikalahasti)! Call 9494829450 for your next doorstep or slot wash.`;
+Thank you for choosing MS Car Mechanic & Car Wash Srikalahasti! Call 8309390902 for your next doorstep or slot service.`;
 
     const encoded = encodeURIComponent(text);
     const waUrl = cleanPhone ? `https://wa.me/91${cleanPhone}?text=${encoded}` : `https://wa.me/?text=${encoded}`;
@@ -329,26 +334,26 @@ Thank you for choosing MS Car Wash (Srikalahasti)! Call 9494829450 for your next
   // WhatsApp Alert: Wash Started
   const sendWashStartWhatsApp = (booking: Booking) => {
     const cleanPhone = booking.phone.replace(/\D/g, '');
-    const text = `🌊 MS CAR WASH — WASH STARTED
-Hi ${booking.name}! We have started cleaning your ${booking.vehicleType} (${booking.vehicleModel}) [Ref: ${booking.id}]. 
-Our team is performing scratch-free foam washing & high-pressure underbody rinse. We will update you once ready!`;
+    const text = `🌊 MS CAR MECHANIC & CAR WASH — SERVICE STARTED
+Hi ${booking.name}! We have started servicing your ${booking.vehicleType} (${booking.vehicleModel}) [Ref: ${booking.id}]. 
+Our team is performing scratch-free foam washing, repairs & high-pressure underbody rinse. We will update you once ready!`;
     window.open(`https://wa.me/91${cleanPhone}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   // WhatsApp Alert: Vehicle Ready for Pickup/Delivery
   const sendWashReadyWhatsApp = (booking: Booking) => {
     const cleanPhone = booking.phone.replace(/\D/g, '');
-    const text = `✨ MS CAR WASH — VEHICLE READY!
+    const text = `✨ MS CAR MECHANIC & CAR WASH — VEHICLE READY!
 Hi ${booking.name}! Great news! Your ${booking.vehicleType} (${booking.vehicleModel}) is clean, polished & ready for pickup/delivery! [Ref: ${booking.id}]
-Thank you for choosing MS Car Wash Srikalahasti. Call 9494829450 for assistance!`;
+Thank you for choosing MS Car Mechanic & Car Wash Srikalahasti. Call 8309390902 for assistance!`;
     window.open(`https://wa.me/91${cleanPhone}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   // WhatsApp Alert: Google Review Request
   const sendGoogleReviewWhatsApp = (booking: Booking) => {
     const cleanPhone = booking.phone.replace(/\D/g, '');
-    const text = `⭐ MS CAR WASH — RATE YOUR WASH EXPERIENCE
-Hi ${booking.name}, thank you for trusting MS Car Wash with your ${booking.vehicleModel}!
+    const text = `⭐ MS CAR MECHANIC & CAR WASH — RATE YOUR EXPERIENCE
+Hi ${booking.name}, thank you for trusting MS Car Mechanic & Car Wash with your ${booking.vehicleModel}!
 Could you take 10 seconds to leave us a quick 5-star Google review?
 ⭐ Review Link: https://maps.app.goo.gl/i8Wa5ef1dZZwnJmF9
 Your feedback helps our team grow!`;
@@ -409,8 +414,8 @@ Your feedback helps our team grow!`;
 
     const addOnText = editAddOns.length > 0 ? editAddOns.join(', ') : 'Standard Wash Services';
 
-    const invoiceText = `🧾 MS CAR WASH — OFFICIAL TAX RECEIPT
-----------------------------------
+    const invoiceText = `🧾 MS CAR MECHANIC & CAR WASH — OFFICIAL TAX RECEIPT
+-----------------------------------
 Invoice No: ${booking.id}
 Generated Time: ${exactTimeStr}
 Billed By: ${staffName}
@@ -421,16 +426,16 @@ Phone: ${editPhone || booking.phone}
 Vehicle: ${editVehicleType || booking.vehicleType} (${editVehicleModel || booking.vehicleModel})
 
 ITEMIZED BREAKDOWN:
-1. Full Water & Snow Foam Wash: ₹${amountVal}
+1. Full Water & Snow Foam Wash / Repairs: ₹${amountVal}
 2. Add-ons Included: ${addOnText}
 3. Free Perks: Chilled Water Bottle + Car Tissue Box (FREE)
 
 TOTAL PAID AMOUNT: ₹${amountVal} (${editPaymentMethod})
 PAYMENT STATUS: PAID / COMPLETED ✓
 ----------------------------------
-Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
+Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
 📍 Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Srikalahasti
-📞 Contact: 9494829450 / 8309390902`;
+📞 Contact: 8309390902`;
 
     const waUrl = `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(invoiceText)}`;
     if (typeof window !== 'undefined') {
@@ -441,7 +446,7 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
   // Direct 1-Tap Customer Chat on WhatsApp
   const openDirectCustomerWhatsApp = (phone: string, name: string, id: string) => {
     const cleanPhone = phone.replace(/\D/g, '');
-    const msg = `Hi ${name}, regarding your wash booking #${id} at MS Car Wash Srikalahasti: `;
+    const msg = `Hi ${name}, regarding your service booking #${id} at MS Car Mechanic & Car Wash Srikalahasti: `;
     const waUrl = `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(msg)}`;
     if (typeof window !== 'undefined') {
       window.open(waUrl, '_blank');
@@ -538,6 +543,41 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
   yesterdayObj.setDate(yesterdayObj.getDate() - 1);
   const yesterdayStr = getLocalDateString(yesterdayObj);
   const monthStr = todayStr.substring(0, 7);
+
+  const todayBookings = bookings.filter(b => getLocalDateFromIso(b.createdAt) === todayStr);
+  const todayCompleted = todayBookings.filter(b => b.status === 'completed');
+  const todayPending = todayBookings.filter(b => b.status !== 'completed');
+  const todayRevenue = todayCompleted.reduce((sum, b) => sum + (b.totalAmount || getDefaultPrice(b.vehicleType)), 0);
+
+  const sendDailySummaryWhatsApp = () => {
+    const avgTicket = todayCompleted.length > 0 ? Math.round(todayRevenue / todayCompleted.length) : 0;
+    const dateFormatted = new Date().toLocaleDateString('en-IN', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
+
+    const message = `📊 *MS CAR MECHANIC & CAR WASH — DAILY CLOSING SUMMARY*
+🏢 *Srikalahasti Center Desk*
+📅 *Date:* ${dateFormatted}
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚗 *Total Vehicles Handled Today:* ${todayBookings.length}
+✅ *Completed Jobs:* ${todayCompleted.length}
+⏳ *Pending / Active:* ${todayPending.length}
+
+💰 *Today's Revenue:* ₹${todayRevenue.toLocaleString('en-IN')}
+💵 *Avg Ticket Value:* ₹${avgTicket}
+🏆 *All-Time Recorded Revenue:* ₹${totalRevenue.toLocaleString('en-IN')}
+
+📞 *Desk Helpline:* 8309390902
+━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+
+    const url = `https://wa.me/918309390902?text=${encodeURIComponent(message)}`;
+    if (typeof window !== 'undefined') {
+      window.open(url, '_blank');
+    }
+  };
 
   const filteredBookings = bookings.filter(b => {
     const matchesFilter =
@@ -649,6 +689,7 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
                 width={44}
                 height={44}
                 className="w-11 h-11 object-contain"
+                style={{ width: 'auto', height: 'auto' }}
               />
             </div>
             <div>
@@ -660,7 +701,7 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
                 </span>
               </h1>
               <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                Auto-refreshes every 10s. Direct WhatsApp notifications active for Naveen (8885426155).
+                Auto-refreshes every 10s. Direct WhatsApp helpline: 8309390902.
               </p>
             </div>
           </div>
@@ -796,22 +837,42 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
 
           {showAnalytics && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-              {/* Avg Ticket Value & Pickup vs Slot ratio */}
+              {/* Avg Ticket Value, Today's Revenue & Quick WhatsApp Summary */}
               <div className="space-y-3 p-4 rounded-2xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.06] dark:border-white/[0.06]">
-                <span className="text-[11px] font-extrabold uppercase tracking-wider text-neutral-500 block">
-                  Financial Highlights
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-neutral-500 block">
+                    Financial Highlights
+                  </span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 font-extrabold">
+                    Today
+                  </span>
+                </div>
+                
                 <div className="flex items-baseline justify-between">
+                  <span className="text-xs font-bold text-neutral-600 dark:text-neutral-300">Today&apos;s Revenue</span>
+                  <span className="text-xl font-black text-emerald-600 dark:text-emerald-400">₹{todayRevenue.toLocaleString('en-IN')}</span>
+                </div>
+
+                <div className="flex items-baseline justify-between pt-1 border-t border-black/[0.06] dark:border-white/[0.06]">
                   <span className="text-xs font-bold text-neutral-600 dark:text-neutral-300">Avg Ticket Value</span>
-                  <span className="text-lg font-black text-emerald-600 dark:text-emerald-400">₹{avgTicketValue}</span>
+                  <span className="text-sm font-bold text-slate-800 dark:text-white">₹{avgTicketValue}</span>
                 </div>
+
                 <div className="flex items-baseline justify-between pt-1 border-t border-black/[0.06] dark:border-white/[0.06]">
-                  <span className="text-xs font-bold text-neutral-600 dark:text-neutral-300">Doorstep Pickup</span>
-                  <span className="text-xs font-bold text-amber-500">{pickupCount} washes ({totalBookingsCount > 0 ? Math.round((pickupCount / totalBookingsCount) * 100) : 0}%)</span>
+                  <span className="text-xs font-bold text-neutral-600 dark:text-neutral-300">Today&apos;s Completed</span>
+                  <span className="text-xs font-bold text-emerald-500">{todayCompleted.length} / {todayBookings.length} jobs</span>
                 </div>
-                <div className="flex items-baseline justify-between pt-1 border-t border-black/[0.06] dark:border-white/[0.06]">
-                  <span className="text-xs font-bold text-neutral-600 dark:text-neutral-300">Center Slot Washes</span>
-                  <span className="text-xs font-bold text-blue-500">{slotCount} washes ({totalBookingsCount > 0 ? Math.round((slotCount / totalBookingsCount) * 100) : 0}%)</span>
+
+                {/* WhatsApp Daily Summary Trigger */}
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={sendDailySummaryWhatsApp}
+                    className="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center justify-center gap-1.5 shadow-sm shadow-emerald-600/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>WhatsApp Daily Closing Report</span>
+                  </button>
                 </div>
               </div>
 
@@ -1139,6 +1200,15 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
                           </button>
                           <button
                             type="button"
+                            onClick={() => setJobCardBooking(b)}
+                            className="p-1.5 rounded-lg bg-indigo-600 text-white font-bold text-[10px] flex items-center gap-1"
+                            title="Vehicle Intake Job Card"
+                          >
+                            <ClipboardList className="w-3.5 h-3.5" />
+                            <span>Job Card</span>
+                          </button>
+                          <button
+                            type="button"
                             onClick={() => setPrintingTokenBooking(b)}
                             className="p-1.5 rounded-lg bg-slate-800 text-white text-[10px]"
                             title="Print Token"
@@ -1358,6 +1428,17 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
                               ⭐ Review
                             </button>
 
+                            {/* Vehicle Intake Job Card */}
+                            <button
+                              type="button"
+                              onClick={() => setJobCardBooking(b)}
+                              className="px-2.5 py-1 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-bold transition-all shadow-xs inline-flex items-center gap-1"
+                              title="Create / Print Vehicle Intake Job Card & Inspection Slip"
+                            >
+                              <ClipboardList className="w-3 h-3" />
+                              <span>Job Card</span>
+                            </button>
+
                             {/* Job Token Printer Button */}
                             <button
                               type="button"
@@ -1449,7 +1530,7 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
                   <input
                     type="tel"
                     required
-                    placeholder="e.g. 9494829450"
+                    placeholder="e.g. 8309390902"
                     value={walkinPhone}
                     onChange={(e) => setWalkinPhone(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.08] dark:border-white/[0.08] font-medium"
@@ -1796,6 +1877,7 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
                           width={36}
                           height={36}
                           className="w-9 h-9 object-contain"
+                          style={{ width: 'auto', height: 'auto' }}
                         />
                         <div>
                           <h4 className="font-extrabold text-sm text-[#1D1D1F] dark:text-white leading-none">MS CAR WASH</h4>
@@ -2024,6 +2106,13 @@ Thank you for choosing MS Car Wash — Clean Car, Happy Ride!
             </div>
           </div>
         )}
+
+        {/* 5. VEHICLE INTAKE JOB CARD & INSPECTION SLIP MODAL */}
+        <JobCardModal
+          booking={jobCardBooking}
+          isOpen={!!jobCardBooking}
+          onClose={() => setJobCardBooking(null)}
+        />
 
       </div>
     </div>
