@@ -34,17 +34,23 @@ export async function GET() {
 
   // 2. Query Supabase database to add completed local bookings/reviews count dynamically
   let extraCount = 0;
-  if (supabase) {
+  if (supabase && process.env.NEXT_PUBLIC_SUPABASE_URL && !process.env.NEXT_PUBLIC_SUPABASE_URL.includes('your-supabase-project')) {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 1200);
+
       const { count, error } = await supabase
         .from('bookings')
-        .select('*', { count: 'exact', head: true });
+        .select('*', { count: 'exact', head: true })
+        .abortSignal(controller.signal);
       
+      clearTimeout(timeoutId);
+
       if (!error && typeof count === 'number') {
         extraCount = count;
       }
-    } catch (e) {
-      // ignore DB errors
+    } catch {
+      // Fallback silently if offline or project URL not resolved
     }
   }
 

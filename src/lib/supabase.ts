@@ -4,16 +4,42 @@ import { Booking } from './types';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  if (typeof window !== 'undefined') {
-    console.warn('MS Car Wash: Supabase environment variables are missing. Using local storage fallback.');
+const SUPABASE_UNREACHABLE_KEY = 'ms_supabase_unreachable_v1';
+
+let isSupabaseDisabled = false;
+if (typeof window !== 'undefined') {
+  try {
+    isSupabaseDisabled = sessionStorage.getItem(SUPABASE_UNREACHABLE_KEY) === 'true';
+  } catch {
+    isSupabaseDisabled = false;
   }
 }
 
-export const supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null;
+function markSupabaseUnreachable(reason?: string) {
+  isSupabaseDisabled = true;
+  if (typeof window !== 'undefined') {
+    try {
+      sessionStorage.setItem(SUPABASE_UNREACHABLE_KEY, 'true');
+    } catch {}
+  }
+  if (reason) {
+    console.info(`MS Car Mechanic & Car Wash: Switched to reliable local offline storage. (${reason})`);
+  }
+}
+
+const isInvalidHost = 
+  !supabaseUrl || 
+  !supabaseAnonKey || 
+  supabaseUrl.includes('jvdwosqdkogoizvzxmoz') || 
+  supabaseUrl.includes('your-supabase-project');
+
+export const supabase = !isInvalidHost ? createClient(supabaseUrl, supabaseAnonKey) : null;
+
+if (isInvalidHost) {
+  isSupabaseDisabled = true;
+}
 
 const LOCAL_STORAGE_KEY = 'ms_car_wash_bookings_v2';
-let isSupabaseDisabled = false;
 
 // Convert JS Booking object to Postgres DB row (matching column casing)
 function toDbRow(booking: Booking): Record<string, unknown> {
@@ -80,7 +106,7 @@ export async function saveBooking(bookingData: Omit<Booking, 'id' | 'createdAt' 
 
   let savedBooking = newBooking;
 
-  if (supabase) {
+  if (supabase && !isSupabaseDisabled) {
     try {
       const dbRow = toDbRow(newBooking);
       const { data, error } = await supabase
@@ -92,10 +118,13 @@ export async function saveBooking(bookingData: Omit<Booking, 'id' | 'createdAt' 
       if (!error && data) {
         savedBooking = fromDbRow(data);
       } else if (error) {
-        console.error('Supabase insert error details:', error.message, error.code, error.details);
+        const msg = String(error.message || '');
+        if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || error.code === 'PGRST301' || error.code === '401') {
+          markSupabaseUnreachable('Insert unreachable');
+        }
       }
-    } catch (err) {
-      console.error('Supabase insert exception:', err);
+    } catch {
+      markSupabaseUnreachable('Insert exception');
     }
   }
 
@@ -119,7 +148,7 @@ function isTestBooking(b: Booking): boolean {
 export async function getBookings(): Promise<Booking[]> {
   let dbBookings: Booking[] = [];
 
-  if (supabase) {
+  if (supabase && !isSupabaseDisabled) {
     try {
       const { data, error } = await supabase
         .from('bookings')
@@ -128,10 +157,13 @@ export async function getBookings(): Promise<Booking[]> {
       if (!error && data) {
         dbBookings = data.map(fromDbRow);
       } else if (error) {
-        console.error('Supabase fetch error:', error.message, error.code);
+        const msg = String(error.message || '');
+        if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || error.code === 'PGRST301' || error.code === '401') {
+          markSupabaseUnreachable('Query unreachable');
+        }
       }
-    } catch (err) {
-      console.error('Supabase fetch exception:', err);
+    } catch {
+      markSupabaseUnreachable('Fetch exception');
     }
   }
 
@@ -163,11 +195,14 @@ export async function updateBookingStatus(id: string, status: Booking['status'],
       const { error } = await supabase.from('bookings').update(updatePayload).eq('id', id);
       if (!error) {
         updatedInDb = true;
-      } else if (error && (error.code === 'PGRST301' || error.code === '401')) {
-        isSupabaseDisabled = true;
+      } else {
+        const msg = String(error.message || '');
+        if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || error.code === 'PGRST301' || error.code === '401') {
+          markSupabaseUnreachable('Update unreachable');
+        }
       }
-    } catch (err) {
-      console.warn('Supabase update exception:', err);
+    } catch {
+      markSupabaseUnreachable('Update exception');
     }
   }
 
@@ -197,9 +232,14 @@ export async function deleteBooking(id: string): Promise<boolean> {
       const { error } = await supabase.from('bookings').delete().eq('id', id);
       if (!error) {
         deletedInDb = true;
+      } else {
+        const msg = String(error.message || '');
+        if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || error.code === 'PGRST301' || error.code === '401') {
+          markSupabaseUnreachable('Delete unreachable');
+        }
       }
-    } catch (err) {
-      console.warn('Supabase delete exception:', err);
+    } catch {
+      markSupabaseUnreachable('Delete exception');
     }
   }
 
@@ -220,9 +260,14 @@ export async function deleteAllBookings(): Promise<boolean> {
       const { error } = await supabase.from('bookings').delete().neq('id', 'NONE_RESERVED');
       if (!error) {
         deletedInDb = true;
+      } else {
+        const msg = String(error.message || '');
+        if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || error.code === 'PGRST301' || error.code === '401') {
+          markSupabaseUnreachable('Delete-all unreachable');
+        }
       }
-    } catch (err) {
-      console.warn('Supabase delete all exception:', err);
+    } catch {
+      markSupabaseUnreachable('Delete-all exception');
     }
   }
 

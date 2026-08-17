@@ -38,14 +38,14 @@ ${booking.addOns && booking.addOns.length > 0 ? `• *Add-Ons:* _${booking.addOn
 ${booking.notes ? `• *Customer Notes:* _"${booking.notes}"_` : ''}
 
 ━━━━━━━━━━━━━━━━━━━━━━
-📍 *MS Car Wash — Srikalahasti Desk*`;
+📍 *MS Car Mechanic & Car Wash — Srikalahasti Desk*`;
 
       // Build inline buttons for 1-click WhatsApp & Google Maps navigation
       const inlineButtons: Array<Array<{ text: string; url: string }>> = [
         [
           {
             text: '💬 WhatsApp Customer',
-            url: `https://wa.me/${waPhone}?text=${encodeURIComponent(`Hello ${booking.name}, regarding your MS Car Wash booking #${booking.id}...`)}`,
+            url: `https://wa.me/${waPhone}?text=${encodeURIComponent(`Hello ${booking.name}, regarding your MS Car Mechanic & Car Wash booking #${booking.id}...`)}`,
           },
         ],
       ];
