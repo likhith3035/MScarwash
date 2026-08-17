@@ -14,13 +14,21 @@ export function PwaInstallPrompt() {
   const [isInstalled, setIsInstalled] = useState(false);
 
   useEffect(() => {
-    // Register Service Worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch((err) => {
-          console.warn('PWA Service Worker registration failed:', err);
+    // In development mode, auto-clean any registered service worker to prevent Turbopack refresh loops
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+      if (process.env.NODE_ENV !== 'production' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+          for (const registration of registrations) {
+            registration.unregister();
+          }
         });
-      });
+      } else {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch((err) => {
+            console.warn('PWA Service Worker registration failed:', err);
+          });
+        });
+      }
     }
 
     // Check standalone state
@@ -75,8 +83,8 @@ export function PwaInstallPrompt() {
               <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-400 uppercase tracking-wider">
                 <Sparkles className="w-3.5 h-3.5" /> Fast App Access
               </div>
-              <h4 className="font-bold text-sm text-white">Install MS Car Wash App</h4>
-              <p className="text-xs text-slate-300">Book washes 10x faster & track status offline.</p>
+              <h4 className="font-bold text-sm text-white">Install MS Car Mechanic & Wash App</h4>
+              <p className="text-xs text-slate-300">Book services & washes 10x faster & track status offline.</p>
             </div>
           </div>
           <button

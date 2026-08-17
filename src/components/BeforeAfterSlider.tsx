@@ -97,7 +97,7 @@ export function BeforeAfterSlider() {
       {/* Helper label below */}
       <div className="p-3.5 bg-slate-900 text-slate-300 text-center text-xs font-bold flex items-center justify-center gap-2 border-t border-white/10">
         <SlidersHorizontal className="w-4 h-4 text-emerald-400" />
-        <span>Drag or click slider left/right to compare vehicle before & after MS Car Wash</span>
+        <span>Drag or click slider left/right to compare vehicle before & after MS Car Mechanic & Car Wash</span>
       </div>
 
     </div>

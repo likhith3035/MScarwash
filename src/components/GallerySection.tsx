@@ -14,7 +14,7 @@ export function GallerySection() {
       title: 'Snow Foam Bath & Wash Srikalahasti',
       category: 'Snow Foam Wash',
       src: '/gallery-foam-car.png',
-      desc: 'Rich, thick snow-foam bath safely lifting dirt and highway mud at MS Car Wash Srikalahasti.',
+      desc: 'Rich, thick snow-foam bath safely lifting dirt and highway mud at MS Car Mechanic & Car Wash Srikalahasti.',
     },
     {
       id: 2,
@@ -42,7 +42,7 @@ export function GallerySection() {
       title: 'Mirror Gloss Wax Polish Protection',
       category: 'Gloss Polish',
       src: '/gallery-car-shine.png',
-      desc: 'Protective gloss coating with water-beading paint protection at MS Car Wash.',
+      desc: 'Protective gloss coating with water-beading paint protection at MS Car Mechanic & Car Wash.',
     },
   ];
 
@@ -65,7 +65,7 @@ export function GallerySection() {
           Real Detailing Photo Gallery
         </h2>
         <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium">
-          Explore actual work photos from MS Car Wash Srikalahasti — snow foam baths, underbody pressure blasts, bike detailing & cabin vacuuming.
+          Explore actual work photos from MS Car Mechanic & Car Wash Srikalahasti — snow foam baths, underbody pressure blasts, bike detailing & cabin vacuuming.
         </p>
       </div>
 
@@ -103,6 +103,7 @@ export function GallerySection() {
                 src={item.src}
                 alt={item.title}
                 fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 className="object-cover group-hover:scale-108 transition-transform duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
@@ -147,6 +148,7 @@ export function GallerySection() {
                 src={lightboxImage.src}
                 alt={lightboxImage.title}
                 fill
+                sizes="(max-width: 1024px) 100vw, 896px"
                 className="object-contain"
               />
             </div>

@@ -20,7 +20,7 @@ const LANDMARKS = [
   { name: 'Bapuji Nagar', lat: 13.7510, lng: 79.7110, icon: '🏠' },
   { name: 'Swarnamukhi Bank', lat: 13.7485, lng: 79.7045, icon: '🏦' },
   { name: 'Tirupati Road', lat: 13.7550, lng: 79.7060, icon: '🛣️' },
-  { name: 'MS Car Wash Center', lat: 13.7505, lng: 79.6992, icon: '🚗' },
+  { name: 'MS Car Mechanic & Wash Center', lat: 13.7505, lng: 79.6992, icon: '🚗' },
 ];
 
 export default function MapPinPickerModal({

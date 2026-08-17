@@ -42,7 +42,7 @@ export function GoogleRatingBadge({ className = '' }: { className?: string }) {
       target="_blank"
       rel="noopener noreferrer"
       className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-900 dark:text-amber-200 border border-amber-500/30 backdrop-blur-md transition-all hover:scale-105 shadow-sm group ${className}`}
-      title="View verified real-time Google Maps reviews for MS Car Wash"
+      title="View verified real-time Google Maps reviews for MS Car Mechanic & Car Wash"
     >
       <div className="flex items-center gap-1">
         <Star className="w-4 h-4 text-amber-500 fill-amber-500 animate-pulse" />
