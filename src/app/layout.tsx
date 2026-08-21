@@ -86,8 +86,11 @@ export const metadata: Metadata = {
     'tirupati srikalahasti car wash',
     'highway car mechanic panagal',
   ],
-  authors: [{ name: 'MS Auto Care — Car Mechanic & Car Wash Srikalahasti', url: 'https://mscarwash.vercel.app' }],
-  creator: 'MS Auto Care Team',
+  authors: [
+    { name: 'MS Auto Care — Car Mechanic & Car Wash Srikalahasti', url: 'https://mscarwash.vercel.app' },
+    { name: 'Likhith', url: 'https://devlikhith.vercel.app/' },
+  ],
+  creator: 'Likhith (https://devlikhith.vercel.app/)',
   publisher: 'MS Auto Care Srikalahasti',
   manifest: '/manifest.webmanifest',
   icons: {

@@ -294,8 +294,25 @@ export function StructuredData() {
     ],
   };
 
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'MS Auto Care — Car Mechanic & Car Wash Srikalahasti',
+    url: 'https://mscarwash.vercel.app',
+    creator: {
+      '@type': 'Person',
+      name: 'Likhith',
+      url: 'https://devlikhith.vercel.app/',
+      jobTitle: 'Full Stack Web Developer & Software Engineer',
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}

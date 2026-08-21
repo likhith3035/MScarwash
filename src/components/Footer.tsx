@@ -127,6 +127,7 @@ export function Footer() {
               href="https://devlikhith.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
+              title="Likhith — Full Stack Web Developer &amp; Software Engineer Portfolio"
               className="inline-flex items-center gap-1 font-black text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 transition-all px-2.5 py-1 rounded-full bg-black/5 dark:bg-white/10 border border-black/5 dark:border-white/10 hover:scale-105"
             >
               <Code className="w-3.5 h-3.5 text-emerald-500" />
