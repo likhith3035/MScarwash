@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { getBookings } from '@/lib/supabase';
 import { Booking } from '@/lib/types';
 import { generateInvoicePDF } from '@/lib/invoice-generator';
@@ -20,6 +21,7 @@ import {
   AlertCircle,
   Calendar,
   MapPin,
+  Share2,
 } from 'lucide-react';
 
 const STATUS_STEPS = [
@@ -28,15 +30,15 @@ const STATUS_STEPS = [
   { key: 'completed', label: 'Ready & Quality Checked', desc: 'Free water bottle + tissue box loaded' },
 ];
 
-export function BookingStatusTracker() {
+function TrackerContent() {
+  const searchParams = useSearchParams();
   const [query, setQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [results, setResults] = useState<Booking[]>([]);
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const cleanQuery = query.trim().toUpperCase();
+  const performSearch = async (searchTerm: string) => {
+    const cleanQuery = searchTerm.trim().toUpperCase();
     if (!cleanQuery) return;
 
     setIsSearching(true);
@@ -56,6 +58,22 @@ export function BookingStatusTracker() {
     } finally {
       setIsSearching(false);
     }
+  };
+
+  // Auto-search if URL contains ?id=... or ?phone=...
+  useEffect(() => {
+    const idParam = searchParams.get('id');
+    const phoneParam = searchParams.get('phone');
+    const initialQuery = idParam || phoneParam;
+    if (initialQuery) {
+      setQuery(initialQuery);
+      performSearch(initialQuery);
+    }
+  }, [searchParams]);
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await performSearch(query);
   };
 
   const getStepIndex = (status: Booking['status']) => {
@@ -254,7 +272,7 @@ export function BookingStatusTracker() {
                     )}
                   </div>
 
-                  {/* Action Buttons: Invoice, Review, WhatsApp */}
+                  {/* Action Buttons: Invoice, Review, WhatsApp & Share */}
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
                     <div className="flex flex-wrap gap-2">
                       {booking.status === 'completed' && (
@@ -267,6 +285,19 @@ export function BookingStatusTracker() {
                           <span>Download Tax Invoice</span>
                         </button>
                       )}
+
+                      <a
+                        href={`https://wa.me/?text=${encodeURIComponent(
+                          `🚗 *MS Car Mechanic & Car Wash Srikalahasti — Live Status*\nVehicle: ${booking.vehicleType} (${booking.vehicleModel})\nStatus: ${booking.status.toUpperCase()}\nBooking ID: ${booking.id}\nTrack Live: https://mscarwash.vercel.app/track?id=${booking.id}`
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-black text-xs flex items-center gap-1.5 shadow-sm hover:scale-105 active:scale-95 transition-all"
+                        title="Share live tracking link with family or driver"
+                      >
+                        <Share2 className="w-3.5 h-3.5" />
+                        <span>Share Tracking</span>
+                      </a>
 
                       <a
                         href={`https://wa.me/918309390902?text=${encodeURIComponent(
@@ -298,5 +329,13 @@ export function BookingStatusTracker() {
       )}
 
     </div>
+  );
+}
+
+export function BookingStatusTracker() {
+  return (
+    <Suspense fallback={<div className="py-12 text-center text-xs font-bold text-slate-400">Loading tracker...</div>}>
+      <TrackerContent />
+    </Suspense>
   );
 }
