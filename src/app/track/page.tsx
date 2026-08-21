@@ -4,11 +4,12 @@ import { Sparkles, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Live Vehicle Repair & Water Wash Status Tracker | MS Auto Care Srikalahasti',
-  description: 'Track real-time status of your car mechanic repair, foam cleaning, or doorstep pickup in Srikalahasti. Enter your 10-digit phone number or MSCW booking ID for live stage updates.',
+  title: 'Live Vehicle Repair & Wash Status Tracker (Call: 8309390902) | MS Auto Care Srikalahasti',
+  description: 'Track real-time status of your car mechanic repair, foam cleaning, or doorstep pickup in Srikalahasti. For urgent updates or inquiries call 8309390902.',
   keywords: [
-    'MS Auto Care live tracker',
-    'track car repair status srikalahasti',
+    '8309390902',
+    'MS Auto Care live tracker 8309390902',
+    'track car repair status srikalahasti 8309390902',
     'track car wash status srikalahasti',
     'ms car wash live tracking',
     'ms car mechanic status skht',
@@ -18,16 +19,16 @@ export const metadata: Metadata = {
     canonical: 'https://mscarwash.vercel.app/track',
   },
   openGraph: {
-    title: 'Live Vehicle Repair & Water Wash Status Tracker | MS Auto Care Srikalahasti',
-    description: 'Track live progress of your vehicle wash or mechanic service in Srikalahasti. Enter your booking ID or phone number.',
+    title: 'Live Vehicle Repair & Wash Status Tracker — Call 8309390902 | MS Auto Care',
+    description: 'Track live progress of your vehicle wash or mechanic service in Srikalahasti. Call 8309390902 for assistance.',
     url: 'https://mscarwash.vercel.app/track',
-    siteName: 'MS Auto Care — Car Mechanic & Car Wash Srikalahasti',
-    images: [{ url: '/logo.png', width: 500, height: 500, alt: 'MS Auto Care Tracker' }],
+    siteName: 'MS Auto Care Srikalahasti (Call: 8309390902)',
+    images: [{ url: '/logo.png', width: 500, height: 500, alt: 'MS Auto Care Tracker — Call 8309390902' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Track Vehicle Repair & Wash Status | MS Auto Care Srikalahasti',
-    description: 'Live vehicle repair & water wash progress tracker in Srikalahasti.',
+    title: 'Track Vehicle Repair & Wash Status (Call: 8309390902) | MS Auto Care',
+    description: 'Live vehicle repair & water wash progress tracker in Srikalahasti. Call 8309390902.',
     images: ['/logo.png'],
   },
 };

@@ -12,11 +12,17 @@ import { MobileBottomNav } from '@/components/MobileBottomNav';
 export const metadata: Metadata = {
   metadataBase: new URL('https://mscarwash.vercel.app'),
   title: {
-    default: 'MS Auto Care — Car Mechanic, Engine Repairs & Water Wash Srikalahasti (SKHT)',
-    template: '%s | MS Auto Care — Car Mechanic & Car Wash Srikalahasti',
+    default: 'MS Auto Care Srikalahasti (Call 8309390902) — Car Mechanic & Water Wash (SKHT)',
+    template: '%s | MS Auto Care Srikalahasti (Call 8309390902)',
   },
-  description: 'MS Auto Care Srikalahasti (SKHT) — #1 rated car mechanic garage & water wash in Srikalahasti. Complete car repairs, engine diagnostics, oil change, brake/clutch overhaul, car AC gas top-up, 100% scratch-free foam washing, pressure underbody rinse & doorstep pickup. Call 8309390902.',
+  description: 'MS Auto Care Srikalahasti (Call: 8309390902) — #1 rated car mechanic garage & water wash in Srikalahasti. Complete car repairs, engine diagnostics, oil change, brake overhaul, car AC gas top-up, 100% scratch-free foam washing, pressure underbody rinse & doorstep pickup.',
   keywords: [
+    '8309390902',
+    '+918309390902',
+    'MS Auto Care 8309390902',
+    'car mechanic srikalahasti 8309390902',
+    'car wash srikalahasti 8309390902',
+    'car breakdown srikalahasti 8309390902',
     'MS Auto Care',
     'MS Auto Care Srikalahasti',
     'MS Auto Care Car Mechanic & Car Wash',
@@ -76,7 +82,7 @@ export const metadata: Metadata = {
     'auto detailing srikalahasti',
     'car cleaning services srikalahasti',
     'శ్రీకాళహస్తి ఆటో కేర్',
-    'శ్రీకాళహస్తి కార్ మెకానిక్',
+    'శ్రీకాళహస్తి కార్ మెకానిక్ 8309390902',
     'శ్రీకాళహస్తి కార్ రిపేర్',
     'శ్రీకాళహస్తి కార్ రిపేర్ సర్వీస్',
     'శ్రీకాళహస్తి కార్ వాష్',
@@ -87,11 +93,11 @@ export const metadata: Metadata = {
     'highway car mechanic panagal',
   ],
   authors: [
-    { name: 'MS Auto Care — Car Mechanic & Car Wash Srikalahasti', url: 'https://mscarwash.vercel.app' },
+    { name: 'MS Auto Care — Car Mechanic & Car Wash Srikalahasti (Call 8309390902)', url: 'https://mscarwash.vercel.app' },
     { name: 'Likhith', url: 'https://devlikhith.vercel.app/' },
   ],
   creator: 'Likhith (https://devlikhith.vercel.app/)',
-  publisher: 'MS Auto Care Srikalahasti',
+  publisher: 'MS Auto Care Srikalahasti (8309390902)',
   manifest: '/manifest.webmanifest',
   icons: {
     icon: [
@@ -109,6 +115,7 @@ export const metadata: Metadata = {
     'geo.placename': 'Srikalahasti',
     'geo.position': '13.742436;79.683298',
     'ICBM': '13.742436, 79.683298',
+    'contact:phone_number': '+918309390902',
   },
   verification: {
     google: 'Y9Pz6KKF2dRqhHD68hqf5NrUjcpR2ULh8je2rh_8Kyw',
@@ -122,22 +129,22 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_IN',
     url: 'https://mscarwash.vercel.app',
-    title: 'MS Auto Care — Car Mechanic & Car Wash Srikalahasti (SKHT) — ⭐ 4.9 Full Auto Workshop',
-    description: '🚘 Complete Car Repairs (Engine Diagnostics, Brakes, AC Gas Refilling, Oil Change & Electrical) & 100% Scratch-Free Snow Foam Wash | Doorstep Pickup & Slot Booking | Call 8309390902',
-    siteName: 'MS Auto Care — Car Mechanic & Car Wash Srikalahasti',
+    title: 'MS Auto Care Srikalahasti (Call: 8309390902) — ⭐ 4.9 Car Mechanic & Water Wash',
+    description: '📞 Call 8309390902 for instant doorstep pickup, car mechanic repairs (engine, AC, brakes) & scratch-free snow foam wash in Srikalahasti (Panagal, near highway). 24/7 Breakdown Help.',
+    siteName: 'MS Auto Care Srikalahasti (Call: 8309390902)',
     images: [
       {
         url: 'https://mscarwash.vercel.app/logo.png',
         width: 1200,
         height: 630,
-        alt: 'MS Auto Care Srikalahasti Logo',
+        alt: 'MS Auto Care Srikalahasti Logo — Call 8309390902',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'MS Car Mechanic & Car Wash Srikalahasti — Complete Car Mechanic & Water Wash Services',
-    description: '⭐ 4.9 Rated Car Repairs & Water Wash in Srikalahasti (SKHT). Engine repair, AC gas top-up, brake service, oil change, foam wash & doorstep pickup! Call 8309390902.',
+    title: 'MS Auto Care Srikalahasti (Call: 8309390902) — Car Repairs & Water Wash',
+    description: '📞 Call 8309390902 — Top-rated car repairs, engine diagnostics, AC gas refilling & foam water wash in Srikalahasti.',
     images: ['https://mscarwash.vercel.app/logo.png'],
   },
   robots: {

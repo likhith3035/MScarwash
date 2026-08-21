@@ -2,9 +2,9 @@ import { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'MS Auto Care — Car Mechanic & Car Wash Srikalahasti',
+    name: 'MS Auto Care — Car Mechanic & Car Wash Srikalahasti (8309390902)',
     short_name: 'MS Auto Care',
-    description: 'Top-rated car mechanic & car wash in Srikalahasti (SKHT). Full vehicle repairs, engine diagnostics, scratch-free foam wash, underbody rinse & doorstep pickup.',
+    description: 'Top-rated car mechanic & water wash in Srikalahasti (SKHT). Call 8309390902 for doorstep pickup, car repairs, engine service & foam wash.',
     start_url: '/',
     display: 'standalone',
     background_color: '#08080A',

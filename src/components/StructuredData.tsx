@@ -27,10 +27,14 @@ export function StructuredData() {
     ],
     image: 'https://mscarwash.vercel.app/logo.png',
     logo: 'https://mscarwash.vercel.app/logo.png',
-    '@id': 'https://mscarwash.vercel.app/#autowash',
-    url: 'https://mscarwash.vercel.app',
-    hasMap: 'https://maps.app.goo.gl/i8Wa5ef1dZZwnJmF9',
-    telephone: ['+918309390902'],
+    telephone: ['+918309390902', '8309390902'],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      telephone: '+918309390902',
+      contactType: 'customer service & roadside breakdown emergency',
+      areaServed: 'IN',
+      availableLanguage: ['English', 'Telugu', 'Hindi'],
+    },
     knowsLanguage: ['English', 'Telugu', 'Hindi'],
     priceRange: '₹100 - ₹5000',
     paymentAccepted: 'Cash, UPI, PhonePe, Google Pay, Paytm',
@@ -202,13 +206,6 @@ export function StructuredData() {
         },
       ],
     },
-    contactPoint: {
-      '@type': 'ContactPoint',
-      telephone: '+918309390902',
-      contactType: 'customer service',
-      areaServed: 'IN',
-      availableLanguage: ['English', 'Telugu', 'Hindi'],
-    },
     sameAs: [
       'https://maps.app.goo.gl/i8Wa5ef1dZZwnJmF9',
       'https://share.google/bN5KNns6mgg3uI4tP',
@@ -256,7 +253,7 @@ export function StructuredData() {
         name: 'What is the best car mechanic and car repair shop in Srikalahasti (SKHT)?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'MS Car Mechanic & Car Wash located in Panagal, Srikalahasti (opposite Old RTO Office, beside Bharat Petroleum) is the top-rated automobile garage offering complete car engine repair, AC service, brake repair, periodic maintenance, and 100% scratch-free foam water washing.',
+          text: 'MS Auto Care (located opposite Old RTO Office, beside Bharat Petroleum in Panagal, Srikalahasti) is the top-rated automobile garage offering complete car engine repair, AC gas refilling, brake overhaul, and 100% scratch-free foam washing. Call 8309390902 for instant assistance.',
         },
       },
       {
@@ -264,7 +261,7 @@ export function StructuredData() {
         name: 'Do you do all types of car mechanic repairs and engine oil changes in Srikalahasti?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes! MS Car Mechanic & Car Wash handles all mechanical and electrical repairs including computerized engine diagnostics, synthetic oil changes, brake/clutch overhaul, suspension repair, car AC cooling gas refilling, battery jumpstarts, and heavy vehicle services.',
+          text: 'Yes! MS Auto Care handles all mechanical and electrical repairs including computerized engine diagnostics, synthetic oil changes, brake/clutch overhaul, suspension repair, car AC cooling gas refilling, and battery jumpstarts. Call 8309390902 to book a mechanic slot.',
         },
       },
       {
@@ -272,7 +269,7 @@ export function StructuredData() {
         name: 'Where can I get 24/7 emergency car breakdown help on the Srikalahasti highway?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'MS Car Mechanic provides 24/7 highway roadside assistance across the Srikalahasti-Tirupati-Naidupeta highway corridor. Call our emergency helpline directly at 8309390902 for on-spot mechanic assistance or towing.',
+          text: 'MS Auto Care provides 24/7 highway roadside assistance across the Srikalahasti-Tirupati-Naidupeta highway corridor. Call our emergency helpline directly at 8309390902 for on-spot mechanic assistance or towing.',
         },
       },
       {
@@ -280,15 +277,15 @@ export function StructuredData() {
         name: 'Is doorstep pickup available for car repairs and water wash in Srikalahasti?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes! MS Car Mechanic & Car Wash offers doorstep vehicle pickup and drop service across all localities in Srikalahasti and surrounding highway areas. Book online at mscarwash.vercel.app/book or call 8309390902.',
+          text: 'Yes! MS Auto Care offers doorstep vehicle pickup and drop service across all localities in Srikalahasti and surrounding highway areas. Book online at mscarwash.vercel.app/book or call 8309390902.',
         },
       },
       {
         '@type': 'Question',
-        name: 'What are the operating hours for MS Car Mechanic & Car Wash?',
+        name: 'What are the operating hours for MS Auto Care?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'MS Car Mechanic & Car Wash center is open daily from 7:00 AM to 10:00 PM (Monday to Sunday), with 24/7 roadside emergency breakdown assistance.',
+          text: 'MS Auto Care center is open daily from 7:00 AM to 10:00 PM (Monday to Sunday), with 24/7 roadside emergency breakdown assistance on call at 8309390902.',
         },
       },
     ],

@@ -4,11 +4,12 @@ import { Bike, Car, Gift, HelpCircle, Phone, MessageSquare, Check, Sparkles, Shi
 import { TWO_WHEELER_PRICING, FOUR_WHEELER_PRICING, ADD_ONS } from '@/lib/types';
 
 export const metadata: Metadata = {
-  title: 'Car Repair Rates & Water Wash Packages Srikalahasti | MS Auto Care',
-  description: 'Transparent car repair rates & foam wash pricing in Srikalahasti. Bike wash ₹100, Hatchback ₹350, Sedan ₹450, SUV ₹600. Car mechanic inspection, engine oil change, AC gas top-up & brake service on request. Free mineral water + car tissue box. Call 8309390902.',
+  title: 'Car Repair Rates & Wash Packages Srikalahasti (Call: 8309390902) | MS Auto Care',
+  description: '💰 Transparent car repair rates & foam wash pricing in Srikalahasti. Bike wash ₹100, Hatchback ₹350, Sedan ₹450, SUV ₹600. Car mechanic inspection, engine oil change, AC gas top-up. Call 8309390902.',
   keywords: [
-    'MS Auto Care pricing',
-    'car repair price srikalahasti',
+    '8309390902',
+    'MS Auto Care pricing 8309390902',
+    'car repair price srikalahasti 8309390902',
     'car mechanic service cost srikalahasti',
     'car oil change price srikalahasti',
     'car ac gas refill cost srikalahasti',
@@ -27,15 +28,15 @@ export const metadata: Metadata = {
     canonical: 'https://mscarwash.vercel.app/pricing',
   },
   openGraph: {
-    title: 'Car Repair Rates & Water Wash Packages | MS Auto Care Srikalahasti',
-    description: 'Upfront rates for car mechanic repairs, engine diagnostics, AC gas refilling, and foam wash packages in Panagal, Srikalahasti. Free perks with every wash.',
+    title: 'Car Repair Rates & Water Wash Packages — Call 8309390902 | MS Auto Care',
+    description: 'Upfront rates for car mechanic repairs, engine diagnostics, AC gas refilling, and foam wash packages in Panagal, Srikalahasti. Call 8309390902.',
     url: 'https://mscarwash.vercel.app/pricing',
-    siteName: 'MS Auto Care — Car Mechanic & Car Wash Srikalahasti',
-    images: [{ url: '/logo.png', width: 500, height: 500, alt: 'MS Auto Care Pricing Srikalahasti' }],
+    siteName: 'MS Auto Care Srikalahasti (Call: 8309390902)',
+    images: [{ url: '/logo.png', width: 500, height: 500, alt: 'MS Auto Care Pricing — Call 8309390902' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Car Repair & Wash Pricing | MS Auto Care Srikalahasti',
+    title: 'Car Repair & Wash Pricing (Call: 8309390902) | MS Auto Care',
     description: 'Clear pricing from ₹100 for bikes & ₹350 for cars in Srikalahasti. Full car mechanic repair services. Call 8309390902.',
     images: ['/logo.png'],
   },

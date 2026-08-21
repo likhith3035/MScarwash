@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Book Car Repairs, Engine Service & Water Wash in Srikalahasti | MS Auto Care',
-  description: 'Schedule instant doorstep pickup or drive-in slot for car repairs, engine diagnostics, oil change, brake/clutch service, AC gas top-up or scratch-free foam water wash in Srikalahasti (Panagal, near highway). Free water + tissue box with every wash. Call 8309390902.',
+  title: 'Book Car Repairs & Water Wash Srikalahasti (Call: 8309390902) | MS Auto Care',
+  description: '📞 Call 8309390902 or book online for instant doorstep pickup, car mechanic repairs, engine diagnostics, oil change, AC gas top-up & foam water wash in Srikalahasti. Free water bottle + car tissue box.',
   keywords: [
-    'MS Auto Care booking',
-    'book car repairs srikalahasti',
-    'book car mechanic srikalahasti',
+    '8309390902',
+    'MS Auto Care booking 8309390902',
+    'book car repairs srikalahasti 8309390902',
+    'book car mechanic srikalahasti 8309390902',
     'car repair booking skht',
     'car engine service booking srikalahasti',
     'car ac repair booking srikalahasti',
@@ -25,16 +26,16 @@ export const metadata: Metadata = {
     canonical: 'https://mscarwash.vercel.app/book',
   },
   openGraph: {
-    title: 'Book Car Repairs, Engine Service & Water Wash in Srikalahasti | MS Auto Care',
-    description: 'Schedule doorstep pickup or drive-in slot for car repairs, engine service, AC gas top-up, or foam wash in Srikalahasti.',
+    title: 'Book Car Repairs & Water Wash in Srikalahasti — Call 8309390902 | MS Auto Care',
+    description: '📞 Call 8309390902 to schedule doorstep pickup or drive-in slot for car repairs, engine service, AC gas top-up, or foam wash in Srikalahasti.',
     url: 'https://mscarwash.vercel.app/book',
-    siteName: 'MS Auto Care — Car Mechanic & Car Wash Srikalahasti',
-    images: [{ url: '/logo.png', width: 500, height: 500, alt: 'MS Auto Care Booking Srikalahasti' }],
+    siteName: 'MS Auto Care Srikalahasti (Call: 8309390902)',
+    images: [{ url: '/logo.png', width: 500, height: 500, alt: 'MS Auto Care Booking — Call 8309390902' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Book Car Repairs & Water Wash | MS Auto Care Srikalahasti',
-    description: 'Instant doorstep pickup or center slot booking in Srikalahasti near highway. Call 8309390902.',
+    title: 'Book Car Repairs & Water Wash (Call: 8309390902) | MS Auto Care',
+    description: 'Instant doorstep pickup or center slot booking in Srikalahasti. Call 8309390902.',
     images: ['/logo.png'],
   },
 };
