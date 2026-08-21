@@ -33,48 +33,50 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-[#F8FAF9]/80 dark:bg-[#06090E]/80 backdrop-blur-xl border-b border-black/[0.08] dark:border-white/[0.08] text-slate-900 dark:text-slate-100 transition-colors duration-200">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16 sm:h-20">
+    <header className="sticky top-0 z-50 bg-[#F8FAF9]/90 dark:bg-[#06090E]/90 backdrop-blur-xl border-b border-black/[0.08] dark:border-white/[0.08] text-slate-900 dark:text-slate-100 transition-colors duration-200">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14 sm:h-16">
           
           {/* Logo & Brand Wordmark */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative p-1.5 rounded-2xl bg-white dark:bg-[#0D131D] border border-black/[0.08] dark:border-white/[0.08] shadow-sm group-hover:scale-105 group-hover:border-emerald-500/40 transition-all duration-300">
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 group shrink-0">
+            <div className="relative p-1 sm:p-1.5 rounded-xl sm:rounded-2xl bg-white dark:bg-[#0D131D] border border-black/[0.08] dark:border-white/[0.08] shadow-sm group-hover:scale-105 group-hover:border-emerald-500/40 transition-all duration-300 shrink-0">
               <Image
-                src="/logo.png"
-                alt="MS Car Mechanic & Car Wash"
-                width={40}
-                height={40}
-                className="w-9 h-9 sm:w-10 sm:h-10 object-contain"
-                style={{ width: 'auto', height: 'auto' }}
+                src="/ms-auto-care-logo.png"
+                alt="MS Auto Care — Car Mechanic & Water Wash"
+                width={36}
+                height={36}
+                className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 object-contain"
                 priority
               />
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-[#06090E] animate-pulse"></span>
+              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white dark:border-[#06090E] animate-pulse"></span>
             </div>
-            <div className="flex flex-col leading-none">
+            
+            <div className="flex flex-col justify-center">
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-sm sm:text-base tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                  MS CAR MECHANIC & CAR WASH
+                <span className="font-extrabold text-[12px] min-[380px]:text-sm sm:text-base md:text-[16px] tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors whitespace-nowrap">
+                  MS AUTO CARE
                 </span>
-                <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold tracking-wider uppercase border border-emerald-500/20">
+                <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold tracking-wider uppercase border border-emerald-500/20 shrink-0">
                   SKHT
                 </span>
               </div>
-              <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 dark:text-slate-400 tracking-wide uppercase mt-0.5">
-                Clean Car... Happy Ride!
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[9px] sm:text-[10px] md:text-[11px] font-semibold text-slate-500 dark:text-slate-400 tracking-wide">
+                  Car Mechanic &amp; Water Wash
+                </span>
+              </div>
             </div>
           </Link>
 
           {/* Desktop Nav Pills */}
-          <nav className="hidden md:flex items-center gap-1 bg-slate-200/50 dark:bg-[#0E1420]/80 p-1.5 rounded-full border border-black/[0.06] dark:border-white/[0.06] shadow-inner backdrop-blur-md">
+          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 bg-slate-200/50 dark:bg-[#0E1420]/80 p-1 rounded-full border border-black/[0.06] dark:border-white/[0.06] shadow-inner backdrop-blur-md shrink-0">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 relative ${
+                  className={`px-3 xl:px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 relative whitespace-nowrap ${
                     isActive
                       ? 'bg-white dark:bg-emerald-600 text-black dark:text-white shadow-sm scale-[1.02]'
                       : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5'
@@ -87,18 +89,18 @@ export function Navbar() {
           </nav>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-2 sm:gap-2.5">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             
             {/* Small Round Language Icon Button */}
             <button
               type="button"
               onClick={toggleLanguage}
-              className="p-2.5 rounded-full bg-slate-100 dark:bg-[#0D131D] text-slate-800 dark:text-white border border-black/[0.08] dark:border-white/[0.08] hover:scale-105 hover:border-emerald-500/50 transition-all flex items-center justify-center relative shadow-xs"
+              className="p-2 sm:p-2.5 rounded-full bg-slate-100 dark:bg-[#0D131D] text-slate-800 dark:text-white border border-black/[0.08] dark:border-white/[0.08] hover:scale-105 hover:border-emerald-500/50 transition-all flex items-center justify-center relative shadow-xs"
               title={`Switch language (Current: ${language === 'en' ? 'English' : 'Telugu'})`}
               aria-label="Toggle Language"
             >
-              <Languages className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-              <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-950 text-[9px] font-extrabold leading-tight">
+              <Languages className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600 dark:text-emerald-400" />
+              <span className="absolute -top-1 -right-1 px-1 py-0.2 rounded-full bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-950 text-[8px] font-extrabold leading-tight">
                 {language === 'en' ? 'EN' : 'తె'}
               </span>
             </button>
@@ -107,7 +109,7 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setShowSosModal(true)}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-black bg-rose-600 hover:bg-rose-500 text-white shadow-sm shadow-rose-600/30 transition-all hover:scale-105 active:scale-95 animate-pulse"
+              className="flex items-center gap-1 px-2.5 py-1.5 sm:px-3.5 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-black bg-rose-600 hover:bg-rose-500 text-white shadow-sm shadow-rose-600/30 transition-all hover:scale-105 active:scale-95 animate-pulse shrink-0"
               title="24/7 Roadside & Highway Breakdown SOS"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
@@ -117,7 +119,7 @@ export function Navbar() {
             {/* Phone Call CTA */}
             <a
               href="tel:8309390902"
-              className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-slate-100 dark:bg-[#0D131D] text-slate-900 dark:text-white border border-black/[0.08] dark:border-white/[0.08] hover:bg-slate-200 dark:hover:bg-white/10 transition-all shadow-xs"
+              className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold bg-slate-100 dark:bg-[#0D131D] text-slate-900 dark:text-white border border-black/[0.08] dark:border-white/[0.08] hover:bg-slate-200 dark:hover:bg-white/10 transition-all shadow-xs"
             >
               <Phone className="w-3.5 h-3.5 text-emerald-500" />
               <span>8309390902</span>
@@ -126,9 +128,9 @@ export function Navbar() {
             {/* Book Now Button with Glow Accent */}
             <Link
               href="/book"
-              className="hidden lg:flex items-center gap-1.5 px-4.5 py-2 rounded-full text-xs font-black bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 transition-all hover:scale-[1.03] active:scale-[0.98]"
+              className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-black bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 transition-all hover:scale-[1.03] active:scale-[0.98]"
             >
-              <CalendarCheck className="w-4 h-4" />
+              <CalendarCheck className="w-3.5 h-3.5" />
               <span>{t('bookWash')}</span>
             </Link>
 
@@ -136,13 +138,13 @@ export function Navbar() {
             {mounted && (
               <button
                 onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-                className="p-2.5 rounded-full bg-slate-100 dark:bg-[#0D131D] text-slate-700 dark:text-slate-300 border border-black/[0.08] dark:border-white/[0.08] hover:scale-105 transition-all shadow-xs"
+                className="p-2 sm:p-2.5 rounded-full bg-slate-100 dark:bg-[#0D131D] text-slate-700 dark:text-slate-300 border border-black/[0.08] dark:border-white/[0.08] hover:scale-105 transition-all shadow-xs"
                 aria-label="Toggle Theme"
               >
                 {resolvedTheme === 'dark' ? (
-                  <Sun className="w-4 h-4 text-amber-400" />
+                  <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
                 ) : (
-                  <Moon className="w-4 h-4 text-slate-700" />
+                  <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-700" />
                 )}
               </button>
             )}

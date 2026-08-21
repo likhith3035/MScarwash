@@ -11,7 +11,7 @@ export function MobileBottomNav() {
 
   const navItems = [
     { label: t('home') || 'Home', href: '/', icon: Home },
-    { label: t('book') || 'Book Wash', href: '/book', icon: Calendar, badge: 'Book' },
+    { label: t('bookWash') || 'Book Wash', href: '/book', icon: Calendar, badge: 'Book' },
     { label: t('trackStatus') || 'Track', href: '/track', icon: Search },
     { label: t('pricing') || 'Pricing', href: '/pricing', icon: Tag },
     { label: 'Admin', href: '/admin', icon: ShieldCheck },
