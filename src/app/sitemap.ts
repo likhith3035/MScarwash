@@ -26,5 +26,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
       images: ['https://mscarwash.vercel.app/logo.png'],
     },
+    {
+      url: `${baseUrl}/track`,
+      lastModified: currentDate,
+      changeFrequency: 'daily',
+      priority: 0.8,
+      images: ['https://mscarwash.vercel.app/logo.png'],
+    },
   ];
 }

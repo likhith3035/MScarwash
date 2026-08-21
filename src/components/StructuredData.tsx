@@ -2,9 +2,13 @@ export function StructuredData() {
   const localBusinessSchema = {
     '@context': 'https://schema.org',
     '@type': ['AutoWash', 'AutoRepair', 'AutomotiveBusiness'],
-    name: 'MS Car Mechanic & Car Wash Srikalahasti',
+    name: 'MS Auto Care — Car Mechanic & Car Wash Srikalahasti',
     alternateName: [
+      'MS Auto Care',
+      'MS Auto Care Srikalahasti',
+      'MS Auto Care Car Mechanic & Car Wash',
       'MS Car Mechanic & Car Wash',
+      'MS Car Mechanic & Car Wash Srikalahasti',
       'MS Car mechanic & Car Wash Srikalahasti',
       'MS Car Wash & Car Services',
       'MS Car Mechanics',
@@ -146,8 +150,8 @@ export function StructuredData() {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: 'Car Engine Diagnostic & Periodic Oil Service',
-            description: 'Complete engine checkup, oil filter change, spark plug cleaning, and general car maintenance in Srikalahasti.',
+            name: 'Car Engine Diagnostic & Periodic Synthetic Oil Service',
+            description: 'Computerized engine checkup, synthetic engine oil change, oil filter replacement, spark plug cleaning, and general multi-point inspection in Srikalahasti.',
           },
           priceSpecification: 'Inspection & Quote on Request',
         },
@@ -155,8 +159,8 @@ export function StructuredData() {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: 'Car AC Service & Cooling Gas Top-Up',
-            description: 'Car AC filter cleaning, leak detection, and high-efficiency refrigerant gas refill.',
+            name: 'Car AC Service & Refrigerant Gas Top-Up',
+            description: 'Car air conditioning cooling coil clean, leak check, compressor diagnostic, and genuine refrigerant cooling gas refill.',
           },
           priceSpecification: 'Inspection & Quote on Request',
         },
@@ -164,10 +168,37 @@ export function StructuredData() {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: 'Brake Pad Replacement & Suspension Overhaul',
-            description: 'Front/rear brake pad replacement, disc rotor inspection, and suspension squeak fixing.',
+            name: 'Brake Pad Replacement & Disc Rotor Repair',
+            description: 'Front and rear brake pad replacement, disc rotor resurfacing, brake fluid flush, and ABS brake line bleeding.',
           },
           priceSpecification: 'Inspection & Quote on Request',
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Car Clutch & Gearbox Overhaul',
+            description: 'Clutch plate replacement, pressure plate inspection, flywheel resurfacing, and smooth transmission gear shifting adjustment.',
+          },
+          priceSpecification: 'Inspection & Quote on Request',
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: '24/7 Emergency Highway Breakdown Assistance & Jumpstart',
+            description: 'On-spot roadside repair, dead battery jumpstart, flat tire puncture assistance, and emergency towing help along Srikalahasti highway (Panagal, NH).',
+          },
+          priceSpecification: '24/7 Helpline: 8309390902',
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Doorstep Car Repair & Water Wash Pickup Service',
+            description: 'Free doorstep vehicle pickup and delivery for car repairs, periodic maintenance, and water washing across Srikalahasti town.',
+          },
+          priceSpecification: 'Free Pickup in Srikalahasti',
         },
       ],
     },
@@ -207,6 +238,12 @@ export function StructuredData() {
         name: 'Book Service',
         item: 'https://mscarwash.vercel.app/book',
       },
+      {
+        '@type': 'ListItem',
+        position: 4,
+        name: 'Track Live Status',
+        item: 'https://mscarwash.vercel.app/track',
+      },
     ],
   };
 
@@ -216,18 +253,26 @@ export function StructuredData() {
     mainEntity: [
       {
         '@type': 'Question',
-        name: 'What is the best car mechanic and wash center in Srikalahasti (SKHT)?',
+        name: 'What is the best car mechanic and car repair shop in Srikalahasti (SKHT)?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'MS Car Mechanic & Car Wash located in Panagal, Srikalahasti (opposite Old RTO Office, beside Bharat Petroleum) offers both complete car repairs, engine mechanic service, AC repairs, and scratch-free foam washing.',
+          text: 'MS Car Mechanic & Car Wash located in Panagal, Srikalahasti (opposite Old RTO Office, beside Bharat Petroleum) is the top-rated automobile garage offering complete car engine repair, AC service, brake repair, periodic maintenance, and 100% scratch-free foam water washing.',
         },
       },
       {
         '@type': 'Question',
-        name: 'Do you do all types of car mechanic repairs in Srikalahasti?',
+        name: 'Do you do all types of car mechanic repairs and engine oil changes in Srikalahasti?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes! MS Car Mechanic & Car Wash handles all vehicle repairs including engine diagnostic, oil change, brake/clutch service, electrical repairs, car AC gas refilling, and emergency roadside breakdown support.',
+          text: 'Yes! MS Car Mechanic & Car Wash handles all mechanical and electrical repairs including computerized engine diagnostics, synthetic oil changes, brake/clutch overhaul, suspension repair, car AC cooling gas refilling, battery jumpstarts, and heavy vehicle services.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Where can I get 24/7 emergency car breakdown help on the Srikalahasti highway?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'MS Car Mechanic provides 24/7 highway roadside assistance across the Srikalahasti-Tirupati-Naidupeta highway corridor. Call our emergency helpline directly at 8309390902 for on-spot mechanic assistance or towing.',
         },
       },
       {
@@ -235,7 +280,7 @@ export function StructuredData() {
         name: 'Is doorstep pickup available for car repairs and water wash in Srikalahasti?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes! MS Car Mechanic & Car Wash offers doorstep vehicle pickup and drop service across Srikalahasti town and near the highway area. Book online or call 8309390902.',
+          text: 'Yes! MS Car Mechanic & Car Wash offers doorstep vehicle pickup and drop service across all localities in Srikalahasti and surrounding highway areas. Book online at mscarwash.vercel.app/book or call 8309390902.',
         },
       },
       {
@@ -243,7 +288,7 @@ export function StructuredData() {
         name: 'What are the operating hours for MS Car Mechanic & Car Wash?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'MS Car Mechanic & Car Wash is open daily from 7:00 AM to 10:00 PM (Monday to Sunday).',
+          text: 'MS Car Mechanic & Car Wash center is open daily from 7:00 AM to 10:00 PM (Monday to Sunday), with 24/7 roadside emergency breakdown assistance.',
         },
       },
     ],

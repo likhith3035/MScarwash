@@ -4,33 +4,39 @@ import { Bike, Car, Gift, HelpCircle, Phone, MessageSquare, Check, Sparkles, Shi
 import { TWO_WHEELER_PRICING, FOUR_WHEELER_PRICING, ADD_ONS } from '@/lib/types';
 
 export const metadata: Metadata = {
-  title: 'Car & Bike Wash & Mechanic Pricing | MS Car Mechanic & Car Wash Srikalahasti',
-  description: 'Transparent car & bike wash and mechanic rates in Srikalahasti. Bike wash ₹100, Hatchback ₹350, Sedan ₹450, SUV ₹600. Car mechanic inspection on request. Free water bottle + tissue box. Call 8309390902.',
+  title: 'Car Repair Rates & Water Wash Packages Srikalahasti | MS Auto Care',
+  description: 'Transparent car repair rates & foam wash pricing in Srikalahasti. Bike wash ₹100, Hatchback ₹350, Sedan ₹450, SUV ₹600. Car mechanic inspection, engine oil change, AC gas top-up & brake service on request. Free mineral water + car tissue box. Call 8309390902.',
   keywords: [
+    'MS Auto Care pricing',
+    'car repair price srikalahasti',
+    'car mechanic service cost srikalahasti',
+    'car oil change price srikalahasti',
+    'car ac gas refill cost srikalahasti',
+    'car brake repair charges skht',
     'ms car mechanic & car wash srikalahasti',
     'ms car mechanic pricing',
-    'car repair price srikalahasti',
     'car wash price srikalahasti',
     'bike wash price srikalahasti',
     'foam wash cost skht',
     'car detailing package srikalahasti',
     'underbody wash rates srikalahasti',
     'ms car wash pricing',
+    'panagal car repair price',
   ],
   alternates: {
     canonical: 'https://mscarwash.vercel.app/pricing',
   },
   openGraph: {
-    title: 'Car & Bike Wash Package Rates & Mechanic Services | MS Car Mechanic & Car Wash Srikalahasti',
-    description: 'Upfront rates for bikes, scooters, hatchbacks, sedans, SUVs & full vehicle repairs in Panagal, Srikalahasti. Free perks with every wash.',
+    title: 'Car Repair Rates & Water Wash Packages | MS Auto Care Srikalahasti',
+    description: 'Upfront rates for car mechanic repairs, engine diagnostics, AC gas refilling, and foam wash packages in Panagal, Srikalahasti. Free perks with every wash.',
     url: 'https://mscarwash.vercel.app/pricing',
-    siteName: 'MS Car Mechanic & Car Wash Srikalahasti',
-    images: [{ url: '/logo.png', width: 500, height: 500, alt: 'MS Car Mechanic & Car Wash Pricing' }],
+    siteName: 'MS Auto Care — Car Mechanic & Car Wash Srikalahasti',
+    images: [{ url: '/logo.png', width: 500, height: 500, alt: 'MS Auto Care Pricing Srikalahasti' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Car & Bike Wash & Repair Pricing | MS Car Mechanic & Car Wash Srikalahasti',
-    description: 'Clear pricing from ₹100 for bikes & ₹350 for cars in Srikalahasti. Full car mechanic services. Call 8309390902.',
+    title: 'Car Repair & Wash Pricing | MS Auto Care Srikalahasti',
+    description: 'Clear pricing from ₹100 for bikes & ₹350 for cars in Srikalahasti. Full car mechanic repair services. Call 8309390902.',
     images: ['/logo.png'],
   },
 };
