@@ -3,24 +3,25 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Calendar, Tag, ShieldCheck, PhoneCall, Search } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
 
 export function MobileBottomNav() {
   const pathname = usePathname();
-  const { t } = useLanguage();
 
   const navItems = [
-    { label: t('home') || 'Home', href: '/', icon: Home },
-    { label: t('bookWash') || 'Book Wash', href: '/book', icon: Calendar, badge: 'Book' },
-    { label: t('trackStatus') || 'Track', href: '/track', icon: Search },
-    { label: t('pricing') || 'Pricing', href: '/pricing', icon: Tag },
+    { label: 'Home', href: '/', icon: Home },
+    { label: 'Book', href: '/book', icon: Calendar },
+    { label: 'Track', href: '/track', icon: Search },
+    { label: 'Pricing', href: '/pricing', icon: Tag },
     { label: 'Admin', href: '/admin', icon: ShieldCheck },
     { label: 'Call', href: 'tel:8309390902', icon: PhoneCall, isExternal: true },
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white/95 dark:bg-[#0E1420]/95 backdrop-blur-xl border-t border-black/8 dark:border-white/10 shadow-2xl px-1 py-1 transition-all">
-      <div className="flex items-center justify-around max-w-md mx-auto">
+    <nav 
+      aria-label="Mobile Navigation"
+      className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white/95 dark:bg-[#0A0E17]/95 backdrop-blur-xl border-t border-slate-200 dark:border-white/10 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] py-1 px-1 transition-all"
+    >
+      <div className="grid grid-cols-6 items-center max-w-md mx-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = !item.isExternal && (pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href)));
@@ -30,12 +31,12 @@ export function MobileBottomNav() {
               <a
                 key={item.href}
                 href={item.href}
-                className="flex flex-col items-center justify-center py-1 px-2 rounded-xl text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 transition-colors active:scale-95"
+                className="flex flex-col items-center justify-center py-1 px-0.5 rounded-lg text-emerald-600 dark:text-emerald-400 hover:opacity-80 transition-all active:scale-95 text-center"
               >
-                <div className="relative p-0.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                  <Icon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <div className="h-5 w-5 flex items-center justify-center">
+                  <Icon className="w-[18px] h-[18px] text-emerald-600 dark:text-emerald-400" />
                 </div>
-                <span className="text-[9px] font-extrabold uppercase mt-0.5 tracking-tight text-emerald-600 dark:text-emerald-400">
+                <span className="text-[10px] font-bold tracking-tight mt-0.5 truncate w-full text-center leading-none text-emerald-600 dark:text-emerald-400">
                   {item.label}
                 </span>
               </a>
@@ -46,27 +47,22 @@ export function MobileBottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all active:scale-95 ${
+              className={`flex flex-col items-center justify-center py-1 px-0.5 rounded-lg transition-all active:scale-95 text-center ${
                 isActive
                   ? 'text-emerald-600 dark:text-emerald-400 font-bold'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium'
               }`}
             >
-              <div className="relative">
-                <Icon className={`w-4 h-4 ${isActive ? 'text-emerald-600 dark:text-emerald-400 drop-shadow-[0_0_6px_rgba(16,185,129,0.5)]' : 'text-slate-500 dark:text-slate-400'}`} />
-                {item.badge && (
-                  <span className="absolute -top-1.5 -right-2 px-1 py-0.2 bg-emerald-500 text-slate-950 text-[7px] font-black rounded-full uppercase tracking-tighter">
-                    {item.badge}
-                  </span>
-                )}
+              <div className="h-5 w-5 flex items-center justify-center relative">
+                <Icon className={`w-[18px] h-[18px] ${isActive ? 'text-emerald-600 dark:text-emerald-400 drop-shadow-[0_0_6px_rgba(16,185,129,0.5)]' : 'text-slate-500 dark:text-slate-400'}`} />
               </div>
-              <span className={`text-[9px] uppercase tracking-tight mt-0.5 ${isActive ? 'font-black text-emerald-400' : 'font-semibold text-slate-400'}`}>
+              <span className={`text-[10px] tracking-tight mt-0.5 truncate w-full text-center leading-none ${isActive ? 'font-bold text-emerald-600 dark:text-emerald-400' : 'font-medium text-slate-500 dark:text-slate-400'}`}>
                 {item.label}
               </span>
             </Link>
           );
         })}
       </div>
-    </div>
+    </nav>
   );
 }
