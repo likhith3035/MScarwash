@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ms-car-wash-v3';
+const CACHE_NAME = 'ms-car-wash-v5';
 
 const ASSETS_TO_CACHE = [
   '/',
@@ -7,8 +7,16 @@ const ASSETS_TO_CACHE = [
   '/track',
   '/logo.png',
   '/favicon.ico',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/apple-touch-icon.png',
   '/water-bottle.png',
   '/tissue-box.png',
+  '/gallery-foam-car.png',
+  '/gallery-underbody.png',
+  '/gallery-interior.png',
+  '/gallery-bike-foam.png',
+  '/gallery-car-shine.png',
 ];
 
 // Install Event
