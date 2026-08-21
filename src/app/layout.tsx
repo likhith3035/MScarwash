@@ -150,10 +150,10 @@ export const metadata: Metadata = {
     siteName: 'MS Auto Care Srikalahasti (Call: 8309390902)',
     images: [
       {
-        url: 'https://mscarwash.vercel.app/logo.png',
+        url: 'https://mscarwash.vercel.app/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'MS Auto Care Srikalahasti Logo — Call 8309390902',
+        alt: 'MS Auto Care Srikalahasti — Call 8309390902',
       },
     ],
   },
@@ -161,7 +161,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'MS Auto Care Srikalahasti (Call: 8309390902) — Car Repairs & Water Wash',
     description: '📞 Call 8309390902 — Top-rated car repairs, engine diagnostics, AC gas refilling & foam water wash in Srikalahasti.',
-    images: ['https://mscarwash.vercel.app/logo.png'],
+    images: ['https://mscarwash.vercel.app/og-image.png'],
   },
   robots: {
     index: true,
