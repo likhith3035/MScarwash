@@ -7,7 +7,7 @@ async function getLogoDataUrl(): Promise<string | null> {
   return new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = 'Anonymous';
-    img.src = '/logo.png';
+    img.src = '/ms-auto-care-logo.png';
     img.onload = () => {
       const canvas = document.createElement('canvas');
       canvas.width = img.naturalWidth || img.width;
@@ -55,20 +55,20 @@ export async function generateInvoicePDF(
   const textStartX = logoData ? margin + 32 : margin;
 
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(19);
+  doc.setFontSize(18);
   doc.setTextColor(255, 255, 255);
-  doc.text('MS CAR MECHANIC & CAR WASH', textStartX, 18);
+  doc.text('MS AUTO CARE', textStartX, 17);
 
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(9);
+  doc.setFontSize(8.5);
   doc.setTextColor(16, 185, 129); // Emerald Green Accent
-  doc.text('Clean Car... Happy Ride!', textStartX, 24);
+  doc.text('CAR MECHANIC & WATER WASH • SRIKALAHASTI', textStartX, 23);
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8);
   doc.setTextColor(203, 213, 225); // Light slate text
-  doc.text('Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Srikalahasti - 517644', textStartX, 30);
-  doc.text('Phone & WhatsApp: +91 8309390902', textStartX, 35);
+  doc.text('Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Srikalahasti - 517644', textStartX, 29);
+  doc.text('Phone & WhatsApp: +91 8309390902 | Web: mscarwash.vercel.app', textStartX, 35);
 
   // 2. INVOICE META ROW (BELOW HEADER)
   let currentY = 50;

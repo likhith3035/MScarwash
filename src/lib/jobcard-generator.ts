@@ -18,7 +18,7 @@ async function getLogoDataUrl(): Promise<string | null> {
   return new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = 'Anonymous';
-    img.src = '/logo.png';
+    img.src = '/ms-auto-care-logo.png';
     img.onload = () => {
       const canvas = document.createElement('canvas');
       canvas.width = img.naturalWidth || img.width;
@@ -35,7 +35,7 @@ async function getLogoDataUrl(): Promise<string | null> {
 export async function generateJobCardPDF(
   booking: Booking,
   details: JobCardData,
-  autoSave: boolean = true
+  autoSave: boolean = false
 ): Promise<{ doc: jsPDF; blobUrl: string; download: () => void; fileName: string }> {
   const doc = new jsPDF({
     orientation: 'portrait',
@@ -43,23 +43,26 @@ export async function generateJobCardPDF(
     format: 'a4',
   });
 
-  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageWidth = doc.internal.pageSize.getWidth(); // 210mm
+  const margin = 12;
+  const contentWidth = pageWidth - margin * 2; // 186mm
 
-  // 1. Primary Header Banner
-  doc.setFillColor(15, 23, 42); // Deep Slate (#0f172a)
-  doc.rect(0, 0, pageWidth, 42, 'F');
-
-  // Emerald accent top line
-  doc.setFillColor(16, 185, 129); // Emerald 500
-  doc.rect(0, 0, pageWidth, 3.5, 'F');
-
-  // Logo
+  // Load emblem logo
   const logoDataUrl = await getLogoDataUrl();
+
+  // 1. TOP HEADER BANNER (Indigo/Navy Theme)
+  doc.setFillColor(30, 27, 75); // Dark Indigo (#1E1B4B)
+  doc.rect(0, 0, pageWidth, 38, 'F');
+
+  // Add decorative accent line
+  doc.setFillColor(99, 102, 241); // Indigo Accent (#6366F1)
+  doc.rect(0, 36, pageWidth, 2, 'F');
+
   if (logoDataUrl) {
     try {
-      doc.addImage(logoDataUrl, 'PNG', 14, 8, 26, 26);
-    } catch {
-      // ignore
+      doc.addImage(logoDataUrl, 'PNG', 14, 5, 26, 26);
+    } catch (e) {
+      console.warn('Could not add logo to job card PDF', e);
     }
   }
 
@@ -68,14 +71,18 @@ export async function generateJobCardPDF(
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(16);
-  doc.text('MS CAR MECHANIC & CAR WASH', textStartX, 16);
+  doc.text('MS AUTO CARE', textStartX, 15);
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(165, 180, 252); // Light Indigo Accent
+  doc.text('VEHICLE INTAKE JOB CARD & INSPECTION SLIP', textStartX, 21);
 
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
+  doc.setFontSize(8);
   doc.setTextColor(203, 213, 225);
-  doc.text('VEHICLE INTAKE JOB CARD & INSPECTION SLIP', textStartX, 22);
   doc.text('Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Srikalahasti - 517644', textStartX, 27);
-  doc.text('Phone & WhatsApp: +91 8309390902', textStartX, 32);
+  doc.text('Phone & WhatsApp: +91 8309390902 | Web: mscarwash.vercel.app', textStartX, 32);
 
   // Job Card Badge
   doc.setFillColor(16, 185, 129);
