@@ -17,7 +17,7 @@ export function FloatingContactButtons() {
       <EmergencySosModal isOpen={showSosModal} onClose={() => setShowSosModal(false)} />
 
       {!dismissed && (
-        <div className="fixed bottom-20 md:bottom-6 right-4 z-40 flex items-center gap-2 bg-white/95 dark:bg-[#0E1420]/95 p-1.5 rounded-full border border-black/8 dark:border-white/10 shadow-lg backdrop-blur-md transition-all">
+        <div className="fixed bottom-14 md:bottom-6 right-3 z-40 flex items-center gap-1.5 bg-white/95 dark:bg-[#0E1420]/95 p-1 rounded-full border border-black/8 dark:border-white/10 shadow-lg backdrop-blur-md transition-all">
           {/* Emergency SOS Button */}
           <button
             type="button"

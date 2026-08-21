@@ -182,7 +182,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <LanguageProvider>
             <Navbar />
-            <main className="flex-1 pb-20 md:pb-0">
+            <main className="flex-1 pb-14 md:pb-0">
               {children}
             </main>
             <Footer />
