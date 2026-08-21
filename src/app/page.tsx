@@ -135,7 +135,7 @@ export default function HomePage() {
               {/* DriveU Green Pill Badge */}
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-black tracking-widest uppercase border border-emerald-500/20">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>OPEN NOW • WATER WASH &amp; ALL CAR REPAIRS</span>
+                <span>#1 WATER WASH, CAR REPAIRS &amp; AUTO REPAIRS • SRIKALAHASTI</span>
               </div>
 
               {/* Dynamic Google Rating Badge */}
@@ -144,13 +144,26 @@ export default function HomePage() {
 
             {/* Main MS Auto Care SEO Headline */}
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.1]">
-              MS AUTO CARE — Best Car Mechanic &amp; Water Wash in Srikalahasti
+              MS AUTO CARE — #1 Car Repairs, Auto Repairs &amp; Water Wash in Srikalahasti
             </h1>
 
-            {/* Subtitle with MS Car Wash Data */}
+            {/* Subtitle with High-Density Search Keywords */}
             <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
-              Top-rated water wash, 100% scratch-free foam washing, and <strong className="text-slate-900 dark:text-white font-black">all types of car mechanic repairs</strong> in Srikalahasti (Panagal, near highway). Engine service, AC repair, brake work &amp; doorstep pickup, <strong className="text-slate-900 dark:text-white font-extrabold">starting at ₹100.</strong>
+              Top-rated <strong className="text-slate-900 dark:text-white font-black">water wash</strong>, 100% scratch-free snow foam washing, and <strong className="text-slate-900 dark:text-white font-black">complete car repairs &amp; auto repairs</strong> in Srikalahasti (Panagal, near highway). Computerized engine diagnostics, AC gas refilling, brake overhaul &amp; doorstep pickup. Call <a href="tel:8309390902" className="text-emerald-600 dark:text-emerald-400 font-extrabold hover:underline">8309390902</a>.
             </p>
+
+            {/* Quick SEO Service Tag Pills */}
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-1">
+              <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-extrabold border border-emerald-500/20">
+                ✓ Water Wash &amp; Foam Detailing
+              </span>
+              <span className="px-2.5 py-1 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-extrabold border border-indigo-500/20">
+                ✓ Car Repairs &amp; Engine Diagnostic
+              </span>
+              <span className="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-extrabold border border-amber-500/20">
+                ✓ Auto Repairs &amp; 24/7 Breakdown
+              </span>
+            </div>
 
             {/* DriveU Solid Action Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
