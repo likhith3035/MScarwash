@@ -35,7 +35,25 @@ import {
   MapPin,
   ClipboardList,
   TrendingUp,
-  Banknote
+  Banknote,
+  Wrench,
+  Bike,
+  Car,
+  Truck,
+  Zap,
+  Activity,
+  Layers,
+  Filter,
+  ArrowUpRight,
+  CircleDollarSign,
+  Check,
+  Share2,
+  Globe,
+  Crown,
+  CheckCheck,
+  FileSpreadsheet,
+  Receipt,
+  Copy,
 } from 'lucide-react';
 import { Booking } from '@/lib/types';
 import { getBookings, updateBookingStatus, saveBooking, clearAllLocalBookings, deleteBooking, deleteAllBookings } from '@/lib/supabase';
@@ -53,7 +71,9 @@ export default function AdminPage() {
 
   // Bookings Data State
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [filter, setFilter] = useState<'all' | 'pending' | 'in_progress' | 'completed' | 'pickup' | 'slot'>('all');
+  const [filter, setFilter] = useState<
+    'all' | 'pending' | 'in_progress' | 'completed' | 'pickup' | 'slot' | 'today_pickups' | 'in_progress_washes' | 'pending_mechanic'
+  >('all');
   const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'yesterday' | 'month'>('all');
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
@@ -61,6 +81,12 @@ export default function AdminPage() {
   const [showAnalytics, setShowAnalytics] = useState(true);
   const [printingTokenBooking, setPrintingTokenBooking] = useState<Booking | null>(null);
   const prevBookingsCountRef = useRef<number>(0);
+
+  // Growth, Review & Financial Export States
+  const [reviewedBookingIds, setReviewedBookingIds] = useState<Set<string>>(new Set());
+  const [showExportMenu, setShowExportMenu] = useState(false);
+  const [reviewLangModalBooking, setReviewLangModalBooking] = useState<Booking | null>(null);
+  const [copiedReviewId, setCopiedReviewId] = useState<string | null>(null);
 
   // Edit / Invoice Modal State
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
@@ -178,8 +204,15 @@ export default function AdminPage() {
     }
   };
 
-  // Auto-refresh every 10 seconds for live counter updates
+  // Auto-refresh every 10 seconds for live counter updates & load reviewed IDs
   useEffect(() => {
+    try {
+      const savedReviews = localStorage.getItem('ms_car_wash_reviewed_bookings');
+      if (savedReviews) {
+        setReviewedBookingIds(new Set(JSON.parse(savedReviews)));
+      }
+    } catch {}
+
     if (isAuthenticated) {
       fetchBookingsList();
       const interval = setInterval(() => {
@@ -203,55 +236,164 @@ export default function AdminPage() {
     }
   };
 
-  // Export Bookings to CSV File
-  const exportToCSV = () => {
-    if (bookings.length === 0) {
-      alert('No booking records to export.');
+  // 👑 Customer Loyalty & Frequency Analysis
+  const getCustomerLoyaltyInfo = (phone?: string) => {
+    const clean = (phone || '').replace(/\D/g, '');
+    const count = (clean && customerBookingCounts[clean]) || 1;
+    if (count >= 5) {
+      return {
+        label: `VIP Patron (${count} Visits)`,
+        badgeClass: 'bg-purple-500/15 border-purple-500/30 text-purple-700 dark:text-purple-300 font-black',
+        icon: 'crown',
+        count,
+      };
+    }
+    if (count >= 2) {
+      return {
+        label: `Regular (${count} Visits)`,
+        badgeClass: 'bg-blue-500/15 border-blue-500/30 text-blue-700 dark:text-blue-300 font-extrabold',
+        icon: 'star',
+        count,
+      };
+    }
+    return {
+      label: '1st Visit',
+      badgeClass: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-bold',
+      icon: 'new',
+      count: 1,
+    };
+  };
+
+  // 📊 Advanced Multi-Range CSV Financial Audit Export
+  const handleExportEnhancedCSV = (targetRange: 'active' | 'today' | 'yesterday' | 'month' | 'all' = 'active') => {
+    let targetList: Booking[] = [];
+    let rangeLabel = 'Active Filter';
+
+    if (targetRange === 'today') {
+      targetList = bookings.filter((b) => getLocalDateFromIso(b.createdAt) === todayStr);
+      rangeLabel = `Today (${todayStr})`;
+    } else if (targetRange === 'yesterday') {
+      targetList = bookings.filter((b) => getLocalDateFromIso(b.createdAt) === yesterdayStr);
+      rangeLabel = `Yesterday (${yesterdayStr})`;
+    } else if (targetRange === 'month') {
+      targetList = bookings.filter((b) => {
+        const d = getLocalDateFromIso(b.createdAt);
+        return d && d.startsWith(monthStr);
+      });
+      rangeLabel = `This Month (${monthStr})`;
+    } else if (targetRange === 'all') {
+      targetList = bookings;
+      rangeLabel = 'All Time Records';
+    } else {
+      targetList = filteredBookings;
+      rangeLabel = `Current Filter (${filter.toUpperCase()} - ${dateFilter.toUpperCase()})`;
+    }
+
+    if (targetList.length === 0) {
+      alert(`No booking records found for export scope: ${rangeLabel}`);
       return;
     }
 
+    // Compute Executive Financial Metrics for Top Block
+    const totalRev = targetList
+      .filter((b) => b.status === 'completed')
+      .reduce((sum, b) => sum + (b.totalAmount || getDefaultPrice(b.vehicleType)), 0);
+
+    const cashRev = targetList
+      .filter((b) => b.status === 'completed')
+      .reduce((sum, b) => {
+        const noteStr = (b.notes || '').toUpperCase();
+        const isUpi = noteStr.includes('UPI') || noteStr.includes('GPAY') || noteStr.includes('PHONEPE') || noteStr.includes('ONLINE') || noteStr.includes('PAYTM');
+        return !isUpi ? sum + (b.totalAmount || getDefaultPrice(b.vehicleType)) : sum;
+      }, 0);
+
+    const upiRev = targetList
+      .filter((b) => b.status === 'completed')
+      .reduce((sum, b) => {
+        const noteStr = (b.notes || '').toUpperCase();
+        const isUpi = noteStr.includes('UPI') || noteStr.includes('GPAY') || noteStr.includes('PHONEPE') || noteStr.includes('ONLINE') || noteStr.includes('PAYTM');
+        return isUpi ? sum + (b.totalAmount || getDefaultPrice(b.vehicleType)) : sum;
+      }, 0);
+
+    const completedCount = targetList.filter((b) => b.status === 'completed').length;
+    const bikesCount = targetList.filter((b) => b.vehicleType === 'Bike' || b.vehicleType === 'Scooter').length;
+    const carsCount = targetList.filter((b) => b.vehicleType === 'Car' || b.vehicleType === 'SUV' || b.vehicleType === 'Van' || b.vehicleType === 'Sedan' || b.vehicleType === 'Hatchback').length;
+    const heavyCount = targetList.filter((b) => b.vehicleType === 'Truck' || b.vehicleType === 'Tractor' || b.vehicleType === 'JCB' || b.vehicleType === 'Auto').length;
+
+    const escapeCsv = (str: string | number | undefined | null) => {
+      if (str === undefined || str === null) return '""';
+      const clean = String(str).replace(/"/g, '""').replace(/\r?\n|\r/g, ' ');
+      return `"${clean}"`;
+    };
+
+    let csvContent = 'data:text/csv;charset=utf-8,';
+
+    // Top Block: Executive Financial & Operations Summary
+    csvContent += '========================================================================================\r\n';
+    csvContent += `MS CAR MECHANIC & CAR WASH — AUDIT & FINANCIAL REPORT\r\n`;
+    csvContent += `Center Location: Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Srikalahasti - 517644\r\n`;
+    csvContent += `Report Generated: ${new Date().toLocaleString('en-IN')} | Desk Manager: Naveen\r\n`;
+    csvContent += `Export Scope: ${rangeLabel} | Total Bookings Count: ${targetList.length} | Completed Jobs: ${completedCount}\r\n`;
+    csvContent += `Total Completed Revenue: INR ${totalRev} | Cash: INR ${cashRev} | UPI: INR ${upiRev}\r\n`;
+    csvContent += `Fleet Serviced: Bikes: ${bikesCount} | Cars/SUVs: ${carsCount} | Commercial/Heavy: ${heavyCount}\r\n`;
+    csvContent += '========================================================================================\r\n\r\n';
+
+    // CSV Table Headers
     const headers = [
       'Booking ID',
-      'Created Time',
+      'Date & Time (IST)',
       'Customer Name',
-      'Phone',
-      'Mode',
-      'Vehicle Type',
+      'Phone Number',
+      'Vehicle Category',
       'Vehicle Model',
-      'Slot / Window',
-      'Address',
-      'Add-ons',
-      'Bill Amount (INR)',
+      'Service Mode',
       'Status',
-      'Before Photo URL',
-      'After Photo URL'
+      'Gross Bill Amount (INR)',
+      'Payment Mode',
+      'Preferred Slot / Window',
+      'Pickup Address / Landmark',
+      'Service Notes & Add-Ons',
+      'Live Tracking URL',
     ];
 
-    const rows = bookings.map(b => [
-      b.id,
-      formatTimestampWithSeconds(b.createdAt),
-      `"${(b.name || '').replace(/"/g, '""')}"`,
-      b.phone,
-      b.mode,
-      b.vehicleType,
-      `"${(b.vehicleModel || '').replace(/"/g, '""')}"`,
-      `"${(b.timeSlot || b.timeWindow || '').replace(/"/g, '""')}"`,
-      `"${(b.address || '').replace(/"/g, '""')}"`,
-      `"${(b.addOns || []).join('; ')}"`,
-      b.totalAmount || getDefaultPrice(b.vehicleType),
-      b.status,
-      `"${b.beforePhotoUrl || ''}"`,
-      `"${b.afterPhotoUrl || ''}"`
-    ]);
+    csvContent += headers.map((h) => `"${h}"`).join(',') + '\r\n';
 
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+    // Data rows
+    targetList.forEach((b) => {
+      const noteStr = (b.notes || '').toUpperCase();
+      const isUpi = noteStr.includes('UPI') || noteStr.includes('GPAY') || noteStr.includes('PHONEPE') || noteStr.includes('ONLINE') || noteStr.includes('PAYTM');
+      const paymentMode = isUpi ? 'UPI / Online' : 'Cash';
+      const billAmount = b.totalAmount || getDefaultPrice(b.vehicleType);
+
+      const row = [
+        escapeCsv(b.id),
+        escapeCsv(formatTimestampWithSeconds(b.createdAt)),
+        escapeCsv(b.name),
+        escapeCsv(b.phone),
+        escapeCsv(b.vehicleType),
+        escapeCsv(b.vehicleModel),
+        escapeCsv(b.mode === 'pickup' ? 'Doorstep Pickup' : 'Center Slot'),
+        escapeCsv(b.status.toUpperCase()),
+        escapeCsv(billAmount),
+        escapeCsv(paymentMode),
+        escapeCsv(b.mode === 'pickup' ? b.timeWindow : `${b.date || ''} (${b.timeSlot || ''})`),
+        escapeCsv(b.address || 'In-Center Drive-In'),
+        escapeCsv(b.notes || 'Water Wash'),
+        escapeCsv(`https://mscarwash.vercel.app/track?id=${b.id}`),
+      ];
+
+      csvContent += row.join(',') + '\r\n';
+    });
+
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `ms_car_wash_report_${new Date().toISOString().split('T')[0]}.csv`);
+    const cleanRangeName = rangeLabel.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+    link.setAttribute('download', `MS_Car_Wash_Audit_${cleanRangeName}_${todayStr}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    setShowExportMenu(false);
   };
 
   const handleStatusChange = async (id: string, newStatus: Booking['status']) => {
@@ -349,15 +491,95 @@ Thank you for choosing MS Car Mechanic & Car Wash Srikalahasti. Call 8309390902 
     window.open(`https://wa.me/91${cleanPhone}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
-  // WhatsApp Alert: Google Review Request
-  const sendGoogleReviewWhatsApp = (booking: Booking) => {
-    const cleanPhone = booking.phone.replace(/\D/g, '');
-    const text = `⭐ MS CAR MECHANIC & CAR WASH — RATE YOUR EXPERIENCE
-Hi ${booking.name}, thank you for trusting MS Car Mechanic & Car Wash with your ${booking.vehicleModel}!
-Could you take 10 seconds to leave us a quick 5-star Google review?
-⭐ Review Link: https://maps.app.goo.gl/i8Wa5ef1dZZwnJmF9
-Your feedback helps our team grow!`;
-    window.open(`https://wa.me/91${cleanPhone}?text=${encodeURIComponent(text)}`, '_blank');
+  // ⭐ Smart Bilingual Google Review Request Dispatch
+  const handleSendReviewWhatsApp = (booking: Booking, lang: 'en' | 'te' = 'en') => {
+    const cleanPhone = (booking.phone || '').replace(/\D/g, '');
+    if (!cleanPhone) {
+      alert('No valid phone number for customer.');
+      return;
+    }
+
+    const enMsg = `Hi ${booking.name || 'there'}! 👋 Thank you for choosing *MS Car Mechanic & Car Wash Srikalahasti* for your ${booking.vehicleType} (${booking.vehicleModel || 'Vehicle'})! 🚗✨
+
+Your service is completed, and we have placed your complimentary *Mineral Water Bottle + Car Tissue Box* inside.
+
+Could you please take 10 seconds to share your experience with a 5-star Google review? It helps our local team immensely:
+⭐ https://share.google/bN5KNns6mgg3uI4tP
+
+Thank you, and have a safe and happy ride! 🚘
+— Naveen, MS Car Mechanic & Car Wash (Panagal, Srikalahasti)`;
+
+    const teMsg = `నమస్కారం ${booking.name || 'గారు'}! 🙏
+
+*MS కార్ మెకానిక్ & కార్ వాష్ (శ్రీకాళహస్తి)* వద్ద మీ ${booking.vehicleType} (${booking.vehicleModel || 'వాహనం'}) సర్వీస్ పూర్తయింది! 🚗✨
+
+మీ కారులో ఉచిత *మినరల్ వాటర్ బాటిల్ & కార్ టిష్యూ బాక్స్* ఉంచాము.
+
+మా సర్వీస్ మీకు నచ్చినట్లయితే, దయచేసి క్రింది లింక్ ద్వారా గూగుల్ లో 5-స్టార్ రేటింగ్ & రివ్యూ ఇవ్వండి:
+⭐ https://share.google/bN5KNns6mgg3uI4tP
+
+ధన్యవాదాలు! మీ ప్రయాణం సురక్షితంగా సాగాలని కోరుకుంటున్నాము! 🚘
+— నవీన్, MS కార్ మెకానిక్ & కార్ వాష్ (పనగల్, శ్రీకాళహస్తి)`;
+
+    const message = lang === 'te' ? teMsg : enMsg;
+    const url = `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(message)}`;
+
+    // Mark as reviewed
+    const updated = new Set(reviewedBookingIds);
+    updated.add(booking.id);
+    setReviewedBookingIds(updated);
+    try {
+      localStorage.setItem('ms_car_wash_reviewed_bookings', JSON.stringify(Array.from(updated)));
+    } catch {}
+
+    setReviewLangModalBooking(null);
+    if (typeof window !== 'undefined') {
+      window.open(url, '_blank');
+    }
+  };
+
+  // 🧾 1-Click WhatsApp Digital Receipt Dispatch
+  const handleSendReceiptWhatsApp = (booking: Booking) => {
+    const cleanPhone = (booking.phone || '').replace(/\D/g, '');
+    if (!cleanPhone) {
+      alert('No valid phone number for customer.');
+      return;
+    }
+
+    const amount = booking.totalAmount || getDefaultPrice(booking.vehicleType);
+    const dateFormatted = formatTimestampWithSeconds(booking.createdAt);
+
+    const message = `🧾 *MS CAR MECHANIC & CAR WASH — OFFICIAL PAYMENT RECEIPT*
+🏢 *Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Srikalahasti (SKHT)*
+📞 Helpline: 8309390902
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔖 *Booking ID:* ${booking.id}
+👤 *Customer Name:* ${booking.name}
+🚘 *Vehicle:* ${booking.vehicleType} - ${booking.vehicleModel}
+📅 *Date & Time:* ${dateFormatted}
+🛠️ *Service:* ${booking.notes || 'Water Wash & Complete Detailing'}
+✨ *Add-ons:* ${booking.addOns && booking.addOns.length > 0 ? booking.addOns.join(', ') : 'Complimentary Package'}
+💰 *Gross Bill Amount:* ₹${amount.toLocaleString('en-IN')} (PAID)
+🎁 *Free Perks Included:* 1x Mineral Water Bottle + 1x Car Tissue Box
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔍 *Track Status / Download Official Tax Invoice PDF:*
+https://mscarwash.vercel.app/track?id=${booking.id}
+
+*Thank you for trusting MS Car Mechanic & Car Wash Srikalahasti! Have a great ride!*`;
+
+    const url = `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(message)}`;
+    if (typeof window !== 'undefined') {
+      window.open(url, '_blank');
+    }
+  };
+
+  // Copy Google Review Link
+  const handleCopyReviewLink = (bookingId: string) => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText('https://share.google/bN5KNns6mgg3uI4tP');
+      setCopiedReviewId(bookingId);
+      setTimeout(() => setCopiedReviewId(null), 2500);
+    }
   };
 
   // Open Google Maps Directions for Pickup Wash Address
@@ -499,6 +721,23 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
     return 350;
   };
 
+  // Helper to detect mechanic repairs & inspections
+  const isMechanicBooking = (b: Booking): boolean => {
+    const text = `${b.notes || ''} ${b.vehicleModel || ''}`.toLowerCase();
+    return (
+      text.includes('repair') ||
+      text.includes('mechanic') ||
+      text.includes('engine') ||
+      text.includes('brake') ||
+      text.includes('ac gas') ||
+      text.includes('oil change') ||
+      text.includes('electrical') ||
+      text.includes('suspension') ||
+      text.includes('breakdown') ||
+      b.totalAmount === 999
+    );
+  };
+
   // Metrics Calculations
   const totalBookingsCount = bookings.length;
   const pendingCount = bookings.filter(b => b.status === 'pending').length;
@@ -544,10 +783,40 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
   const yesterdayStr = getLocalDateString(yesterdayObj);
   const monthStr = todayStr.substring(0, 7);
 
+  // Today's Detailed Shift Statistics
   const todayBookings = bookings.filter(b => getLocalDateFromIso(b.createdAt) === todayStr);
   const todayCompleted = todayBookings.filter(b => b.status === 'completed');
   const todayPending = todayBookings.filter(b => b.status !== 'completed');
   const todayRevenue = todayCompleted.reduce((sum, b) => sum + (b.totalAmount || getDefaultPrice(b.vehicleType)), 0);
+
+  // Cash vs UPI Collections for Today
+  const todayCashRevenue = todayCompleted.reduce((sum, b) => {
+    const noteStr = (b.notes || '').toUpperCase();
+    const isUpi = noteStr.includes('UPI') || noteStr.includes('GPAY') || noteStr.includes('PHONEPE') || noteStr.includes('ONLINE') || noteStr.includes('PAYTM');
+    return isUpi ? sum : sum + (b.totalAmount || getDefaultPrice(b.vehicleType));
+  }, 0);
+
+  const todayUpiRevenue = todayCompleted.reduce((sum, b) => {
+    const noteStr = (b.notes || '').toUpperCase();
+    const isUpi = noteStr.includes('UPI') || noteStr.includes('GPAY') || noteStr.includes('PHONEPE') || noteStr.includes('ONLINE') || noteStr.includes('PAYTM');
+    return isUpi ? sum + (b.totalAmount || getDefaultPrice(b.vehicleType)) : sum;
+  }, 0);
+
+  const cashPercent = todayRevenue > 0 ? Math.round((todayCashRevenue / todayRevenue) * 100) : 0;
+  const upiPercent = todayRevenue > 0 ? Math.round((todayUpiRevenue / todayRevenue) * 100) : 0;
+
+  // Fleet volume by vehicle category for Today
+  const todayBikesCount = todayBookings.filter(b => b.vehicleType === 'Bike' || b.vehicleType === 'Scooter').length;
+  const todayCarsCount = todayBookings.filter(b => b.vehicleType === 'Car' || b.vehicleType === 'SUV' || b.vehicleType === 'Van' || b.vehicleType === 'Sedan' || b.vehicleType === 'Hatchback').length;
+  const todayHeavyCount = todayBookings.filter(b => b.vehicleType === 'Truck' || b.vehicleType === 'Tractor' || b.vehicleType === 'JCB' || b.vehicleType === 'Auto').length;
+
+  // Quick Preset Counts
+  const todayPickupsCount = bookings.filter(b => b.mode === 'pickup' && getLocalDateFromIso(b.createdAt) === todayStr).length;
+  const inProgressWashesCount = inProgressCount;
+  const pendingMechanicCount = bookings.filter(b => isMechanicBooking(b) && b.status === 'pending').length;
+
+  // Turnaround and Completion Rate
+  const completionRate = todayBookings.length > 0 ? Math.round((todayCompleted.length / todayBookings.length) * 100) : 0;
 
   const sendDailySummaryWhatsApp = () => {
     const avgTicket = todayCompleted.length > 0 ? Math.round(todayRevenue / todayCompleted.length) : 0;
@@ -558,20 +827,34 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
       year: 'numeric',
     });
 
-    const message = `📊 *MS CAR MECHANIC & CAR WASH — DAILY CLOSING SUMMARY*
+    const message = `📊 *MS CAR MECHANIC & CAR WASH — DAILY SHIFT CLOSING SUMMARY*
 🏢 *Srikalahasti Center Desk*
 📅 *Date:* ${dateFormatted}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚗 *Total Vehicles Handled Today:* ${todayBookings.length}
-✅ *Completed Jobs:* ${todayCompleted.length}
-⏳ *Pending / Active:* ${todayPending.length}
+🚗 *FLEET VOLUME TODAY:* ${todayBookings.length} Vehicles
+• 🏍️ Two-Wheelers (Bikes/Scooters): ${todayBikesCount}
+• 🚘 Passenger Cars & SUVs: ${todayCarsCount}
+• 🚛 Commercial & Heavy: ${todayHeavyCount}
 
-💰 *Today's Revenue:* ₹${todayRevenue.toLocaleString('en-IN')}
-💵 *Avg Ticket Value:* ₹${avgTicket}
-🏆 *All-Time Recorded Revenue:* ₹${totalRevenue.toLocaleString('en-IN')}
+✅ *JOB STATUS:*
+• Completed & Delivered: ${todayCompleted.length} (${completionRate}%)
+• In-Wash / Active: ${inProgressCount}
+• Pending Orders: ${todayPending.length}
+• Today's Doorstep Pickups: ${todayPickupsCount}
 
-📞 *Desk Helpline:* 8309390902
-━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+💰 *PAYMENT & CASHFLOW BREAKDOWN:*
+• 💵 Cash Collections: ₹${todayCashRevenue.toLocaleString('en-IN')} (${cashPercent}%)
+• 📱 UPI / Online Collections: ₹${todayUpiRevenue.toLocaleString('en-IN')} (${upiPercent}%)
+• 💎 Total Today's Revenue: ₹${todayRevenue.toLocaleString('en-IN')}
+• 🏷️ Avg Ticket Value: ₹${avgTicket}
+
+⏱️ *EFFICIENCY & ALL-TIME:*
+• Avg Turnaround Time: ~25 mins (Foam Wash) | ~1.5h (Mechanic)
+• All-Time Recorded Revenue: ₹${totalRevenue.toLocaleString('en-IN')}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+📍 Panagal, Opp Old RTO Office, Near Highway Srikalahasti
+📞 Desk Manager: Naveen | Helpline: 8309390902`;
 
     const url = `https://wa.me/918309390902?text=${encodeURIComponent(message)}`;
     if (typeof window !== 'undefined') {
@@ -579,16 +862,128 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
     }
   };
 
+  // Print End-of-Day Shift Summary Sheet
+  const handlePrintShiftSummary = () => {
+    if (typeof window === 'undefined') return;
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      alert('Pop-up blocked! Please allow pop-ups to print the shift summary.');
+      return;
+    }
+    const dateFormatted = new Date().toLocaleDateString('en-IN', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
+    const avgTicket = todayCompleted.length > 0 ? Math.round(todayRevenue / todayCompleted.length) : 0;
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>MS Car Wash - Shift Summary (${dateFormatted})</title>
+          <style>
+            * { box-sizing: border-box; }
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; padding: 25px; color: #111; line-height: 1.4; }
+            .header { text-align: center; border-bottom: 2px solid #059669; padding-bottom: 12px; margin-bottom: 18px; }
+            .logo-text { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; color: #111; }
+            .sub { font-size: 11px; color: #555; margin-top: 2px; }
+            .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+            .box { border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; background: #f8fafc; }
+            .box-title { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #64748b; }
+            .box-val { font-size: 18px; font-weight: 900; color: #0f172a; margin-top: 4px; }
+            .box-sub { font-size: 10px; color: #059669; font-weight: 700; margin-top: 2px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 11px; }
+            th, td { border: 1px solid #cbd5e1; padding: 6px 8px; text-align: left; }
+            th { background: #f1f5f9; font-weight: 800; text-transform: uppercase; font-size: 10px; }
+            .footer { margin-top: 24px; border-top: 1px dashed #94a3b8; padding-top: 14px; display: flex; justify-content: space-between; font-size: 11px; color: #475569; }
+            @media print { body { padding: 0; } }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div class="logo-text">MS CAR MECHANIC & CAR WASH — DAILY SHIFT SUMMARY</div>
+            <div class="sub">Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Srikalahasti | Helpline: 8309390902</div>
+            <div class="sub"><strong>Date:</strong> ${dateFormatted} | <strong>Shift Billed By:</strong> Naveen (Manager)</div>
+          </div>
+
+          <div class="grid">
+            <div class="box">
+              <div class="box-title">Today's Revenue</div>
+              <div class="box-val">₹${todayRevenue.toLocaleString('en-IN')}</div>
+              <div class="box-sub">Cash: ₹${todayCashRevenue.toLocaleString('en-IN')} (${cashPercent}%) | UPI: ₹${todayUpiRevenue.toLocaleString('en-IN')} (${upiPercent}%)</div>
+            </div>
+            <div class="box">
+              <div class="box-title">Fleet Serviced</div>
+              <div class="box-val">${todayBookings.length} Vehicles</div>
+              <div class="box-sub">Bikes: ${todayBikesCount} | Cars: ${todayCarsCount} | Heavy: ${todayHeavyCount}</div>
+            </div>
+            <div class="box">
+              <div class="box-title">Completion Status</div>
+              <div class="box-val">${todayCompleted.length} Completed (${completionRate}%)</div>
+              <div class="box-sub">Avg Ticket: ₹${avgTicket} | Active/Pending: ${todayPending.length}</div>
+            </div>
+          </div>
+
+          <div style="font-weight: 800; font-size: 12px; margin-bottom: 4px;">Today's Serviced Vehicles (${todayBookings.length}):</div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Time</th>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>Vehicle Model</th>
+                <th>Mode</th>
+                <th>Status</th>
+                <th>Bill (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${todayBookings.length === 0 ? '<tr><td colspan="8" style="text-align:center; padding:12px;">No bookings recorded for today.</td></tr>' : todayBookings.map(b => `
+                <tr>
+                  <td><strong>${b.id}</strong></td>
+                  <td>${formatTimestampWithSeconds(b.createdAt).split(',')[1] || ''}</td>
+                  <td>${b.name}</td>
+                  <td>${b.phone}</td>
+                  <td>${b.vehicleType} (${b.vehicleModel})</td>
+                  <td>${b.mode === 'pickup' ? 'Doorstep Pickup' : 'Center Slot'}</td>
+                  <td><strong>${b.status.toUpperCase()}</strong></td>
+                  <td>₹${b.totalAmount || getDefaultPrice(b.vehicleType)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+
+          <div class="footer">
+            <div>Printed: ${new Date().toLocaleTimeString('en-IN')} | MS Car Wash Desk System</div>
+            <div>Cashier / Manager Signoff: _________________________</div>
+          </div>
+
+          <script>
+            window.onload = function() { window.print(); }
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
   const filteredBookings = bookings.filter(b => {
+    const createdDateStr = getLocalDateFromIso(b.createdAt);
+
     const matchesFilter =
       filter === 'all' ||
       (filter === 'pending' && b.status === 'pending') ||
       (filter === 'in_progress' && b.status === 'in_progress') ||
       (filter === 'completed' && b.status === 'completed') ||
       (filter === 'pickup' && b.mode === 'pickup') ||
-      (filter === 'slot' && b.mode === 'slot');
+      (filter === 'slot' && b.mode === 'slot') ||
+      (filter === 'today_pickups' && b.mode === 'pickup' && createdDateStr === todayStr) ||
+      (filter === 'in_progress_washes' && b.status === 'in_progress') ||
+      (filter === 'pending_mechanic' && isMechanicBooking(b) && b.status === 'pending');
 
-    const createdDateStr = getLocalDateFromIso(b.createdAt);
     const matchesDate =
       dateFilter === 'all' ||
       (dateFilter === 'today' && createdDateStr === todayStr) ||
@@ -599,7 +994,8 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
       b.name.toLowerCase().includes(search.toLowerCase()) ||
       b.phone.includes(search) ||
       b.id.toLowerCase().includes(search.toLowerCase()) ||
-      b.vehicleModel.toLowerCase().includes(search.toLowerCase());
+      b.vehicleModel.toLowerCase().includes(search.toLowerCase()) ||
+      (b.notes || '').toLowerCase().includes(search.toLowerCase());
 
     return matchesFilter && matchesDate && matchesSearch;
   });
@@ -684,8 +1080,8 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
           <div className="flex items-center gap-3.5">
             <div className="p-2 rounded-2xl bg-white dark:bg-[#141416] border border-black/[0.08] dark:border-white/[0.08] shrink-0 shadow-xs">
               <Image
-                src="/logo.png"
-                alt="MS Car Wash Logo"
+                src="/ms-auto-care-logo.png"
+                alt="MS Auto Care Logo"
                 width={44}
                 height={44}
                 className="w-11 h-11 object-contain"
@@ -694,7 +1090,7 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
             </div>
             <div>
               <h1 className="text-2xl font-extrabold tracking-tight flex items-center gap-2">
-                MS Car Wash — Admin Desk
+                MS Auto Care — Admin Desk
                 <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                   Live Updates
@@ -733,14 +1129,66 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
               <span>+ Add Walk-In</span>
             </button>
 
-            <button
-              onClick={exportToCSV}
-              className="px-3.5 py-2 rounded-full bg-white dark:bg-[#141416] border border-black/[0.08] dark:border-white/[0.08] text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs"
-              title="Export sales data to CSV file"
-            >
-              <Download className="w-3.5 h-3.5 text-blue-500" />
-              <span>Export CSV</span>
-            </button>
+            {/* Export Audit CSV Dropdown */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setShowExportMenu(!showExportMenu)}
+                className="px-3.5 py-2 rounded-full bg-white dark:bg-[#141416] border border-black/[0.08] dark:border-white/[0.08] text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs hover:border-blue-500/40"
+                title="Export sales data and audit sheets to CSV"
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5 text-blue-500" />
+                <span>Export CSV ▾</span>
+              </button>
+
+              {showExportMenu && (
+                <div className="absolute right-0 mt-2 w-52 rounded-2xl bg-white dark:bg-[#1C1C1F] border border-black/10 dark:border-white/10 shadow-2xl p-2 z-50 space-y-1 text-xs font-bold animate-in fade-in zoom-in-95">
+                  <span className="block px-2.5 py-1 text-[10px] uppercase font-black tracking-wider text-slate-400">
+                    Export Financial Scope:
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleExportEnhancedCSV('today')}
+                    className="w-full text-left px-3 py-2 rounded-xl hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400 flex items-center justify-between transition-colors"
+                  >
+                    <span>📅 Today&apos;s Shift</span>
+                    <span className="text-[10px] opacity-70">({todayBookings.length})</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleExportEnhancedCSV('yesterday')}
+                    className="w-full text-left px-3 py-2 rounded-xl hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-400 flex items-center justify-between transition-colors"
+                  >
+                    <span>📅 Yesterday</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleExportEnhancedCSV('month')}
+                    className="w-full text-left px-3 py-2 rounded-xl hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 flex items-center justify-between transition-colors"
+                  >
+                    <span>📅 This Month</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleExportEnhancedCSV('active')}
+                    className="w-full text-left px-3 py-2 rounded-xl hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center justify-between transition-colors"
+                  >
+                    <span>⚡ Current Filter</span>
+                    <span className="text-[10px] opacity-70">({filteredBookings.length})</span>
+                  </button>
+                  <div className="pt-1 border-t border-black/5 dark:border-white/5">
+                    <button
+                      type="button"
+                      onClick={() => handleExportEnhancedCSV('all')}
+                      className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/10 flex items-center justify-between transition-colors"
+                    >
+                      <span>📁 All Time Records</span>
+                      <span className="text-[10px] opacity-70">({bookings.length})</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
 
             <button
               onClick={() => fetchBookingsList()}
@@ -818,98 +1266,366 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
 
         </div>
 
-        {/* VISUAL REVENUE & BOOKING ANALYTICS DASHBOARD */}
-        <div className="rounded-3xl bg-white dark:bg-[#141416] border border-black/[0.08] dark:border-white/[0.08] p-6 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] pb-3">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-emerald-500" />
-              <h3 className="text-sm font-extrabold text-[#1D1D1F] dark:text-white uppercase tracking-wider">
-                Sales & Fleet Analytics
-              </h3>
+        {/* END-OF-DAY SHIFT & CASHFLOW SUMMARY WIDGET */}
+        <div className="rounded-3xl bg-white dark:bg-[#141416] border border-black/[0.08] dark:border-white/[0.08] p-6 shadow-sm space-y-5 relative overflow-hidden">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-black/[0.08] dark:border-white/[0.08] pb-4">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                <TrendingUp className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight">
+                    End-of-Day Shift &amp; Cashflow Summary
+                  </h3>
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-wider border border-emerald-500/20">
+                    Live Shift Desk
+                  </span>
+                </div>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400 font-medium mt-0.5">
+                  Manager: Naveen • Cash vs UPI collections &amp; fleet turnaround for today
+                </p>
+              </div>
             </div>
-            <button
-              onClick={() => setShowAnalytics(!showAnalytics)}
-              className="text-xs font-bold text-neutral-500 hover:text-emerald-500 transition-colors"
-            >
-              {showAnalytics ? 'Hide Graph ↑' : 'Show Graph ↓'}
-            </button>
+
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                type="button"
+                onClick={sendDailySummaryWhatsApp}
+                className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center gap-1.5 shadow-sm shadow-emerald-600/20 transition-all hover:scale-105 active:scale-95"
+                title="Send today's shift summary report via WhatsApp"
+              >
+                <Send className="w-3.5 h-3.5" />
+                <span>WhatsApp Shift Report</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handlePrintShiftSummary}
+                className="px-3.5 py-1.5 rounded-xl bg-neutral-100 dark:bg-[#1C1C1F] text-slate-800 dark:text-slate-200 border border-black/[0.08] dark:border-white/[0.08] hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black text-xs font-bold transition-all flex items-center gap-1.5"
+                title="Print official shift closing summary"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>Print Summary</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleExportEnhancedCSV('today')}
+                className="px-3.5 py-1.5 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 hover:bg-blue-600 hover:text-white text-xs font-bold transition-all flex items-center gap-1.5"
+                title="Download today's shift spreadsheet for accounting"
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5" />
+                <span>Export Shift CSV</span>
+              </button>
+
+              <button
+                onClick={() => setShowAnalytics(!showAnalytics)}
+                className="text-xs font-bold text-neutral-500 hover:text-emerald-500 transition-colors px-2 py-1"
+              >
+                {showAnalytics ? 'Hide Stats ↑' : 'Show Stats ↓'}
+              </button>
+            </div>
           </div>
 
           {showAnalytics && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-              {/* Avg Ticket Value, Today's Revenue & Quick WhatsApp Summary */}
-              <div className="space-y-3 p-4 rounded-2xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.06] dark:border-white/[0.06]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-1">
+              
+              {/* 1. Cash vs UPI Collections Card */}
+              <div className="p-4 rounded-2xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.06] dark:border-white/[0.06] space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-neutral-500 block">
-                    Financial Highlights
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-neutral-500 flex items-center gap-1">
+                    <Banknote className="w-3.5 h-3.5 text-emerald-500" />
+                    <span>Today&apos;s Revenue &amp; Payments</span>
                   </span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 font-extrabold">
-                    Today
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-extrabold">
+                    Total ₹{todayRevenue.toLocaleString('en-IN')}
                   </span>
                 </div>
-                
-                <div className="flex items-baseline justify-between">
-                  <span className="text-xs font-bold text-neutral-600 dark:text-neutral-300">Today&apos;s Revenue</span>
-                  <span className="text-xl font-black text-emerald-600 dark:text-emerald-400">₹{todayRevenue.toLocaleString('en-IN')}</span>
+
+                <div>
+                  <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">
+                    ₹{todayRevenue.toLocaleString('en-IN')}
+                  </div>
+                  <span className="text-[10px] text-neutral-400 font-bold block mt-0.5">
+                    {todayCompleted.length} Completed Vehicle Jobs
+                  </span>
                 </div>
 
-                <div className="flex items-baseline justify-between pt-1 border-t border-black/[0.06] dark:border-white/[0.06]">
-                  <span className="text-xs font-bold text-neutral-600 dark:text-neutral-300">Avg Ticket Value</span>
-                  <span className="text-sm font-bold text-slate-800 dark:text-white">₹{avgTicketValue}</span>
+                {/* Cash vs UPI Visual Progress Bar */}
+                <div className="space-y-1.5 pt-1 border-t border-black/5 dark:border-white/5">
+                  <div className="flex items-center justify-between text-[11px] font-bold">
+                    <span className="text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                      💵 Cash: ₹{todayCashRevenue.toLocaleString('en-IN')} ({cashPercent}%)
+                    </span>
+                    <span className="text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                      📱 UPI: ₹{todayUpiRevenue.toLocaleString('en-IN')} ({upiPercent}%)
+                    </span>
+                  </div>
+                  <div className="w-full h-2 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden flex">
+                    <div
+                      className="h-full bg-amber-500 transition-all duration-500"
+                      style={{ width: `${cashPercent}%` }}
+                      title={`Cash: ${cashPercent}%`}
+                    />
+                    <div
+                      className="h-full bg-blue-500 transition-all duration-500"
+                      style={{ width: `${upiPercent}%` }}
+                      title={`UPI: ${upiPercent}%`}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. Fleet Serviced Volume Card */}
+              <div className="p-4 rounded-2xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.06] dark:border-white/[0.06] space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-neutral-500 flex items-center gap-1">
+                    <Car className="w-3.5 h-3.5 text-blue-500" />
+                    <span>Today&apos;s Fleet Volume</span>
+                  </span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-extrabold">
+                    {todayBookings.length} Vehicles
+                  </span>
                 </div>
 
-                <div className="flex items-baseline justify-between pt-1 border-t border-black/[0.06] dark:border-white/[0.06]">
-                  <span className="text-xs font-bold text-neutral-600 dark:text-neutral-300">Today&apos;s Completed</span>
-                  <span className="text-xs font-bold text-emerald-500">{todayCompleted.length} / {todayBookings.length} jobs</span>
+                <div>
+                  <div className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                    {todayBookings.length} <span className="text-xs font-bold text-neutral-400">Total Handled</span>
+                  </div>
+                  <span className="text-[10px] text-neutral-400 font-bold block mt-0.5">
+                    {todayCompleted.length} Delivered • {todayPending.length} Active
+                  </span>
                 </div>
 
-                {/* WhatsApp Daily Summary Trigger */}
-                <div className="pt-2">
-                  <button
-                    type="button"
-                    onClick={sendDailySummaryWhatsApp}
-                    className="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center justify-center gap-1.5 shadow-sm shadow-emerald-600/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                <div className="grid grid-cols-3 gap-1.5 pt-1 border-t border-black/5 dark:border-white/5 text-[11px] font-bold">
+                  <div className="p-1.5 rounded-xl bg-white dark:bg-[#141416] border border-black/5 dark:border-white/5 text-center">
+                    <Bike className="w-3.5 h-3.5 mx-auto text-emerald-500 mb-0.5" />
+                    <span className="text-slate-900 dark:text-white">{todayBikesCount}</span>
+                    <span className="text-[9px] text-neutral-400 block font-normal">Bikes</span>
+                  </div>
+                  <div className="p-1.5 rounded-xl bg-white dark:bg-[#141416] border border-black/5 dark:border-white/5 text-center">
+                    <Car className="w-3.5 h-3.5 mx-auto text-blue-500 mb-0.5" />
+                    <span className="text-slate-900 dark:text-white">{todayCarsCount}</span>
+                    <span className="text-[9px] text-neutral-400 block font-normal">Cars</span>
+                  </div>
+                  <div className="p-1.5 rounded-xl bg-white dark:bg-[#141416] border border-black/5 dark:border-white/5 text-center">
+                    <Truck className="w-3.5 h-3.5 mx-auto text-amber-500 mb-0.5" />
+                    <span className="text-slate-900 dark:text-white">{todayHeavyCount}</span>
+                    <span className="text-[9px] text-neutral-400 block font-normal">Heavy</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. Turnaround & Completion Efficiency Card */}
+              <div className="p-4 rounded-2xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.06] dark:border-white/[0.06] space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-neutral-500 flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5 text-indigo-500" />
+                    <span>Turnaround &amp; Efficiency</span>
+                  </span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-extrabold">
+                    {completionRate}% Delivered
+                  </span>
+                </div>
+
+                <div>
+                  <div className="text-2xl font-black text-indigo-600 dark:text-indigo-400 tracking-tight">
+                    ~25 mins <span className="text-xs font-bold text-neutral-400">Avg Wash</span>
+                  </div>
+                  <span className="text-[10px] text-neutral-400 font-bold block mt-0.5">
+                    Mechanic Service: ~1.5 hrs avg
+                  </span>
+                </div>
+
+                <div className="space-y-1 pt-1 border-t border-black/5 dark:border-white/5 text-[11px] font-bold text-neutral-600 dark:text-neutral-300">
+                  <div className="flex justify-between">
+                    <span>Avg Ticket Value:</span>
+                    <span className="text-slate-900 dark:text-white font-extrabold">₹{avgTicketValue}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>All-Time Gross:</span>
+                    <span className="text-slate-900 dark:text-white font-extrabold">₹{totalRevenue.toLocaleString('en-IN')}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 4. Active Operations Summary Card */}
+              <div className="p-4 rounded-2xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.06] dark:border-white/[0.06] space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-neutral-500 flex items-center gap-1">
+                    <Activity className="w-3.5 h-3.5 text-rose-500" />
+                    <span>Active Shift Tasks</span>
+                  </span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 font-extrabold">
+                    Live
+                  </span>
+                </div>
+
+                <div className="space-y-2 text-xs font-bold">
+                  <div
+                    onClick={() => {
+                      setFilter('today_pickups');
+                      setDateFilter('today');
+                    }}
+                    className="p-2 rounded-xl bg-white dark:bg-[#141416] border border-black/5 dark:border-white/5 flex items-center justify-between cursor-pointer hover:border-emerald-500 transition-all"
                   >
-                    <Send className="w-3.5 h-3.5" />
-                    <span>WhatsApp Daily Closing Report</span>
-                  </button>
+                    <span className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
+                      <MapPin className="w-3.5 h-3.5 text-emerald-500" />
+                      <span>Today&apos;s Pickups:</span>
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-xs font-black">
+                      {todayPickupsCount}
+                    </span>
+                  </div>
+
+                  <div
+                    onClick={() => setFilter('in_progress_washes')}
+                    className="p-2 rounded-xl bg-white dark:bg-[#141416] border border-black/5 dark:border-white/5 flex items-center justify-between cursor-pointer hover:border-blue-500 transition-all"
+                  >
+                    <span className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
+                      <Zap className="w-3.5 h-3.5 text-blue-500" />
+                      <span>In-Wash Right Now:</span>
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-400 text-xs font-black flex items-center gap-1">
+                      {inProgressWashesCount > 0 && <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping"></span>}
+                      {inProgressWashesCount}
+                    </span>
+                  </div>
+
+                  <div
+                    onClick={() => setFilter('pending_mechanic')}
+                    className="p-2 rounded-xl bg-white dark:bg-[#141416] border border-black/5 dark:border-white/5 flex items-center justify-between cursor-pointer hover:border-indigo-500 transition-all"
+                  >
+                    <span className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
+                      <Wrench className="w-3.5 h-3.5 text-indigo-500" />
+                      <span>Mechanic Quotes Pending:</span>
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 text-xs font-black">
+                      {pendingMechanicCount}
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              {/* Vehicle Type Breakdown Progress Bars */}
-              <div className="md:col-span-2 space-y-2.5 p-4 rounded-2xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.06] dark:border-white/[0.06]">
-                <span className="text-[11px] font-extrabold uppercase tracking-wider text-neutral-500 block mb-1">
-                  Vehicle Type Breakdown
-                </span>
-                {Object.keys(vehicleStats).length === 0 ? (
-                  <p className="text-xs text-neutral-400">No vehicle stats yet.</p>
-                ) : (
-                  Object.entries(vehicleStats).map(([type, count]) => {
-                    const percent = totalBookingsCount > 0 ? Math.round((count / totalBookingsCount) * 100) : 0;
-                    return (
-                      <div key={type} className="space-y-1">
-                        <div className="flex justify-between text-xs font-bold">
-                          <span className="text-[#1D1D1F] dark:text-white">{type}</span>
-                          <span className="text-neutral-500">{count} washes ({percent}%)</span>
-                        </div>
-                        <div className="w-full h-2 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden">
-                          <div
-                            className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-500"
-                            style={{ width: `${percent}%` }}
-                          />
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
             </div>
           )}
         </div>
 
 
-        {/* FILTER & SEARCH CONTROLS */}
+        {/* QUICK FILTER PRESETS BAR & SEARCH CONTROLS */}
         <div className="space-y-3">
+          
+          {/* QUICK OPERATIONAL PRESET SHORTCUT TABS */}
+          <div className="p-3 rounded-2xl bg-neutral-100 dark:bg-[#141416] border border-black/[0.08] dark:border-white/[0.08] space-y-2">
+            <div className="flex items-center justify-between px-1">
+              <span className="text-[11px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+                <Filter className="w-3.5 h-3.5 text-emerald-500" />
+                <span>⚡ Quick Operations Presets</span>
+              </span>
+
+              {(filter === 'today_pickups' || filter === 'in_progress_washes' || filter === 'pending_mechanic') && (
+                <button
+                  type="button"
+                  onClick={() => setFilter('all')}
+                  className="text-[11px] font-extrabold text-rose-600 dark:text-rose-400 hover:underline flex items-center gap-1"
+                >
+                  <X className="w-3 h-3" />
+                  <span>Clear Preset Filter</span>
+                </button>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {/* Preset 1: Today's Doorstep Pickups */}
+              <button
+                type="button"
+                onClick={() => {
+                  setFilter(filter === 'today_pickups' ? 'all' : 'today_pickups');
+                  setDateFilter('today');
+                }}
+                className={`p-2.5 rounded-xl border text-xs font-bold transition-all flex items-center justify-between shadow-xs ${
+                  filter === 'today_pickups'
+                    ? 'bg-emerald-600 text-white border-emerald-600 ring-2 ring-emerald-500/30'
+                    : 'bg-white dark:bg-[#1C1C1F] text-slate-800 dark:text-slate-200 border-black/[0.08] dark:border-white/[0.08] hover:border-emerald-500/40'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <div className={`p-1.5 rounded-lg ${filter === 'today_pickups' ? 'bg-white/20 text-white' : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'}`}>
+                    <MapPin className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="text-left">
+                    <span className="block text-xs font-black leading-tight">Today&apos;s Doorstep Pickups</span>
+                    <span className={`text-[10px] ${filter === 'today_pickups' ? 'text-white/80' : 'text-neutral-400'}`}>Panagal &amp; Srikalahasti</span>
+                  </div>
+                </div>
+                <span className={`px-2.5 py-0.5 rounded-full text-xs font-black ${
+                  filter === 'today_pickups'
+                    ? 'bg-white text-emerald-700'
+                    : 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                }`}>
+                  {todayPickupsCount}
+                </span>
+              </button>
+
+              {/* Preset 2: In-Progress Washes */}
+              <button
+                type="button"
+                onClick={() => setFilter(filter === 'in_progress_washes' ? 'all' : 'in_progress_washes')}
+                className={`p-2.5 rounded-xl border text-xs font-bold transition-all flex items-center justify-between shadow-xs ${
+                  filter === 'in_progress_washes'
+                    ? 'bg-blue-600 text-white border-blue-600 ring-2 ring-blue-500/30'
+                    : 'bg-white dark:bg-[#1C1C1F] text-slate-800 dark:text-slate-200 border-black/[0.08] dark:border-white/[0.08] hover:border-blue-500/40'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <div className={`p-1.5 rounded-lg ${filter === 'in_progress_washes' ? 'bg-white/20 text-white' : 'bg-blue-500/10 text-blue-600 dark:text-blue-400'}`}>
+                    <Zap className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="text-left">
+                    <span className="block text-xs font-black leading-tight">In-Progress Washes</span>
+                    <span className={`text-[10px] ${filter === 'in_progress_washes' ? 'text-white/80' : 'text-neutral-400'}`}>Active cleaning on floor</span>
+                  </div>
+                </div>
+                <span className={`px-2.5 py-0.5 rounded-full text-xs font-black flex items-center gap-1 ${
+                  filter === 'in_progress_washes'
+                    ? 'bg-white text-blue-700'
+                    : 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/20'
+                }`}>
+                  {inProgressWashesCount > 0 && <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping"></span>}
+                  {inProgressWashesCount}
+                </span>
+              </button>
+
+              {/* Preset 3: Pending Mechanic Estimates */}
+              <button
+                type="button"
+                onClick={() => setFilter(filter === 'pending_mechanic' ? 'all' : 'pending_mechanic')}
+                className={`p-2.5 rounded-xl border text-xs font-bold transition-all flex items-center justify-between shadow-xs ${
+                  filter === 'pending_mechanic'
+                    ? 'bg-indigo-600 text-white border-indigo-600 ring-2 ring-indigo-500/30'
+                    : 'bg-white dark:bg-[#1C1C1F] text-slate-800 dark:text-slate-200 border-black/[0.08] dark:border-white/[0.08] hover:border-indigo-500/40'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <div className={`p-1.5 rounded-lg ${filter === 'pending_mechanic' ? 'bg-white/20 text-white' : 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400'}`}>
+                    <Wrench className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="text-left">
+                    <span className="block text-xs font-black leading-tight">Pending Mechanic Estimates</span>
+                    <span className={`text-[10px] ${filter === 'pending_mechanic' ? 'text-white/80' : 'text-neutral-400'}`}>Repairs awaiting quote</span>
+                  </div>
+                </div>
+                <span className={`px-2.5 py-0.5 rounded-full text-xs font-black ${
+                  filter === 'pending_mechanic'
+                    ? 'bg-white text-indigo-700'
+                    : 'bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20'
+                }`}>
+                  {pendingMechanicCount}
+                </span>
+              </button>
+            </div>
+          </div>
           
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             {/* Search bar */}
@@ -917,7 +1633,7 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
               <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-neutral-400" />
               <input
                 type="text"
-                placeholder="Search by ID, Customer Name, Phone, Vehicle..."
+                placeholder="Search by ID, Customer Name, Phone, Vehicle, Notes..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white dark:bg-[#141416] border border-black/[0.08] dark:border-white/[0.08] text-xs font-medium focus:ring-1 focus:ring-black dark:focus:ring-white focus:outline-none"
@@ -970,7 +1686,7 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
             </div>
           </div>
 
-          {/* Status Filter Tabs */}
+          {/* Standard Status Filter Tabs */}
           <div className="flex items-center gap-1 bg-neutral-200/50 dark:bg-[#1C1C1F]/60 p-1 rounded-2xl border border-black/[0.06] dark:border-white/[0.06] text-xs font-bold overflow-x-auto">
             <button
               onClick={() => setFilter('all')}
@@ -1070,22 +1786,25 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
               {/* Mobile Card List View (Visible on smartphones < md) */}
               <div className="block md:hidden divide-y divide-black/10 dark:divide-white/10">
                 {filteredBookings.map((b) => {
-                  const cleanPhone = (b.phone || '').replace(/\D/g, '');
-                  const bookingCountForCustomer = customerBookingCounts[cleanPhone] || 1;
-                  const isRepeatCustomer = bookingCountForCustomer > 1;
+                  const loyalty = getCustomerLoyaltyInfo(b.phone);
+                  const isReviewed = reviewedBookingIds.has(b.id);
 
                   return (
                     <div key={b.id} className="p-4 space-y-3 bg-white dark:bg-[#141416]">
-                      {/* Header Row: ID, Time, VIP Badge */}
+                      {/* Header Row: ID, Time, Loyalty Badge */}
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span className="font-mono font-black text-[#D97757] text-sm">{b.id}</span>
-                          {isRepeatCustomer && (
-                            <span className="px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-300 text-[10px] font-black uppercase flex items-center gap-1">
-                              <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
-                              VIP ({bookingCountForCustomer})
-                            </span>
-                          )}
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] uppercase flex items-center gap-1 border ${loyalty.badgeClass}`}>
+                            {loyalty.count >= 5 ? (
+                              <Crown className="w-3 h-3 text-purple-500 fill-purple-500" />
+                            ) : loyalty.count >= 2 ? (
+                              <Star className="w-3 h-3 text-blue-500 fill-blue-500" />
+                            ) : (
+                              <Sparkles className="w-3 h-3 text-emerald-500" />
+                            )}
+                            <span>{loyalty.label}</span>
+                          </span>
                         </div>
                         <span className="font-mono text-[10px] text-neutral-400">
                           {formatTimestampWithSeconds(b.createdAt)}
@@ -1181,22 +1900,28 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
                           )}
                         </div>
 
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 flex-wrap">
                           <button
                             type="button"
-                            onClick={() => sendWashStartWhatsApp(b)}
-                            className="px-2 py-1 rounded-lg bg-blue-500/10 text-blue-600 font-bold text-[10px]"
-                            title="Start Msg"
+                            onClick={() => setReviewLangModalBooking(b)}
+                            className={`px-2 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 ${
+                              isReviewed
+                                ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30'
+                                : 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30'
+                            }`}
+                            title="Send Google Review Request via WhatsApp"
                           >
-                            Start
+                            <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                            <span>{isReviewed ? 'Review ✓' : 'Review'}</span>
                           </button>
                           <button
                             type="button"
-                            onClick={() => sendWashReadyWhatsApp(b)}
-                            className="px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 font-bold text-[10px]"
-                            title="Ready Msg"
+                            onClick={() => handleSendReceiptWhatsApp(b)}
+                            className="px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold text-[10px] flex items-center gap-0.5"
+                            title="Send WhatsApp Receipt"
                           >
-                            Ready
+                            <Receipt className="w-3 h-3" />
+                            <span>Receipt</span>
                           </button>
                           <button
                             type="button"
@@ -1205,7 +1930,6 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
                             title="Vehicle Intake Job Card"
                           >
                             <ClipboardList className="w-3.5 h-3.5" />
-                            <span>Job Card</span>
                           </button>
                           <button
                             type="button"
@@ -1254,9 +1978,8 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
                 </thead>
                 <tbody className="divide-y divide-black/[0.06] dark:divide-white/[0.06] font-medium">
                   {filteredBookings.map((b) => {
-                    const cleanPhone = (b.phone || '').replace(/\D/g, '');
-                    const bookingCountForCustomer = customerBookingCounts[cleanPhone] || 1;
-                    const isRepeatCustomer = bookingCountForCustomer > 1;
+                    const loyalty = getCustomerLoyaltyInfo(b.phone);
+                    const isReviewed = reviewedBookingIds.has(b.id);
 
                     return (
                       <tr key={b.id} className="hover:bg-neutral-50/80 dark:hover:bg-[#1C1C1F]/50 transition-colors">
@@ -1271,17 +1994,21 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
                           {formatTimestampWithSeconds(b.createdAt)}
                         </td>
 
-                        {/* Customer Details & VIP Badge */}
+                        {/* Customer Details & Loyalty Badge */}
                         <td className="py-4 px-4">
-                          <div className="font-bold text-[#1D1D1F] dark:text-white flex items-center gap-1.5">
+                          <div className="font-bold text-[#1D1D1F] dark:text-white flex items-center gap-1.5 flex-wrap">
                             <User className="w-3.5 h-3.5 text-neutral-400" />
                             <span>{b.name}</span>
-                            {isRepeatCustomer && (
-                              <span className="px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-[10px] font-black uppercase flex items-center gap-1" title={`${bookingCountForCustomer} Total Bookings`}>
-                                <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
-                                VIP ({bookingCountForCustomer})
-                              </span>
-                            )}
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] uppercase flex items-center gap-1 border ${loyalty.badgeClass}`} title={`${loyalty.count} Total Bookings`}>
+                              {loyalty.count >= 5 ? (
+                                <Crown className="w-3 h-3 text-purple-500 fill-purple-500" />
+                              ) : loyalty.count >= 2 ? (
+                                <Star className="w-3 h-3 text-blue-500 fill-blue-500" />
+                              ) : (
+                                <Sparkles className="w-3 h-3 text-emerald-500" />
+                              )}
+                              <span>{loyalty.label}</span>
+                            </span>
                           </div>
                           <div className="flex items-center gap-2 mt-0.5">
                             <a
@@ -1400,14 +2127,40 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
                         <td className="py-4 px-4 text-right space-y-1">
                           <div className="flex items-center justify-end gap-1 flex-wrap">
                             
-                            {/* WhatsApp Alert Triggers */}
+                            {/* 1-Click Bilingual Google Review Trigger */}
+                            <button
+                              type="button"
+                              onClick={() => setReviewLangModalBooking(b)}
+                              className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 shadow-xs ${
+                                isReviewed
+                                  ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30'
+                                  : 'bg-amber-500/15 text-amber-700 dark:text-amber-300 hover:bg-amber-500 hover:text-white border border-amber-500/30'
+                              }`}
+                              title="Send 5-Star Google Review Request on WhatsApp"
+                            >
+                              <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                              <span>{isReviewed ? 'Review ✓' : '⭐ Review'}</span>
+                            </button>
+
+                            {/* 1-Click WhatsApp Official Receipt */}
+                            <button
+                              type="button"
+                              onClick={() => handleSendReceiptWhatsApp(b)}
+                              className="px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-600 hover:text-white font-bold text-[10px] transition-all flex items-center gap-0.5"
+                              title="Send official payment receipt to customer WhatsApp"
+                            >
+                              <Receipt className="w-3 h-3" />
+                              <span>Receipt</span>
+                            </button>
+
+                            {/* WhatsApp Alerts */}
                             <button
                               type="button"
                               onClick={() => sendWashStartWhatsApp(b)}
                               className="px-2 py-1 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white font-bold text-[10px] transition-all"
                               title="Send 'Wash Started' alert on WhatsApp"
                             >
-                              Start Msg
+                              Start
                             </button>
 
                             <button
@@ -1416,16 +2169,7 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
                               className="px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-600 hover:text-white font-bold text-[10px] transition-all"
                               title="Send 'Vehicle Ready' alert on WhatsApp"
                             >
-                              Ready Msg
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => sendGoogleReviewWhatsApp(b)}
-                              className="px-2 py-1 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500 hover:text-white font-bold text-[10px] transition-all"
-                              title="Send 'Google Review Request' on WhatsApp"
-                            >
-                              ⭐ Review
+                              Ready
                             </button>
 
                             {/* Vehicle Intake Job Card */}
@@ -1872,7 +2616,7 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
                     <div className="flex items-start justify-between border-b border-dashed border-black/[0.1] dark:border-white/[0.1] pb-3">
                       <div className="flex items-center gap-2.5">
                         <Image
-                          src="/logo.png"
+                          src="/ms-auto-care-logo.png"
                           alt="Logo"
                           width={36}
                           height={36}
@@ -1880,8 +2624,8 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
                           style={{ width: 'auto', height: 'auto' }}
                         />
                         <div>
-                          <h4 className="font-extrabold text-sm text-[#1D1D1F] dark:text-white leading-none">MS CAR WASH</h4>
-                          <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold block mt-0.5">Clean Car... Happy Ride!</span>
+                          <h4 className="font-extrabold text-sm text-[#1D1D1F] dark:text-white leading-none">MS AUTO CARE</h4>
+                          <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold block mt-0.5">Car Mechanic &amp; Water Wash</span>
                         </div>
                       </div>
                       <div className="text-right">
@@ -2113,6 +2857,112 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
           isOpen={!!jobCardBooking}
           onClose={() => setJobCardBooking(null)}
         />
+
+        {/* 6. BILINGUAL GOOGLE REVIEW DISPATCH MODAL */}
+        {reviewLangModalBooking && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-in fade-in duration-200">
+            <div className="w-full max-w-md rounded-3xl bg-white dark:bg-[#141416] border border-black/10 dark:border-white/10 shadow-2xl p-6 space-y-5 relative overflow-hidden">
+              
+              {/* Header */}
+              <div className="flex items-start justify-between gap-2 border-b border-black/5 dark:border-white/5 pb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                    <Star className="w-5 h-5 fill-amber-500 text-amber-500" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-black text-slate-900 dark:text-white">
+                      Request 5-Star Google Review
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                      Customer: <span className="font-bold text-slate-900 dark:text-white">{reviewLangModalBooking.name}</span> ({reviewLangModalBooking.vehicleModel})
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setReviewLangModalBooking(null)}
+                  className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Language Selection Buttons */}
+              <div className="space-y-2.5">
+                <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 block">
+                  Select WhatsApp Message Language:
+                </span>
+
+                {/* English Option */}
+                <button
+                  type="button"
+                  onClick={() => handleSendReviewWhatsApp(reviewLangModalBooking, 'en')}
+                  className="w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-[#1C1C1F] hover:bg-emerald-500/10 border border-black/8 dark:border-white/8 hover:border-emerald-500/30 text-left transition-all flex items-center justify-between group"
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-black text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+                        🇬🇧 Send in English
+                      </span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-extrabold">
+                        Travellers &amp; Visitors
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
+                      &quot;Thank you for visiting MS Car Mechanic... Could you take 10s to leave a 5-star review?&quot;
+                    </p>
+                  </div>
+                  <Send className="w-4 h-4 text-slate-400 group-hover:text-emerald-500 shrink-0 ml-2" />
+                </button>
+
+                {/* Telugu Option */}
+                <button
+                  type="button"
+                  onClick={() => handleSendReviewWhatsApp(reviewLangModalBooking, 'te')}
+                  className="w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-[#1C1C1F] hover:bg-emerald-500/10 border border-black/8 dark:border-white/8 hover:border-emerald-500/30 text-left transition-all flex items-center justify-between group"
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-black text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+                        🇮🇳 Send in Telugu (తెలుగు)
+                      </span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-extrabold">
+                        Local Residents
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
+                      &quot;నమస్కారం! మీ వాహన సర్వీస్ పూర్తయింది... దయచేసి 5-స్టార్ రివ్యూ ఇవ్వండి&quot;
+                    </p>
+                  </div>
+                  <Send className="w-4 h-4 text-slate-400 group-hover:text-emerald-500 shrink-0 ml-2" />
+                </button>
+              </div>
+
+              {/* Copy Direct Review Link */}
+              <div className="pt-2 border-t border-black/5 dark:border-white/5 flex items-center justify-between text-xs">
+                <span className="text-slate-500 font-medium">Official Review URL:</span>
+                <button
+                  type="button"
+                  onClick={() => handleCopyReviewLink(reviewLangModalBooking.id)}
+                  className="px-3 py-1.5 rounded-xl bg-neutral-100 dark:bg-white/10 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-black text-slate-800 dark:text-slate-200 font-bold transition-all flex items-center gap-1.5"
+                >
+                  {copiedReviewId === reviewLangModalBooking.id ? (
+                    <>
+                      <CheckCheck className="w-3.5 h-3.5 text-emerald-500" />
+                      <span>Copied ✓</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copy Link</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+            </div>
+          </div>
+        )}
 
       </div>
     </div>
