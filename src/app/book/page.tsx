@@ -21,6 +21,7 @@ import {
 import { BookingMode, TIME_SLOTS, VEHICLE_TYPES, ADD_ONS, Booking } from '@/lib/types';
 import { saveBooking, getBookings } from '@/lib/supabase';
 import { useLanguage } from '@/context/LanguageContext';
+import MapPinPickerModal from '@/components/MapPinPickerModal';
 
 const MAX_SLOTS_PER_HOUR = 2;
 
@@ -44,6 +45,7 @@ function BookingForm() {
   const [serviceCategory, setServiceCategory] = useState<'wash' | 'repair' | 'combo'>('wash');
   const [selectedRepairs, setSelectedRepairs] = useState<string[]>([]);
   const [customRepairNote, setCustomRepairNote] = useState('');
+  const [showMapPicker, setShowMapPicker] = useState(false);
 
   // Form Fields
   const [name, setName] = useState('');
@@ -101,10 +103,20 @@ function BookingForm() {
     return acc;
   }, {} as Record<string, number>);
 
-  // Live Price
+  // Live Price Calculations with Add-ons
   const selectedVehicleObj = VEHICLE_TYPES.find((v) => v.id === vehicleType) || VEHICLE_TYPES[0];
   const vehicleBasePrice = selectedVehicleObj.basePrice || 350;
-  const totalAmount = serviceCategory === 'repair' ? 999 : serviceCategory === 'combo' ? vehicleBasePrice + 850 : vehicleBasePrice;
+  
+  const selectedAddOnsTotal = selectedAddOns.reduce((sum, id) => {
+    const found = ADD_ONS.find((a) => a.id === id);
+    return sum + (found ? found.price : 0);
+  }, 0);
+
+  const totalAmount = serviceCategory === 'repair' 
+    ? 999 
+    : serviceCategory === 'combo' 
+    ? (vehicleBasePrice + 850 + selectedAddOnsTotal) 
+    : (vehicleBasePrice + selectedAddOnsTotal);
 
   // Submission State
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -155,27 +167,36 @@ function BookingForm() {
         console.log('Telegram API call error:', err);
       }
 
+      const mapNavUrl = address ? `https://maps.google.com/?q=${encodeURIComponent(address + ', Srikalahasti')}` : '';
+
       const waText =
         mode === 'pickup'
-          ? `New Booking — MS Car Mechanic & Car Wash Srikalahasti
-Service: ${categoryTitle}
-Mode: Doorstep Pickup
-Name: ${name}
-Phone: ${phone}
-Vehicle: ${vehicleType} - ${vehicleModel}
-Address: ${address || 'Srikalahasti'}
-Time: ${timeWindow}
-Add-ons: ${selectedAddOns.length > 0 ? selectedAddOns.join(', ') : 'None'}
-Booking ID: ${saved.id}`
-          : `New Booking — MS Car Mechanic & Car Wash Srikalahasti
-Service: ${categoryTitle}
-Mode: Center Drive-In
-Name: ${name}
-Phone: ${phone}
-Vehicle: ${vehicleType} - ${vehicleModel}
-Date: ${date} (${timeSlot})
-Add-ons: ${selectedAddOns.length > 0 ? selectedAddOns.join(', ') : 'None'}
-Booking ID: ${saved.id}`;
+          ? `🚗 *NEW DOORSTEP PICKUP BOOKING — MS CAR MECHANIC & CAR WASH*
+🏢 *Panagal, Srikalahasti (SKHT)*
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+🛠️ *SERVICE:* ${categoryTitle}
+🚘 *VEHICLE:* ${vehicleType} (${vehicleModel})
+👤 *CUSTOMER:* ${name}
+📞 *PHONE:* ${phone}
+📍 *PICKUP ADDRESS:* ${address || 'Srikalahasti'}
+🗺️ *MAPS NAV LINK:* ${mapNavUrl || 'Address entered above'}
+⏰ *TIME WINDOW:* ${timeWindow}
+✨ *ADD-ONS:* ${selectedAddOns.length > 0 ? selectedAddOns.join(', ') : 'None'}
+💰 *ESTIMATED TOTAL:* ${serviceCategory === 'repair' ? 'Quote on Inspection' : `₹${totalAmount}`}
+🔖 *BOOKING ID:* ${saved.id}
+🔍 *LIVE TRACKING:* https://mscarwash.vercel.app/track?id=${saved.id}`
+          : `🚗 *NEW CENTER DRIVE-IN BOOKING — MS CAR MECHANIC & CAR WASH*
+🏢 *Panagal, Srikalahasti (SKHT)*
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+🛠️ *SERVICE:* ${categoryTitle}
+🚘 *VEHICLE:* ${vehicleType} (${vehicleModel})
+👤 *CUSTOMER:* ${name}
+📞 *PHONE:* ${phone}
+📅 *DATE & SLOT:* ${date} (${timeSlot})
+✨ *ADD-ONS:* ${selectedAddOns.length > 0 ? selectedAddOns.join(', ') : 'None'}
+💰 *ESTIMATED TOTAL:* ${serviceCategory === 'repair' ? 'Quote on Inspection' : `₹${totalAmount}`}
+🔖 *BOOKING ID:* ${saved.id}
+🔍 *LIVE TRACKING:* https://mscarwash.vercel.app/track?id=${saved.id}`;
 
       const whatsappUrl = `https://wa.me/918309390902?text=${encodeURIComponent(waText)}`;
 
@@ -432,12 +453,22 @@ Booking ID: ${saved.id}`;
           {mode === 'pickup' ? (
             <div className="space-y-3 pt-1">
               <div>
-                <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Pickup Address / Landmark in Srikalahasti
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300">
+                    Pickup Address / Landmark in Srikalahasti
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowMapPicker(true)}
+                    className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20"
+                  >
+                    <Compass className="w-3 h-3 text-emerald-500" />
+                    <span>📍 Map &amp; GPS Detect</span>
+                  </button>
+                </div>
                 <input
                   type="text"
-                  placeholder="e.g. Panagal, near Swarnamukhi Bank"
+                  placeholder="e.g. Panagal, near Swarnamukhi Bank, Srikalahasti"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/8 dark:border-white/8 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
@@ -471,7 +502,8 @@ Booking ID: ${saved.id}`;
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/8 dark:border-white/8 text-xs font-bold text-slate-900 dark:text-white"
+                  min={new Date().toISOString().split('T')[0]}
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/8 dark:border-white/8 text-xs font-bold text-slate-900 dark:text-white"
                 />
               </div>
               <div>
@@ -481,7 +513,7 @@ Booking ID: ${saved.id}`;
                 <select
                   value={timeSlot}
                   onChange={(e) => setTimeSlot(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/8 dark:border-white/8 text-xs font-bold text-slate-900 dark:text-white"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#151D2A] border border-black/8 dark:border-white/8 text-xs font-bold text-slate-900 dark:text-white"
                 >
                   {TIME_SLOTS.map((ts) => {
                     const bookedCount = slotCountsForDate[ts.slot] || 0;
@@ -497,71 +529,99 @@ Booking ID: ${saved.id}`;
             </div>
           )}
 
-          {/* Optional Add-Ons Expandable */}
-          <div className="border-t border-black/5 dark:border-white/5 pt-3">
-            <button
-              type="button"
-              onClick={() => setShowAddOns(!showAddOns)}
-              className="w-full flex items-center justify-between text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-            >
-              <span className="flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                <span>Add Services / Extras ({selectedAddOns.length} selected)</span>
-              </span>
-              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showAddOns ? 'rotate-180' : ''}`} />
-            </button>
-            {showAddOns && (
-              <div className="mt-2.5 space-y-1.5 animate-fade-in-up">
+          {/* Add-ons Section (if wash) */}
+          {serviceCategory !== 'repair' && (
+            <div className="space-y-2 pt-1 border-t border-black/8 dark:border-white/8">
+              <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300">
+                Optional Value Add-ons
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 {ADD_ONS.map((addon) => {
-                  const isActive = selectedAddOns.includes(addon.id);
+                  const isChecked = selectedAddOns.includes(addon.id);
                   return (
                     <button
-                      key={addon.id}
                       type="button"
+                      key={addon.id}
                       onClick={() => toggleAddOn(addon.id)}
-                      className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-xs text-left transition-all ${
-                        isActive
-                          ? 'border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold'
-                          : 'border-black/5 dark:border-white/5 bg-slate-50 dark:bg-white/5 text-slate-700 dark:text-slate-300 font-medium'
+                      className={`p-2.5 rounded-xl border text-left flex items-start justify-between transition-all ${
+                        isChecked
+                          ? 'bg-emerald-500/10 border-emerald-500 text-emerald-950 dark:text-emerald-100 ring-1 ring-emerald-500'
+                          : 'bg-slate-50 dark:bg-[#151D2A] border-black/8 dark:border-white/8 text-slate-700 dark:text-slate-300'
                       }`}
                     >
-                      <div className="flex items-center gap-2">
-                        <div className={`w-4 h-4 rounded border flex items-center justify-center ${isActive ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-300 dark:border-slate-600'}`}>
-                          {isActive && <CheckCircle2 className="w-3.5 h-3.5" />}
-                        </div>
-                        <span>{addon.name}</span>
+                      <div className="space-y-0.5">
+                        <span className="block text-xs font-black leading-tight">{addon.name}</span>
+                        <span className="block text-[10px] opacity-70 leading-tight">{addon.desc}</span>
                       </div>
-                      <span className="text-[10px] text-slate-400 font-normal">{addon.desc}</span>
+                      <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 shrink-0 ml-1">
+                        +₹{addon.price}
+                      </span>
                     </button>
                   );
                 })}
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
-          {/* Price Bar & Submit */}
-          <div className="border-t border-black/8 dark:border-white/8 pt-3 space-y-3">
-            <div className="flex justify-between items-center text-xs">
-              <span className="font-bold text-slate-500">Estimated Total:</span>
-              <span className="text-lg font-black text-emerald-600 dark:text-emerald-400">
-                {serviceCategory === 'repair' ? (
-                  <span className="text-sm font-extrabold text-indigo-600 dark:text-indigo-400">Quote on Inspection</span>
-                ) : (
-                  <>₹{totalAmount} <span className="text-[10px] text-amber-500 font-bold ml-1">(Free Perks Included)</span></>
-                )}
+          {/* Transparent Itemized Bill Summary */}
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#151D2A] border border-black/8 dark:border-white/8 space-y-2 text-xs">
+            <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">
+              Estimated Bill Breakdown
+            </span>
+            <div className="flex justify-between items-center text-slate-700 dark:text-slate-300 font-medium">
+              <span>{serviceCategory === 'repair' ? 'Diagnostic & Repair Check' : `${vehicleType} Base Foam Wash`}:</span>
+              <span className="font-bold text-slate-900 dark:text-white">
+                {serviceCategory === 'repair' ? 'Quote on Checkup' : `₹${vehicleBasePrice}`}
               </span>
             </div>
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-60"
-            >
-              <MessageSquare className="w-4 h-4 fill-current" />
-              <span>{isSubmitting ? 'Saving Request...' : 'Book Wash via WhatsApp'}</span>
-            </button>
+            {serviceCategory !== 'repair' && selectedAddOns.map((id) => {
+              const addon = ADD_ONS.find((a) => a.id === id);
+              if (!addon) return null;
+              return (
+                <div key={id} className="flex justify-between items-center text-emerald-600 dark:text-emerald-400 font-medium">
+                  <span>+ {addon.name}:</span>
+                  <span className="font-bold">+₹{addon.price}</span>
+                </div>
+              );
+            })}
+
+            <div className="pt-2 border-t border-black/8 dark:border-white/8 flex justify-between items-center font-black text-sm">
+              <span className="text-slate-900 dark:text-white">Estimated Total:</span>
+              <span className="text-emerald-600 dark:text-emerald-400 text-base">
+                {serviceCategory === 'repair' ? (
+                  <span className="text-sm text-indigo-600 dark:text-indigo-400">Quote on Inspection</span>
+                ) : (
+                  <>₹{totalAmount}</>
+                )}
+              </span>
+            </div>
+            <span className="text-[10px] text-amber-500 dark:text-amber-400 font-bold block text-right">
+              ⚡ Free Mineral Water Bottle + Car Tissue Box Included
+            </span>
           </div>
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-60"
+          >
+            <MessageSquare className="w-4 h-4 fill-current" />
+            <span>{isSubmitting ? 'Saving Request...' : 'Book Wash via WhatsApp'}</span>
+          </button>
         </form>
+      )}
+
+      {/* Map Pin Picker Modal */}
+      {showMapPicker && (
+        <MapPinPickerModal
+          isOpen={showMapPicker}
+          onClose={() => setShowMapPicker(false)}
+          onConfirm={(addr: string) => {
+            setAddress(addr);
+            setShowMapPicker(false);
+          }}
+        />
       )}
 
       {/* Trust Line */}
@@ -572,9 +632,29 @@ Booking ID: ${saved.id}`;
   );
 }
 
+function BookingPageSkeleton() {
+  return (
+    <div className="max-w-xl mx-auto py-10 px-4 space-y-6">
+      <div className="text-center space-y-2">
+        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+          Book Car Repair &amp; Water Wash in Srikalahasti
+        </h1>
+        <p className="text-xs text-slate-500 font-medium">
+          MS Car Mechanic &amp; Car Wash • Panagal, Near Highway, Srikalahasti (517644)
+        </p>
+      </div>
+      <div className="p-6 rounded-3xl bg-slate-50 dark:bg-[#0E1420] border border-black/8 dark:border-white/8 animate-pulse space-y-4">
+        <div className="h-10 bg-slate-200 dark:bg-white/10 rounded-xl w-full" />
+        <div className="h-24 bg-slate-200 dark:bg-white/10 rounded-xl w-full" />
+        <div className="h-12 bg-slate-200 dark:bg-white/10 rounded-xl w-full" />
+      </div>
+    </div>
+  );
+}
+
 export default function BookingPage() {
   return (
-    <Suspense fallback={<div className="py-12 text-center text-xs text-slate-400 font-bold">Loading booking form...</div>}>
+    <Suspense fallback={<BookingPageSkeleton />}>
       <BookingForm />
     </Suspense>
   );
