@@ -27,6 +27,8 @@ import {
 } from 'lucide-react';
 import { QuickPriceEstimator } from '@/components/QuickPriceEstimator';
 import { GallerySection } from '@/components/GallerySection';
+import { BeforeAfterSlider } from '@/components/BeforeAfterSlider';
+import { GoogleRatingBadge } from '@/components/GoogleRatingBadge';
 import { FaqSection } from '@/components/FaqSection';
 import { HomeEmergencySosBanner } from '@/components/HomeEmergencySosBanner';
 
@@ -130,20 +132,25 @@ export default function HomePage() {
           {/* Left Column: Headline & Action Buttons */}
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
             
-            {/* DriveU Green Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-black tracking-widest uppercase border border-emerald-500/20">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>OPEN NOW • WATER WASH & ALL CAR REPAIRS • SRIKALAHASTI</span>
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5">
+              {/* DriveU Green Pill Badge */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-black tracking-widest uppercase border border-emerald-500/20">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>OPEN NOW • WATER WASH &amp; ALL CAR REPAIRS</span>
+              </div>
+
+              {/* Dynamic Google Rating Badge */}
+              <GoogleRatingBadge />
             </div>
 
-            {/* Main MS Car Wash SEO Headline */}
+            {/* Main MS Auto Care SEO Headline */}
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.1]">
-              MS CAR MECHANIC & CAR WASH — Best Car Repair & Water Wash in Srikalahasti
+              MS AUTO CARE — Best Car Mechanic &amp; Water Wash in Srikalahasti
             </h1>
 
             {/* Subtitle with MS Car Wash Data */}
             <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
-              Top-rated water wash, 100% scratch-free foam washing, and <strong className="text-slate-900 dark:text-white font-black">all types of car mechanic repairs</strong> in Srikalahasti (Panagal, near highway). Engine service, AC repair, brake work & doorstep pickup, <strong className="text-slate-900 dark:text-white font-extrabold">starting at ₹100.</strong>
+              Top-rated water wash, 100% scratch-free foam washing, and <strong className="text-slate-900 dark:text-white font-black">all types of car mechanic repairs</strong> in Srikalahasti (Panagal, near highway). Engine service, AC repair, brake work &amp; doorstep pickup, <strong className="text-slate-900 dark:text-white font-extrabold">starting at ₹100.</strong>
             </p>
 
             {/* DriveU Solid Action Buttons */}
@@ -160,7 +167,7 @@ export default function HomePage() {
                 href="/pricing"
                 className="w-full sm:w-auto px-6 py-4 rounded-xl bg-slate-100 dark:bg-[#0E1420] text-slate-900 dark:text-white border border-black/8 dark:border-white/10 text-xs font-extrabold hover:bg-slate-200 dark:hover:bg-white/10 transition-all flex items-center justify-center gap-2"
               >
-                <span>View All Services & Rates</span>
+                <span>View All Services &amp; Rates</span>
               </Link>
             </div>
 
@@ -185,8 +192,8 @@ export default function HomePage() {
               
               <div className="relative w-48 h-48 flex items-center justify-center p-4 bg-white dark:bg-[#141C2B] rounded-2xl border border-black/5 dark:border-white/5 shadow-inner">
                 <Image
-                  src="/logo.png"
-                  alt="MS Car Mechanic & Car Wash Srikalahasti Logo"
+                  src="/ms-auto-care-logo.png"
+                  alt="MS Auto Care — Car Mechanic & Water Wash Srikalahasti Logo"
                   width={160}
                   height={160}
                   className="w-40 h-40 object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"
@@ -196,18 +203,21 @@ export default function HomePage() {
               </div>
 
               <div>
-                <h3 className="font-black text-xl text-slate-900 dark:text-white">MS CAR MECHANIC & CAR WASH</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium leading-relaxed">
-                  Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Near Highway Srikalahasti - 517644
-                </p>
+                <h3 className="font-black text-xl text-slate-900 dark:text-white">MS AUTO CARE</h3>
+                <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-extrabold tracking-wider uppercase block mt-0.5">
+                  Car Mechanic &amp; Water Wash
+                </span>
+                <address className="not-italic text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium leading-relaxed">
+                  Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Near Highway, Srikalahasti - 517644
+                </address>
               </div>
 
               <div className="w-full pt-3 border-t border-black/8 dark:border-white/8 flex items-center justify-between text-xs font-bold">
-                <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Open 7 AM – 10 PM
-                </span>
+                <time className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Open 7 AM – 10 PM Daily
+                </time>
                 <span className="px-2.5 py-1 rounded-full bg-slate-200/70 dark:bg-white/10 text-slate-800 dark:text-slate-200">
-                  Wash & Full Mechanic Service
+                  Wash &amp; Full Mechanic
                 </span>
               </div>
 
@@ -380,6 +390,11 @@ export default function HomePage() {
       {/* QUICK PRICE ESTIMATOR & CALCULATOR */}
       <section className="py-12 px-4 sm:px-6 max-w-6xl mx-auto w-full border-t border-black/8 dark:border-white/8">
         <QuickPriceEstimator />
+      </section>
+
+      {/* INTERACTIVE BEFORE & AFTER TRANSFORMATION SLIDER */}
+      <section className="py-12 px-4 sm:px-6 max-w-6xl mx-auto w-full border-t border-black/8 dark:border-white/8">
+        <BeforeAfterSlider />
       </section>
 
       {/* BEFORE / AFTER PHOTO GALLERY */}

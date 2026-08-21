@@ -13,8 +13,8 @@ export function Footer() {
             <div className="flex items-center gap-2.5">
               <div className="p-1 rounded-xl bg-white dark:bg-[#0D131D] border border-black/[0.08] dark:border-white/[0.08] shadow-xs">
                 <Image
-                  src="/logo.png"
-                  alt="MS Car Mechanic & Car Wash"
+                  src="/ms-auto-care-logo.png"
+                  alt="MS Auto Care — Car Mechanic & Water Wash"
                   width={36}
                   height={36}
                   className="w-9 h-9 object-contain"
@@ -22,12 +22,16 @@ export function Footer() {
                 />
               </div>
               <div>
-                <span className="text-slate-900 dark:text-white font-black text-sm sm:text-base tracking-tight block">MS CAR MECHANIC & CAR WASH</span>
-                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-extrabold tracking-widest uppercase">Srikalahasti</span>
+                <span className="text-slate-900 dark:text-white font-black text-sm sm:text-base tracking-tight block">
+                  MS AUTO CARE
+                </span>
+                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-extrabold tracking-widest uppercase block mt-0.5">
+                  Car Mechanic &amp; Car Wash • Srikalahasti
+                </span>
               </div>
             </div>
             <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
-              Srikalahasti’s #1 premium car mechanic & vehicle wash center. Complete car repairs, engine mechanics, high-pressure foam wash, underbody blast & doorstep pickup service.
+              Srikalahasti’s #1 premium car mechanic &amp; vehicle wash center. Complete car repairs, engine diagnostics, AC gas refilling, high-pressure foam wash, underbody blast &amp; doorstep pickup service.
             </p>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[11px] font-bold border border-emerald-500/20">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -43,7 +47,8 @@ export function Footer() {
             <ul className="space-y-2.5 text-xs font-bold">
               <li><Link href="/" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Home Page</Link></li>
               <li><Link href="/book" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Book Pickup or Slot</Link></li>
-              <li><Link href="/pricing" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Wash Rate Card</Link></li>
+              <li><Link href="/pricing" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Rate Card &amp; Services</Link></li>
+              <li><Link href="/track" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Track Live Status</Link></li>
               <li><Link href="/admin" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Admin Portal</Link></li>
             </ul>
           </div>
@@ -110,7 +115,7 @@ export function Footer() {
         </div>
 
         <div className="pt-6 border-t border-black/[0.08] dark:border-white/[0.08] flex flex-col md:flex-row items-center justify-between text-xs gap-3">
-          <p>&copy; {new Date().getFullYear()} MS Car Mechanic & Car Wash Srikalahasti. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} MS Auto Care — Car Mechanic &amp; Car Wash Srikalahasti. All rights reserved.</p>
           
           <span className="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300">
             <ShieldCheck className="w-4 h-4 text-emerald-500" /> 100% Scratch-Free Snow Foam Technology
