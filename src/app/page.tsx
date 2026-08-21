@@ -27,7 +27,6 @@ import {
 } from 'lucide-react';
 import { QuickPriceEstimator } from '@/components/QuickPriceEstimator';
 import { GallerySection } from '@/components/GallerySection';
-import { BeforeAfterSlider } from '@/components/BeforeAfterSlider';
 import { GoogleRatingBadge } from '@/components/GoogleRatingBadge';
 import { FaqSection } from '@/components/FaqSection';
 import { HomeEmergencySosBanner } from '@/components/HomeEmergencySosBanner';
@@ -392,12 +391,7 @@ export default function HomePage() {
         <QuickPriceEstimator />
       </section>
 
-      {/* INTERACTIVE BEFORE & AFTER TRANSFORMATION SLIDER */}
-      <section className="py-12 px-4 sm:px-6 max-w-6xl mx-auto w-full border-t border-black/8 dark:border-white/8">
-        <BeforeAfterSlider />
-      </section>
-
-      {/* BEFORE / AFTER PHOTO GALLERY */}
+      {/* WORKSHOP & SERVICES PHOTO GALLERY */}
       <section className="py-12 px-4 sm:px-6 max-w-6xl mx-auto w-full border-t border-black/8 dark:border-white/8">
         <GallerySection />
       </section>
