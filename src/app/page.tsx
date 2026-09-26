@@ -135,6 +135,41 @@ export default function HomePage() {
           {/* Left Column: Headline & Action Buttons */}
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
             
+            {/* Smooth Animated Brand Entrance Showcase (Logo & Shop Name) */}
+            <div className="animate-brand-entrance flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pb-1">
+              <div className="relative group shrink-0">
+                <div className="absolute -inset-1.5 rounded-2xl bg-gradient-to-tr from-emerald-500/40 via-teal-500/20 to-cyan-500/30 blur-md opacity-80 animate-ring-pulse"></div>
+                <div className="relative w-14 h-14 sm:w-16 sm:h-16 p-2 rounded-2xl bg-white dark:bg-[#0E1522] border border-emerald-500/40 shadow-xl overflow-hidden flex items-center justify-center">
+                  <Image
+                    src="/ms-auto-care-logo.png"
+                    alt="MS Auto Care Logo"
+                    width={56}
+                    height={56}
+                    className="w-full h-full object-contain filter drop-shadow-sm"
+                    priority
+                  />
+                  <div className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/40 dark:via-white/20 to-transparent animate-shine-sweep pointer-events-none"></div>
+                </div>
+              </div>
+
+              <div className="text-center sm:text-left">
+                <div className="flex items-center justify-center sm:justify-start gap-2">
+                  <span className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase drop-shadow-sm">
+                    MS AUTO CARE
+                  </span>
+                  <span className="px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-black tracking-wider uppercase border border-emerald-500/20">
+                    SKHT
+                  </span>
+                </div>
+                <p className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400 tracking-wide uppercase mt-0.5">
+                  Car Mechanic &amp; Water Wash Center
+                </p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                  Panagal, Opp Old RTO Office, Srikalahasti
+                </p>
+              </div>
+            </div>
+
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5">
               {/* DriveU Green Pill Badge */}
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-black tracking-widest uppercase border border-emerald-500/20">
