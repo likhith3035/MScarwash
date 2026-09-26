@@ -96,7 +96,7 @@ export default function AdminPage() {
   const [editVehicleModel, setEditVehicleModel] = useState('');
   const [editAmount, setEditAmount] = useState<number>(350);
   const [editPaymentMethod, setEditPaymentMethod] = useState<string>('Cash');
-  const [editBilledBy, setEditBilledBy] = useState<string>('Naveen (Manager)');
+  const [editBilledBy, setEditBilledBy] = useState<string>('Naveen K (Owner)');
   const [editAddOns, setEditAddOns] = useState<string[]>([]);
   const [editStatus, setEditStatus] = useState<Booking['status']>('pending');
   const [editBeforePhotoUrl, setEditBeforePhotoUrl] = useState<string>('');
@@ -119,7 +119,7 @@ export default function AdminPage() {
   const [walkinModel, setWalkinModel] = useState('');
   const [walkinAmount, setWalkinAmount] = useState<number>(350);
   const [walkinPaymentMethod, setWalkinPaymentMethod] = useState('Cash');
-  const [walkinBilledBy, setWalkinBilledBy] = useState('Naveen (Manager)');
+  const [walkinBilledBy, setWalkinBilledBy] = useState('Naveen K (Owner)');
   const [walkinNotes, setWalkinNotes] = useState('');
   const [isAddingWalkin, setIsAddingWalkin] = useState(false);
 
@@ -332,7 +332,7 @@ export default function AdminPage() {
     csvContent += '========================================================================================\r\n';
     csvContent += `MS CAR MECHANIC & CAR WASH — AUDIT & FINANCIAL REPORT\r\n`;
     csvContent += `Center Location: Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Srikalahasti - 517644\r\n`;
-    csvContent += `Report Generated: ${new Date().toLocaleString('en-IN')} | Desk Manager: Naveen\r\n`;
+    csvContent += `Report Generated: ${new Date().toLocaleString('en-IN')} | Desk Owner: Naveen K\r\n`;
     csvContent += `Export Scope: ${rangeLabel} | Total Bookings Count: ${targetList.length} | Completed Jobs: ${completedCount}\r\n`;
     csvContent += `Total Completed Revenue: INR ${totalRev} | Cash: INR ${cashRev} | UPI: INR ${upiRev}\r\n`;
     csvContent += `Fleet Serviced: Bikes: ${bikesCount} | Cars/SUVs: ${carsCount} | Commercial/Heavy: ${heavyCount}\r\n`;
@@ -414,7 +414,7 @@ export default function AdminPage() {
     setEditVehicleModel(b.vehicleModel);
     setEditAmount(b.totalAmount || getDefaultPrice(b.vehicleType));
     setEditPaymentMethod('Cash');
-    setEditBilledBy('Naveen (Manager)');
+    setEditBilledBy('Naveen K (Owner)');
     setEditAddOns(b.addOns || []);
     setEditStatus(b.status);
     setEditBeforePhotoUrl(b.beforePhotoUrl || '');
@@ -507,7 +507,7 @@ Could you please take 10 seconds to share your experience with a 5-star Google r
 ⭐ https://share.google/bN5KNns6mgg3uI4tP
 
 Thank you, and have a safe and happy ride! 🚘
-— Naveen, MS Car Mechanic & Car Wash (Panagal, Srikalahasti)`;
+— Naveen K (Owner), MS Car Mechanic & Car Wash (Panagal, Srikalahasti)`;
 
     const teMsg = `నమస్కారం ${booking.name || 'గారు'}! 🙏
 
@@ -594,7 +594,7 @@ https://mscarwash.vercel.app/track?id=${booking.id}
     try {
       const res = await generateInvoicePDF(
         booking,
-        editBilledBy || 'Naveen (Manager)',
+        editBilledBy || 'Naveen K (Owner)',
         editPaymentMethod || 'Cash',
         false // Do NOT auto download
       );
@@ -632,7 +632,7 @@ https://mscarwash.vercel.app/track?id=${booking.id}
     const cleanPhone = phoneToUse.replace(/\D/g, '');
     const amountVal = editAmount || booking.totalAmount || getDefaultPrice(booking.vehicleType);
     const exactTimeStr = formatTimestampWithSeconds(booking.createdAt);
-    const staffName = editBilledBy || 'Naveen (Manager)';
+    const staffName = editBilledBy || 'Naveen K (Owner)';
 
     const addOnText = editAddOns.length > 0 ? editAddOns.join(', ') : 'Standard Wash Services';
 
@@ -854,7 +854,7 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 📍 Panagal, Opp Old RTO Office, Near Highway Srikalahasti
-📞 Desk Manager: Naveen | Helpline: 8309390902`;
+📞 Owner: Naveen K | Helpline: 8309390902`;
 
     const url = `https://wa.me/918309390902?text=${encodeURIComponent(message)}`;
     if (typeof window !== 'undefined') {
@@ -905,7 +905,7 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
           <div class="header">
             <div class="logo-text">MS CAR MECHANIC & CAR WASH — DAILY SHIFT SUMMARY</div>
             <div class="sub">Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Srikalahasti | Helpline: 8309390902</div>
-            <div class="sub"><strong>Date:</strong> ${dateFormatted} | <strong>Shift Billed By:</strong> Naveen (Manager)</div>
+            <div class="sub"><strong>Date:</strong> ${dateFormatted} | <strong>Shift Billed By:</strong> Naveen K (Owner)</div>
           </div>
 
           <div class="grid">
@@ -1283,7 +1283,7 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
                   </span>
                 </div>
                 <p className="text-xs text-neutral-500 dark:text-neutral-400 font-medium mt-0.5">
-                  Manager: Naveen • Cash vs UPI collections &amp; fleet turnaround for today
+                  Owner: Naveen K • Cash vs UPI collections &amp; fleet turnaround for today
                 </p>
               </div>
             </div>
@@ -2345,7 +2345,7 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
                     type="text"
                     value={walkinBilledBy}
                     onChange={(e) => setWalkinBilledBy(e.target.value)}
-                    placeholder="e.g. Naveen (Manager)"
+                    placeholder="e.g. Naveen K (Owner)"
                     className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.08] dark:border-white/[0.08] font-medium"
                   />
                 </div>
@@ -2493,7 +2493,7 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
                       type="text"
                       value={editBilledBy}
                       onChange={(e) => setEditBilledBy(e.target.value)}
-                      placeholder="e.g. Naveen (Manager)"
+                      placeholder="e.g. Naveen K (Owner)"
                       className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.08] dark:border-white/[0.08] text-xs font-medium"
                     />
                   </div>

@@ -35,6 +35,21 @@ export function StructuredData() {
     image: 'https://mscarwash.vercel.app/logo.png',
     logo: 'https://mscarwash.vercel.app/logo.png',
     telephone: ['+918309390902', '8309390902'],
+    founder: {
+      '@type': 'Person',
+      name: 'Naveen Kami',
+      alternateName: 'Naveen K',
+      jobTitle: 'Owner & Founder',
+      telephone: '+918309390902',
+    },
+    employee: [
+      {
+        '@type': 'Person',
+        name: 'Naveen Kami (Naveen K)',
+        jobTitle: 'Owner & Lead Technician',
+        telephone: '+918309390902',
+      },
+    ],
     contactPoint: {
       '@type': 'ContactPoint',
       telephone: '+918309390902',
@@ -255,6 +270,54 @@ export function StructuredData() {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'Who is the owner of MS Car Care SKHT?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'MS Car Care SKHT (located in Panagal, Srikalahasti) is owned and operated by Naveen Kami (also known as Naveen K). Direct contact: +91 8309390902.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Who is the owner of MS Auto Care Srikalahasti?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'MS Auto Care in Srikalahasti is founded, owned, and operated by Naveen Kami (Naveen K). Phone: +91 8309390902.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Who is the owner of MS Care?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Naveen Kami (Naveen K) is the owner and proprietor of MS Care in Srikalahasti. Phone: +91 8309390902.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Who is the owner of MS Car Wash?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'MS Car Wash in Panagal, Srikalahasti is owned and managed by Naveen Kami (Naveen K).',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Who is the owner of MS Car Mechanic?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Naveen Kami is the owner and lead technician of MS Car Mechanic workshop in Srikalahasti.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Who is the proprietor of MS Auto Care / MS Car Care SKHT?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Naveen Kami (Naveen K) is the sole proprietor and owner of MS Auto Care and MS Car Care SKHT.',
+        },
+      },
       {
         '@type': 'Question',
         name: 'What is the best car mechanic and car repair shop in Srikalahasti (SKHT)?',

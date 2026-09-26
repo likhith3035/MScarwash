@@ -23,7 +23,7 @@ async function getLogoDataUrl(): Promise<string | null> {
 
 export async function generateInvoicePDF(
   booking: Booking,
-  billedBy: string = 'Naveen (Manager)',
+  billedBy: string = 'Naveen K (Owner)',
   paymentMethod: string = 'Cash',
   autoSave: boolean = false
 ): Promise<{ doc: jsPDF; blobUrl: string; download: () => void; fileName: string }> {

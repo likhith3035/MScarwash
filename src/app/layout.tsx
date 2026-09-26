@@ -109,6 +109,7 @@ export const metadata: Metadata = {
     'highway car mechanic panagal',
   ],
   authors: [
+    { name: 'Naveen Kami (Naveen K) — Owner, MS Auto Care', url: 'https://mscarwash.vercel.app' },
     { name: 'MS Auto Care — Car Mechanic & Car Wash Srikalahasti (Call 8309390902)', url: 'https://mscarwash.vercel.app' },
     { name: 'Likhith', url: 'https://devlikhith.vercel.app/' },
   ],
@@ -132,6 +133,9 @@ export const metadata: Metadata = {
     'geo.position': '13.742436;79.683298',
     'ICBM': '13.742436, 79.683298',
     'contact:phone_number': '+918309390902',
+    'owner': 'Naveen Kami (Naveen K)',
+    'founder': 'Naveen Kami (Naveen K)',
+    'business:contact_data:founder': 'Naveen Kami (Naveen K)',
   },
   verification: {
     google: 'Y9Pz6KKF2dRqhHD68hqf5NrUjcpR2ULh8je2rh_8Kyw',

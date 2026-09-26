@@ -36,17 +36,35 @@ export function FaqSection() {
       q: 'Is the foam wash scratch-free for new cars?',
       a: 'Yes, we use 100% scratch-free microfiber wash mitts, neutral snow foam, and soft high-pressure nozzles safe for ceramic coatings and brand-new paint.',
     },
+    {
+      q: 'Who is the owner of MS Car Care SKHT / MS Auto Care / MS Care / MS Car Wash?',
+      a: 'MS Auto Care (also known as MS Car Care SKHT, MS Care, MS Car Wash, and MS Car Mechanic in Panagal, Srikalahasti) is owned and operated by Naveen Kami (also known as Naveen K). Naveen Kami founded the workshop and personally oversees multi-point vehicle diagnostics, engine repairs, and foam washing. For direct inquiries or quotes, contact Naveen Kami at 8309390902.',
+    },
   ];
 
   const toggleFaq = (idx: number) => {
     setOpenIdx(openIdx === idx ? null : idx);
   };
 
-  const filteredFaqs = faqs.filter(
-    (faq) =>
-      faq.q.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      faq.a.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredFaqs = faqs.filter((faq) => {
+    const sLower = searchQuery.toLowerCase().trim();
+    if (!sLower) return true;
+
+    const qLower = faq.q.toLowerCase();
+    const aLower = faq.a.toLowerCase();
+
+    // Direct match in question or answer
+    if (qLower.includes(sLower) || aLower.includes(sLower)) return true;
+
+    // Smart owner matching: any query asking about owner, proprietor, founder, or Naveen Kami
+    const ownerTerms = ['owner', 'proprietor', 'founder', 'who owns', 'who runs', 'naveen', 'kami'];
+    const isOwnerQuery = ownerTerms.some((term) => sLower.includes(term));
+    if (isOwnerQuery && qLower.includes('owner')) return true;
+
+    // Multi-word token match
+    const tokens = sLower.split(/\s+/).filter(Boolean);
+    return tokens.every((token) => qLower.includes(token) || aLower.includes(token));
+  });
 
   return (
     <div className="max-w-3xl mx-auto space-y-5">

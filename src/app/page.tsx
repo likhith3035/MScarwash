@@ -30,6 +30,10 @@ import { GallerySection } from '@/components/GallerySection';
 import { GoogleRatingBadge } from '@/components/GoogleRatingBadge';
 import { FaqSection } from '@/components/FaqSection';
 import { HomeEmergencySosBanner } from '@/components/HomeEmergencySosBanner';
+import { LiveWorkshopStatus } from '@/components/LiveWorkshopStatus';
+import { BeforeAfterSlider } from '@/components/BeforeAfterSlider';
+import { TestimonialsSection } from '@/components/TestimonialsSection';
+import { HighwayDirectionsCard } from '@/components/HighwayDirectionsCard';
 
 export default function HomePage() {
   const precisionFeatures = [
@@ -183,6 +187,58 @@ export default function HomePage() {
               </Link>
             </div>
 
+            {/* 1-Tap Quick Vehicle Booking Row */}
+            <div className="pt-2">
+              <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-2 text-center lg:text-left">
+                ⚡ Select Vehicle to Book in 30 Seconds:
+              </span>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <Link
+                  href="/book?vehicle=Bike"
+                  className="p-3 rounded-2xl bg-slate-50 dark:bg-[#0E1420] border border-black/8 dark:border-white/10 hover:border-emerald-500/50 hover:shadow-md transition-all text-left group hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  <div className="flex items-center justify-between text-xs font-black text-slate-900 dark:text-white">
+                    <span>🏍️ Bike</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-extrabold text-[11px]">₹100</span>
+                  </div>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">20-Min Foam Bath</span>
+                </Link>
+
+                <Link
+                  href="/book?vehicle=Car"
+                  className="p-3 rounded-2xl bg-slate-50 dark:bg-[#0E1420] border border-black/8 dark:border-white/10 hover:border-emerald-500/50 hover:shadow-md transition-all text-left group hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  <div className="flex items-center justify-between text-xs font-black text-slate-900 dark:text-white">
+                    <span>🚗 Car</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-extrabold text-[11px]">₹350</span>
+                  </div>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">Hatchback / Sedan</span>
+                </Link>
+
+                <Link
+                  href="/book?vehicle=SUV"
+                  className="p-3 rounded-2xl bg-slate-50 dark:bg-[#0E1420] border border-black/8 dark:border-white/10 hover:border-emerald-500/50 hover:shadow-md transition-all text-left group hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  <div className="flex items-center justify-between text-xs font-black text-slate-900 dark:text-white">
+                    <span>🚙 SUV / MUV</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-extrabold text-[11px]">₹600</span>
+                  </div>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">Deep Mud Wash</span>
+                </Link>
+
+                <Link
+                  href="/book?vehicle=Commercial"
+                  className="p-3 rounded-2xl bg-slate-50 dark:bg-[#0E1420] border border-black/8 dark:border-white/10 hover:border-emerald-500/50 hover:shadow-md transition-all text-left group hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  <div className="flex items-center justify-between text-xs font-black text-slate-900 dark:text-white">
+                    <span>🚜 Heavy</span>
+                    <span className="text-amber-500 font-extrabold text-[11px]">Quote</span>
+                  </div>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">Tractor, Truck, Auto</span>
+                </Link>
+              </div>
+            </div>
+
             {/* Feature Perks Strip */}
             <div className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-5 text-xs text-slate-600 dark:text-slate-400 font-bold border-t border-black/8 dark:border-white/8">
               <span className="flex items-center gap-1.5">
@@ -233,6 +289,9 @@ export default function HomePage() {
                 </span>
               </div>
 
+            </div>
+            <div className="w-full max-w-md mt-4">
+              <LiveWorkshopStatus />
             </div>
           </div>
 
@@ -399,6 +458,11 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* BEFORE & AFTER TRANSFORMATION SLIDER */}
+      <section className="py-12 px-4 sm:px-6 max-w-6xl mx-auto w-full border-t border-black/8 dark:border-white/8">
+        <BeforeAfterSlider />
+      </section>
+
       {/* QUICK PRICE ESTIMATOR & CALCULATOR */}
       <section className="py-12 px-4 sm:px-6 max-w-6xl mx-auto w-full border-t border-black/8 dark:border-white/8">
         <QuickPriceEstimator />
@@ -407,6 +471,16 @@ export default function HomePage() {
       {/* WORKSHOP & SERVICES PHOTO GALLERY */}
       <section className="py-12 px-4 sm:px-6 max-w-6xl mx-auto w-full border-t border-black/8 dark:border-white/8">
         <GallerySection />
+      </section>
+
+      {/* VERIFIED GOOGLE CUSTOMER REVIEWS & TESTIMONIALS */}
+      <section className="py-12 px-4 sm:px-6 max-w-6xl mx-auto w-full border-t border-black/8 dark:border-white/8">
+        <TestimonialsSection />
+      </section>
+
+      {/* HIGHWAY DIRECTIONS & LANDMARK SPOTLIGHT */}
+      <section className="py-12 px-4 sm:px-6 max-w-6xl mx-auto w-full border-t border-black/8 dark:border-white/8">
+        <HighwayDirectionsCard />
       </section>
 
       {/* FREQUENTLY ASKED QUESTIONS */}
