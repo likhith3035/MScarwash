@@ -42,6 +42,13 @@ export const FOUR_WHEELER_PRICING: PricingTier[] = [
   { category: 'Four-Wheeler', segment: 'SUV / MUV', examples: 'Creta, Innova, XUV700, Fortuner, Harrier', price: '₹600', priceValue: 600 },
 ];
 
+export const COMMERCIAL_HEAVY_PRICING: PricingTier[] = [
+  { category: 'Auto Rickshaw', segment: '3-Wheeler Auto', examples: 'Bajaj, Piaggio Ape, Atul Auto (Passenger / Cargo)', price: '₹200', priceValue: 200 },
+  { category: 'Commercial Pickup', segment: 'Mini Truck / Van', examples: 'Tata Ace, Bolero Pickup, Dost, Intra, Eeco', price: '₹450 – ₹550', priceValue: 450 },
+  { category: 'Tractor & Farm', segment: 'Agricultural Machinery', examples: 'Mahindra, Swaraj, John Deere, Sonalika, Farmtrac', price: '₹600', priceValue: 600 },
+  { category: 'Heavy & Industrial', segment: 'Truck, Lorry, Bus & JCB', examples: 'Tipper, Eicher, Lorry, Bus, JCB Earthmover', price: '₹800 – ₹1,200', priceValue: 800 },
+];
+
 export const VEHICLE_TYPES = [
   { id: 'Car', name: 'Car / Hatchback / Sedan', desc: 'Hatchback, Sedan & Saloon', basePrice: 350 },
   { id: 'SUV', name: 'SUV / MUV', desc: 'Creta, Innova, Fortuner', basePrice: 500 },

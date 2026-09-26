@@ -70,7 +70,7 @@ export function LiveWorkshopStatus({ compact = false }: LiveWorkshopStatusProps)
   }
 
   return (
-    <div className="p-3.5 sm:p-4 rounded-2xl bg-white/80 dark:bg-[#0E1420]/80 backdrop-blur-md border border-black/8 dark:border-white/10 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+    <div className="w-full p-3.5 sm:p-4 rounded-2xl bg-white/80 dark:bg-[#0E1420]/80 backdrop-blur-md border border-black/8 dark:border-white/10 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
       <div className="flex items-center gap-3">
         <div
           className={`p-2 rounded-xl flex items-center justify-center shrink-0 ${
@@ -82,7 +82,7 @@ export function LiveWorkshopStatus({ compact = false }: LiveWorkshopStatusProps)
           <Clock className="w-4 h-4" />
         </div>
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
             <span
               className={`w-2 h-2 rounded-full shrink-0 ${
                 isOpen ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
@@ -103,10 +103,10 @@ export function LiveWorkshopStatus({ compact = false }: LiveWorkshopStatusProps)
         </div>
       </div>
 
-      <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+      <div className="w-full sm:w-auto flex items-center justify-end shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-black/5 dark:border-white/5">
         <a
           href="tel:8309390902"
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-black text-xs hover:scale-105 active:scale-95 transition-all shadow-xs"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 sm:py-1.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-black text-xs hover:scale-105 active:scale-95 transition-all shadow-xs"
         >
           <PhoneCall className="w-3.5 h-3.5 text-emerald-400 dark:text-emerald-600" />
           <span>Call Desk</span>

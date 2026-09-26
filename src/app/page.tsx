@@ -289,17 +289,17 @@ export default function HomePage() {
 
           </div>
 
-          {/* Right Column: MS Car Wash Emblem Card */}
-          <div className="lg:col-span-5 flex justify-center">
-            <div className="w-full max-w-md p-6 rounded-3xl bg-slate-50 dark:bg-[#0E1420] border border-black/8 dark:border-white/8 shadow-xl flex flex-col items-center text-center space-y-5 relative overflow-hidden group">
+          {/* Right Column: MS Car Wash Emblem Card & Live Status */}
+          <div className="lg:col-span-5 flex flex-col items-center justify-center gap-4 w-full">
+            <div className="w-full max-w-md p-5 sm:p-6 rounded-3xl bg-slate-50 dark:bg-[#0E1420] border border-black/8 dark:border-white/8 shadow-xl flex flex-col items-center text-center space-y-4 sm:space-y-5 relative overflow-hidden group">
               
-              <div className="relative w-48 h-48 flex items-center justify-center p-4 bg-white dark:bg-[#141C2B] rounded-2xl border border-black/5 dark:border-white/5 shadow-inner">
+              <div className="relative w-36 h-36 sm:w-44 sm:h-44 flex items-center justify-center p-3 sm:p-4 bg-white dark:bg-[#141C2B] rounded-2xl border border-black/5 dark:border-white/5 shadow-inner">
                 <Image
                   src="/ms-auto-care-logo.png"
                   alt="MS Auto Care — Car Mechanic & Water Wash Srikalahasti Logo"
                   width={160}
                   height={160}
-                  className="w-40 h-40 object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"
+                  className="w-28 h-28 sm:w-36 sm:h-36 object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"
                   style={{ width: 'auto', height: 'auto' }}
                   priority
                 />
@@ -310,7 +310,7 @@ export default function HomePage() {
                 <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-extrabold tracking-wider uppercase block mt-0.5">
                   Car Mechanic &amp; Water Wash
                 </span>
-                <address className="not-italic text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium leading-relaxed">
+                <address className="not-italic text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium leading-relaxed max-w-xs">
                   Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Near Highway, Srikalahasti - 517644
                 </address>
               </div>
@@ -325,7 +325,8 @@ export default function HomePage() {
               </div>
 
             </div>
-            <div className="w-full max-w-md mt-4">
+
+            <div className="w-full max-w-md">
               <LiveWorkshopStatus />
             </div>
           </div>
