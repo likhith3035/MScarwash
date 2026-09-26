@@ -147,12 +147,12 @@ export default function HomePage() {
             </div>
 
             {/* Main MS Auto Care SEO Headline */}
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.1]">
+            <h1 className="text-2xl min-[400px]:text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.15]">
               MS AUTO CARE — #1 Car Repairs, Auto Repairs &amp; Water Wash in Srikalahasti
             </h1>
 
             {/* Subtitle with High-Density Search Keywords */}
-            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
+            <p className="text-xs sm:text-base lg:text-lg text-slate-600 dark:text-slate-300 max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
               Top-rated <strong className="text-slate-900 dark:text-white font-black">water wash</strong>, 100% scratch-free snow foam washing, and <strong className="text-slate-900 dark:text-white font-black">complete car repairs &amp; auto repairs</strong> in Srikalahasti (Panagal, near highway). Computerized engine diagnostics, AC gas refilling, brake overhaul &amp; doorstep pickup. Call <a href="tel:8309390902" className="text-emerald-600 dark:text-emerald-400 font-extrabold hover:underline">8309390902</a>.
             </p>
 

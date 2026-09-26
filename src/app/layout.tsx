@@ -8,6 +8,7 @@ import { FloatingContactButtons } from '@/components/FloatingContactButtons';
 import { StructuredData } from '@/components/StructuredData';
 import { PwaInstallPrompt } from '@/components/PwaInstallPrompt';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
+import { BrandOpeningSplash } from '@/components/BrandOpeningSplash';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://mscarwash.vercel.app'),
@@ -201,8 +202,9 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col bg-[#FAFCFA] dark:bg-[#05080D] text-slate-900 dark:text-white antialiased transition-colors duration-200">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <LanguageProvider>
+            <BrandOpeningSplash />
             <Navbar />
-            <main className="flex-1 pb-14 md:pb-0">
+            <main className="flex-1 pb-16 md:pb-0">
               {children}
             </main>
             <Footer />
