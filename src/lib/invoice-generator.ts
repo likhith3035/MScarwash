@@ -23,7 +23,7 @@ async function getLogoDataUrl(): Promise<string | null> {
 
 export async function generateInvoicePDF(
   booking: Booking,
-  billedBy: string = 'Naveen K (Owner)',
+  billedBy: string = 'Kami Naveen (Owner)',
   paymentMethod: string = 'Cash',
   autoSave: boolean = false
 ): Promise<{ doc: jsPDF; blobUrl: string; download: () => void; fileName: string }> {
@@ -186,14 +186,6 @@ export async function generateInvoicePDF(
       ]);
     });
   }
-
-  // Free Perks Row
-  tableRows.push([
-    `${tableRows.length + 1}`,
-    'Complimentary Pack (Chilled Water Bottle + Car Tissue Box)',
-    'Because We Care Perk',
-    'FREE'
-  ]);
 
   autoTable(doc, {
     startY: currentY,

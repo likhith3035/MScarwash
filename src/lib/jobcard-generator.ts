@@ -187,21 +187,8 @@ export async function generateJobCardPDF(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const finalY = (doc as any).lastAutoTable?.finalY || 160;
 
-  // 4. Customer Free Perks Box
-  doc.setFillColor(254, 243, 199); // Amber 100
-  doc.setDrawColor(245, 158, 11);
-  doc.roundedRect(14, finalY + 8, pageWidth - 28, 18, 2, 2, 'FD');
-
-  doc.setTextColor(146, 64, 14);
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(9);
-  doc.text('COMPLIMENTARY CUSTOMER PERKS INCLUDED:', 18, finalY + 15);
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
-  doc.text('1 Chilled Sealed Mineral Water Bottle + 1 Car Dashboard Tissue Paper Box included free.', 18, finalY + 21);
-
-  // 5. Terms & Signatures
-  const signY = finalY + 38;
+  // 4. Terms & Signatures
+  const signY = finalY + 14;
   doc.setTextColor(100, 116, 139);
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(7.5);
