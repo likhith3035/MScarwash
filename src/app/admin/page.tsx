@@ -96,7 +96,7 @@ export default function AdminPage() {
   const [editVehicleModel, setEditVehicleModel] = useState('');
   const [editAmount, setEditAmount] = useState<number>(350);
   const [editPaymentMethod, setEditPaymentMethod] = useState<string>('Cash');
-  const [editBilledBy, setEditBilledBy] = useState<string>('Naveen K (Owner)');
+  const [editBilledBy, setEditBilledBy] = useState<string>('Kami Naveen (Owner)');
   const [editAddOns, setEditAddOns] = useState<string[]>([]);
   const [editStatus, setEditStatus] = useState<Booking['status']>('pending');
   const [editBeforePhotoUrl, setEditBeforePhotoUrl] = useState<string>('');
@@ -119,7 +119,7 @@ export default function AdminPage() {
   const [walkinModel, setWalkinModel] = useState('');
   const [walkinAmount, setWalkinAmount] = useState<number>(350);
   const [walkinPaymentMethod, setWalkinPaymentMethod] = useState('Cash');
-  const [walkinBilledBy, setWalkinBilledBy] = useState('Naveen K (Owner)');
+  const [walkinBilledBy, setWalkinBilledBy] = useState('Kami Naveen (Owner)');
   const [walkinNotes, setWalkinNotes] = useState('');
   const [isAddingWalkin, setIsAddingWalkin] = useState(false);
 
@@ -332,7 +332,7 @@ export default function AdminPage() {
     csvContent += '========================================================================================\r\n';
     csvContent += `MS CAR MECHANIC & CAR WASH — AUDIT & FINANCIAL REPORT\r\n`;
     csvContent += `Center Location: Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Srikalahasti - 517644\r\n`;
-    csvContent += `Report Generated: ${new Date().toLocaleString('en-IN')} | Desk Owner: Naveen K\r\n`;
+    csvContent += `Report Generated: ${new Date().toLocaleString('en-IN')} | Desk Owner: Kami Naveen\r\n`;
     csvContent += `Export Scope: ${rangeLabel} | Total Bookings Count: ${targetList.length} | Completed Jobs: ${completedCount}\r\n`;
     csvContent += `Total Completed Revenue: INR ${totalRev} | Cash: INR ${cashRev} | UPI: INR ${upiRev}\r\n`;
     csvContent += `Fleet Serviced: Bikes: ${bikesCount} | Cars/SUVs: ${carsCount} | Commercial/Heavy: ${heavyCount}\r\n`;
@@ -414,7 +414,7 @@ export default function AdminPage() {
     setEditVehicleModel(b.vehicleModel);
     setEditAmount(b.totalAmount || getDefaultPrice(b.vehicleType));
     setEditPaymentMethod('Cash');
-    setEditBilledBy('Naveen K (Owner)');
+    setEditBilledBy('Kami Naveen (Owner)');
     setEditAddOns(b.addOns || []);
     setEditStatus(b.status);
     setEditBeforePhotoUrl(b.beforePhotoUrl || '');
@@ -501,25 +501,25 @@ Thank you for choosing MS Car Mechanic & Car Wash Srikalahasti. Call 8309390902 
 
     const enMsg = `Hi ${booking.name || 'there'}! 👋 Thank you for choosing *MS Car Mechanic & Car Wash Srikalahasti* for your ${booking.vehicleType} (${booking.vehicleModel || 'Vehicle'})! 🚗✨
 
-Your service is completed, and we have placed your complimentary *Mineral Water Bottle + Car Tissue Box* inside.
+Your service is completed, and your vehicle is sparkling clean and ready.
 
 Could you please take 10 seconds to share your experience with a 5-star Google review? It helps our local team immensely:
 ⭐ https://share.google/bN5KNns6mgg3uI4tP
 
 Thank you, and have a safe and happy ride! 🚘
-— Naveen K (Owner), MS Car Mechanic & Car Wash (Panagal, Srikalahasti)`;
+— Kami Naveen (Owner), MS Auto Care / Madhu Sujatha Car Wash (Panagal, Srikalahasti)`;
 
     const teMsg = `నమస్కారం ${booking.name || 'గారు'}! 🙏
 
 *MS కార్ మెకానిక్ & కార్ వాష్ (శ్రీకాళహస్తి)* వద్ద మీ ${booking.vehicleType} (${booking.vehicleModel || 'వాహనం'}) సర్వీస్ పూర్తయింది! 🚗✨
 
-మీ కారులో ఉచిత *మినరల్ వాటర్ బాటిల్ & కార్ టిష్యూ బాక్స్* ఉంచాము.
+మీ వాహనం సర్వీస్ విజయవంతంగా పూర్తయింది మరియు డెలివరీకి సిద్ధంగా ఉంది.
 
 మా సర్వీస్ మీకు నచ్చినట్లయితే, దయచేసి క్రింది లింక్ ద్వారా గూగుల్ లో 5-స్టార్ రేటింగ్ & రివ్యూ ఇవ్వండి:
 ⭐ https://share.google/bN5KNns6mgg3uI4tP
 
 ధన్యవాదాలు! మీ ప్రయాణం సురక్షితంగా సాగాలని కోరుకుంటున్నాము! 🚘
-— నవీన్, MS కార్ మెకానిక్ & కార్ వాష్ (పనగల్, శ్రీకాళహస్తి)`;
+— కామి నవీన్ (ఓనర్), MS ఆటో కేర్ / మధు సుజాత కార్ వాష్ (పనగల్, శ్రీకాళహస్తి)`;
 
     const message = lang === 'te' ? teMsg : enMsg;
     const url = `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(message)}`;
@@ -560,7 +560,6 @@ Thank you, and have a safe and happy ride! 🚘
 🛠️ *Service:* ${booking.notes || 'Water Wash & Complete Detailing'}
 ✨ *Add-ons:* ${booking.addOns && booking.addOns.length > 0 ? booking.addOns.join(', ') : 'Complimentary Package'}
 💰 *Gross Bill Amount:* ₹${amount.toLocaleString('en-IN')} (PAID)
-🎁 *Free Perks Included:* 1x Mineral Water Bottle + 1x Car Tissue Box
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 🔍 *Track Status / Download Official Tax Invoice PDF:*
 https://mscarwash.vercel.app/track?id=${booking.id}
@@ -594,7 +593,7 @@ https://mscarwash.vercel.app/track?id=${booking.id}
     try {
       const res = await generateInvoicePDF(
         booking,
-        editBilledBy || 'Naveen K (Owner)',
+        editBilledBy || 'Kami Naveen (Owner)',
         editPaymentMethod || 'Cash',
         false // Do NOT auto download
       );
@@ -632,7 +631,7 @@ https://mscarwash.vercel.app/track?id=${booking.id}
     const cleanPhone = phoneToUse.replace(/\D/g, '');
     const amountVal = editAmount || booking.totalAmount || getDefaultPrice(booking.vehicleType);
     const exactTimeStr = formatTimestampWithSeconds(booking.createdAt);
-    const staffName = editBilledBy || 'Naveen K (Owner)';
+    const staffName = editBilledBy || 'Kami Naveen (Owner)';
 
     const addOnText = editAddOns.length > 0 ? editAddOns.join(', ') : 'Standard Wash Services';
 
@@ -650,7 +649,6 @@ Vehicle: ${editVehicleType || booking.vehicleType} (${editVehicleModel || bookin
 ITEMIZED BREAKDOWN:
 1. Full Water & Snow Foam Wash / Repairs: ₹${amountVal}
 2. Add-ons Included: ${addOnText}
-3. Free Perks: Chilled Water Bottle + Car Tissue Box (FREE)
 
 TOTAL PAID AMOUNT: ₹${amountVal} (${editPaymentMethod})
 PAYMENT STATUS: PAID / COMPLETED ✓
@@ -854,7 +852,7 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 📍 Panagal, Opp Old RTO Office, Near Highway Srikalahasti
-📞 Owner: Naveen K | Helpline: 8309390902`;
+📞 Owner: Kami Naveen | Helpline: 8309390902`;
 
     const url = `https://wa.me/918309390902?text=${encodeURIComponent(message)}`;
     if (typeof window !== 'undefined') {
@@ -905,7 +903,7 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
           <div class="header">
             <div class="logo-text">MS CAR MECHANIC & CAR WASH — DAILY SHIFT SUMMARY</div>
             <div class="sub">Panagal, Opp Old RTO Office, Beside Bharat Petroleum, Srikalahasti | Helpline: 8309390902</div>
-            <div class="sub"><strong>Date:</strong> ${dateFormatted} | <strong>Shift Billed By:</strong> Naveen K (Owner)</div>
+            <div class="sub"><strong>Date:</strong> ${dateFormatted} | <strong>Shift Billed By:</strong> Kami Naveen (Owner)</div>
           </div>
 
           <div class="grid">
@@ -1283,7 +1281,7 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
                   </span>
                 </div>
                 <p className="text-xs text-neutral-500 dark:text-neutral-400 font-medium mt-0.5">
-                  Owner: Naveen K • Cash vs UPI collections &amp; fleet turnaround for today
+                  Owner: Kami Naveen • Cash vs UPI collections &amp; fleet turnaround for today
                 </p>
               </div>
             </div>
@@ -2345,7 +2343,7 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
                     type="text"
                     value={walkinBilledBy}
                     onChange={(e) => setWalkinBilledBy(e.target.value)}
-                    placeholder="e.g. Naveen K (Owner)"
+                    placeholder="e.g. Kami Naveen (Owner)"
                     className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.08] dark:border-white/[0.08] font-medium"
                   />
                 </div>
@@ -2493,7 +2491,7 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
                       type="text"
                       value={editBilledBy}
                       onChange={(e) => setEditBilledBy(e.target.value)}
-                      placeholder="e.g. Naveen K (Owner)"
+                      placeholder="e.g. Kami Naveen (Owner)"
                       className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1C1C1F] border border-black/[0.08] dark:border-white/[0.08] text-xs font-medium"
                     />
                   </div>
@@ -2665,13 +2663,6 @@ Thank you for choosing MS Car Mechanic & Car Wash — Clean Car, Happy Ride!
                           <span>Included</span>
                         </div>
                       )}
-
-                      <div className="text-[10px] text-amber-600 dark:text-amber-400 flex justify-between font-bold bg-amber-500/10 p-2 rounded-lg">
-                        <span className="flex items-center gap-1">
-                          <Sparkles className="w-3 h-3 text-amber-500" /> Complimentary Water Bottle + Car Tissue Box
-                        </span>
-                        <span>FREE</span>
-                      </div>
                     </div>
 
                     {/* Grand Total */}

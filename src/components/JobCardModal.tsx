@@ -28,7 +28,7 @@ export function JobCardModal({ booking, isOpen, onClose }: JobCardModalProps) {
   const [fuelLevel, setFuelLevel] = useState('50%');
   const [odometer, setOdometer] = useState('');
   const [regNumber, setRegNumber] = useState('');
-  const [mechanicAssigned, setMechanicAssigned] = useState('Naveen K (Owner & Lead Specialist)');
+  const [mechanicAssigned, setMechanicAssigned] = useState('Kami Naveen (Owner & Lead Specialist)');
   const [scratchNotes, setScratchNotes] = useState('Minor bumper scratches noted');
   const [hasValuablesRemoved, setHasValuablesRemoved] = useState(true);
   const [promisedTime, setPromisedTime] = useState('Within 90 Mins');
@@ -71,7 +71,6 @@ export function JobCardModal({ booking, isOpen, onClose }: JobCardModalProps) {
 🔍 *Inspection Notes:* ${scratchNotes}
 ⏰ *Estimated Delivery:* ${promisedTime}
 💰 *Estimated Total:* ₹${estimatedCost}
-🎁 *Complimentary:* 1 Chilled Mineral Water Bottle + 1 Car Tissue Box
 
 📞 *Desk Hotline:* 8309390902`;
 
