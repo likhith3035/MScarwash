@@ -144,7 +144,7 @@ export default async function Image() {
               border: '1px solid rgba(255, 255, 255, 0.1)',
             }}
           >
-            🎁 Free Water + Tissue Box
+            🔧 Complete Car Repairs
           </div>
         </div>
       </div>

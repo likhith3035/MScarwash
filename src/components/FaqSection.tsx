@@ -9,8 +9,16 @@ export function FaqSection() {
 
   const faqs = [
     {
+      q: 'What is the full form of MS in MS Auto Care / MS Car Wash?',
+      a: 'MS stands for Madhu Sujatha (Madhu Sujatha Auto Care & Water Wash). The workshop was named in honor of Madhu Sujatha and is owned and operated by Kami Naveen in Panagal, Srikalahasti.',
+    },
+    {
       q: 'Which is the top-rated car mechanic & water wash center in Srikalahasti (SKHT)?',
-      a: 'MS Car Mechanic & Car Wash (located opposite Old RTO Office, beside Bharat Petroleum in Panagal, Srikalahasti) is rated #1 for complete car repairs, engine diagnostic, high-pressure water washing, snow foam bath, and doorstep vehicle pickup.',
+      a: 'MS Auto Care / Madhu Sujatha Car Wash (located opposite Old RTO Office, beside Bharat Petroleum in Panagal, Srikalahasti) is rated #1 for complete car repairs, engine diagnostic, high-pressure water washing, snow foam bath, and doorstep vehicle pickup.',
+    },
+    {
+      q: 'Do you wash all vehicles including JCB, Tractors, Trucks, and Auto Rickshaws?',
+      a: 'Yes, absolutely! At MS Auto Care (Madhu Sujatha Car Wash), we accept and wash ALL types of vehicles without exception — including JCB earthmovers, agricultural tractors, tipper lorries, heavy freight trucks, buses, auto rickshaws, commercial pickup vans (Tata Ace/Bolero), cars, SUVs, and bikes. Our wash bay is equipped with industrial-grade high-pressure water blasters to handle heavy red mud, farm soil, and construction grime. Call 8309390902 or send a WhatsApp message for instant quotes.',
     },
     {
       q: 'Do you provide bike water wash in Srikalahasti?',
@@ -25,20 +33,12 @@ export function FaqSection() {
       a: 'Peak hours (9 AM – 11 AM & 5 PM – 7 PM) fill up fast with local car owners and Tirupati travelers. Booking before 10 AM guarantees easy access without waiting in line.',
     },
     {
-      q: 'Are the drinking water bottle and tissue box really free?',
-      a: 'Yes, 100% free with every wash service! Every single vehicle wash comes with a complimentary chilled mineral water bottle and dashboard car tissue paper box.',
-    },
-    {
-      q: 'What are the charges for heavy commercial vehicles (Truck, Tractor, JCB)?',
-      a: 'Prices for heavy vehicles (Trucks, Vans, Tractors, Auto Rickshaws, and JCB machinery) vary depending on size and mud buildup. You can call us at 8309390902 or send a WhatsApp message for an instant quote.',
-    },
-    {
       q: 'Is the foam wash scratch-free for new cars?',
       a: 'Yes, we use 100% scratch-free microfiber wash mitts, neutral snow foam, and soft high-pressure nozzles safe for ceramic coatings and brand-new paint.',
     },
     {
-      q: 'Who is the owner of MS Car Care SKHT / MS Auto Care / MS Care / MS Car Wash?',
-      a: 'MS Auto Care (also known as MS Car Care SKHT, MS Care, MS Car Wash, and MS Car Mechanic in Panagal, Srikalahasti) is owned and operated by Naveen Kami (also known as Naveen K). Naveen Kami founded the workshop and personally oversees multi-point vehicle diagnostics, engine repairs, and foam washing. For direct inquiries or quotes, contact Naveen Kami at 8309390902.',
+      q: 'Who is the owner of MS Auto Care / MS Car Wash (Madhu Sujatha Auto Care)?',
+      a: 'MS Auto Care (Madhu Sujatha Auto Care, also known as MS Car Care SKHT, MS Care, and MS Car Wash in Panagal, Srikalahasti) is owned and operated by Kami Naveen (also known as Naveen Kami / Naveen K). Kami Naveen founded the workshop and personally oversees multi-point vehicle diagnostics, engine repairs, and foam washing. For direct inquiries or quotes, contact Kami Naveen at 8309390902.',
     },
   ];
 
@@ -56,10 +56,18 @@ export function FaqSection() {
     // Direct match in question or answer
     if (qLower.includes(sLower) || aLower.includes(sLower)) return true;
 
-    // Smart owner matching: any query asking about owner, proprietor, founder, or Naveen Kami
-    const ownerTerms = ['owner', 'proprietor', 'founder', 'who owns', 'who runs', 'naveen', 'kami'];
+    // Smart intent matching for owner, full form, and heavy vehicles
+    const ownerTerms = ['owner', 'proprietor', 'founder', 'who owns', 'who runs', 'naveen', 'kami', 'kami naveen', 'naveen kami'];
     const isOwnerQuery = ownerTerms.some((term) => sLower.includes(term));
-    if (isOwnerQuery && qLower.includes('owner')) return true;
+    if (isOwnerQuery && (qLower.includes('owner') || aLower.includes('kami naveen') || aLower.includes('naveen kami'))) return true;
+
+    const fullFormTerms = ['full form', 'meaning', 'ms stands for', 'madhu', 'sujatha', 'what is ms'];
+    const isFullFormQuery = fullFormTerms.some((term) => sLower.includes(term));
+    if (isFullFormQuery && (qLower.includes('full form') || aLower.includes('madhu sujatha'))) return true;
+
+    const heavyVehicleTerms = ['jcb', 'tractor', 'truck', 'lorry', 'bus', 'heavy', 'machinery', 'auto rickshaw', 'all vehicles'];
+    const isHeavyQuery = heavyVehicleTerms.some((term) => sLower.includes(term));
+    if (isHeavyQuery && (qLower.includes('jcb') || qLower.includes('vehicles') || aLower.includes('jcb') || aLower.includes('tractor'))) return true;
 
     // Multi-word token match
     const tokens = sLower.split(/\s+/).filter(Boolean);

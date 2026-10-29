@@ -4,6 +4,12 @@ export function StructuredData() {
     '@type': ['AutoWash', 'AutoRepair', 'AutomotiveBusiness'],
     name: 'MS Auto Care — Car Mechanic & Car Wash Srikalahasti',
     alternateName: [
+      'Madhu Sujatha Auto Care',
+      'Madhu Sujatha Car Wash',
+      'Madhu Sujatha Water Wash',
+      'Madhu Sujatha Car Mechanic',
+      'Madhu Sujatha Auto Care Srikalahasti',
+      'MS (Madhu Sujatha) Car Wash Srikalahasti',
       'MS Auto Care',
       'MS Auto Care Srikalahasti',
       'Water Wash Srikalahasti',
@@ -37,15 +43,15 @@ export function StructuredData() {
     telephone: ['+918309390902', '8309390902'],
     founder: {
       '@type': 'Person',
-      name: 'Naveen Kami',
-      alternateName: 'Naveen K',
+      name: 'Kami Naveen',
+      alternateName: ['Naveen Kami', 'Naveen K'],
       jobTitle: 'Owner & Founder',
       telephone: '+918309390902',
     },
     employee: [
       {
         '@type': 'Person',
-        name: 'Naveen Kami (Naveen K)',
+        name: 'Kami Naveen (Naveen Kami / Naveen K)',
         jobTitle: 'Owner & Lead Technician',
         telephone: '+918309390902',
       },
@@ -125,7 +131,7 @@ export function StructuredData() {
         author: { '@type': 'Person', name: 'Ravi Kumar' },
         datePublished: '2025-02-02',
         reviewRating: { '@type': 'Rating', ratingValue: '5' },
-        reviewBody: 'Pickup and drop service was seamless. Car returned spotless inside and out. Mineral water bottle and tissue box were a wonderful free touch!',
+        reviewBody: 'Pickup and drop service was seamless. Car returned spotless inside and out. Very polite staff and quick turnaround time!',
       },
     ],
     hasOfferCatalog: {
@@ -170,6 +176,36 @@ export function StructuredData() {
             description: 'Complete SUV snow foam detailing, deep underbody pressure blast, full vacuuming, body wax shine.',
           },
           price: '600',
+          priceCurrency: 'INR',
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Auto Rickshaw (3-Wheeler) Pressure & Foam Wash',
+            description: 'Fast high-pressure foam wash and chassis clean for passenger & cargo auto rickshaws (Bajaj, Piaggio Ape, Atul).',
+          },
+          price: '200',
+          priceCurrency: 'INR',
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Tractor & Agricultural Machinery Mud Wash',
+            description: 'High-volume pressure blaster for farm tractors, tillers, and agricultural implements (Mahindra, Swaraj, John Deere, Sonalika).',
+          },
+          price: '600',
+          priceCurrency: 'INR',
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'JCB Earthmover, Truck, Lorry & Bus Heavy Wash',
+            description: 'Industrial heavy equipment wash bay equipped for JCB 3DX earthmovers, tippers, lorries, buses, and commercial transport trucks.',
+          },
+          price: '800',
           priceCurrency: 'INR',
         },
         {
@@ -272,10 +308,34 @@ export function StructuredData() {
     mainEntity: [
       {
         '@type': 'Question',
+        name: 'What is the full form of MS in MS Auto Care / MS Car Wash?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'MS stands for Madhu Sujatha (Madhu Sujatha Auto Care & Water Wash). The workshop in Panagal, Srikalahasti is owned and operated by Kami Naveen (also known as Naveen Kami or Naveen K).',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Who is the owner of MS Auto Care / MS Car Wash (Madhu Sujatha Car Wash)?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Kami Naveen (also known as Naveen Kami or Naveen K) is the owner and founder of MS Auto Care (Madhu Sujatha Auto Care & Car Wash) in Panagal, Srikalahasti. Phone: +91 8309390902.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Do you wash all vehicles including JCB, Tractors, Trucks, and Auto Rickshaws in Srikalahasti?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes, absolutely! MS Auto Care (Madhu Sujatha Car Wash) accepts and washes ALL vehicles without exception — including JCB earthmovers, farm tractors, tipper lorries, freight trucks, buses, auto rickshaws, commercial pickup vans, cars, SUVs, and bikes. Our wash bay is equipped with industrial-grade high-pressure water blasters to handle heavy red mud, farm dirt, and construction grime.',
+        },
+      },
+      {
+        '@type': 'Question',
         name: 'Who is the owner of MS Car Care SKHT?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'MS Car Care SKHT (located in Panagal, Srikalahasti) is owned and operated by Naveen Kami (also known as Naveen K). Direct contact: +91 8309390902.',
+          text: 'MS Car Care SKHT (Madhu Sujatha Auto Care in Panagal, Srikalahasti) is owned and operated by Kami Naveen (also known as Naveen Kami or Naveen K). Direct contact: +91 8309390902.',
         },
       },
       {
@@ -283,7 +343,7 @@ export function StructuredData() {
         name: 'Who is the owner of MS Auto Care Srikalahasti?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'MS Auto Care in Srikalahasti is founded, owned, and operated by Naveen Kami (Naveen K). Phone: +91 8309390902.',
+          text: 'MS Auto Care (Madhu Sujatha Auto Care) in Srikalahasti is founded, owned, and operated by Kami Naveen (Naveen Kami / Naveen K). Phone: +91 8309390902.',
         },
       },
       {
@@ -291,7 +351,7 @@ export function StructuredData() {
         name: 'Who is the owner of MS Care?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Naveen Kami (Naveen K) is the owner and proprietor of MS Care in Srikalahasti. Phone: +91 8309390902.',
+          text: 'Kami Naveen (Naveen Kami / Naveen K) is the owner and proprietor of MS Care (Madhu Sujatha Care) in Srikalahasti. Phone: +91 8309390902.',
         },
       },
       {
@@ -299,7 +359,7 @@ export function StructuredData() {
         name: 'Who is the owner of MS Car Wash?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'MS Car Wash in Panagal, Srikalahasti is owned and managed by Naveen Kami (Naveen K).',
+          text: 'MS Car Wash (Madhu Sujatha Car Wash) in Panagal, Srikalahasti is owned and managed by Kami Naveen (Naveen Kami / Naveen K).',
         },
       },
       {
@@ -307,7 +367,7 @@ export function StructuredData() {
         name: 'Who is the owner of MS Car Mechanic?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Naveen Kami is the owner and lead technician of MS Car Mechanic workshop in Srikalahasti.',
+          text: 'Kami Naveen is the owner and lead technician of MS Car Mechanic (Madhu Sujatha Auto Care) workshop in Srikalahasti.',
         },
       },
       {
@@ -315,7 +375,7 @@ export function StructuredData() {
         name: 'Who is the proprietor of MS Auto Care / MS Car Care SKHT?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Naveen Kami (Naveen K) is the sole proprietor and owner of MS Auto Care and MS Car Care SKHT.',
+          text: 'Kami Naveen (Naveen Kami / Naveen K) is the sole proprietor and owner of MS Auto Care (Madhu Sujatha Auto Care) and MS Car Care SKHT.',
         },
       },
       {
