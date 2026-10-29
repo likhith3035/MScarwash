@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ms-car-wash-v5';
+const CACHE_NAME = 'ms-car-wash-v6';
 
 const ASSETS_TO_CACHE = [
   '/',
@@ -10,8 +10,6 @@ const ASSETS_TO_CACHE = [
   '/icon-192.png',
   '/icon-512.png',
   '/apple-touch-icon.png',
-  '/water-bottle.png',
-  '/tissue-box.png',
   '/gallery-foam-car.png',
   '/gallery-underbody.png',
   '/gallery-interior.png',

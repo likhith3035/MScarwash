@@ -4,7 +4,6 @@ import {
   ShieldCheck,
   Droplets,
   Award,
-  Gift,
   Clock,
   MapPin,
   Phone,
@@ -266,15 +265,15 @@ export default function HomePage() {
                   className="p-3 rounded-2xl bg-slate-50 dark:bg-[#0E1420] border border-black/8 dark:border-white/10 hover:border-emerald-500/50 hover:shadow-md transition-all text-left group hover:scale-[1.02] active:scale-[0.98]"
                 >
                   <div className="flex items-center justify-between text-xs font-black text-slate-900 dark:text-white">
-                    <span>🚜 Heavy</span>
+                    <span>🚜 Heavy Fleet</span>
                     <span className="text-amber-500 font-extrabold text-[11px]">Quote</span>
                   </div>
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">Tractor, Truck, Auto</span>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5 truncate">JCB, Tractor, Truck, Auto</span>
                 </Link>
               </div>
             </div>
 
-            {/* Feature Perks Strip */}
+            {/* Feature Highlights Strip */}
             <div className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-5 text-xs text-slate-600 dark:text-slate-400 font-bold border-t border-black/8 dark:border-white/8">
               <span className="flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 text-emerald-500" /> 100% Scratch Free
@@ -283,7 +282,7 @@ export default function HomePage() {
                 <Wrench className="w-4 h-4 text-indigo-500" /> All Car Repairs
               </span>
               <span className="flex items-center gap-1.5">
-                <Gift className="w-4 h-4 text-amber-500 animate-pulse" /> Free Water + Tissue Box
+                <Sparkles className="w-4 h-4 text-amber-500" /> Doorstep Pickup &amp; Drop
               </span>
             </div>
 

@@ -225,7 +225,7 @@ function BookingForm() {
           {t('bookVehicleWash')}
         </h1>
         <p className="text-xs text-slate-500 dark:text-slate-400">
-          Fast & easy booking • Free water bottle + tissue box
+          Fast & easy booking • Doorstep pickup & center slots
         </p>
       </div>
 
@@ -596,9 +596,6 @@ function BookingForm() {
                 )}
               </span>
             </div>
-            <span className="text-[10px] text-amber-500 dark:text-amber-400 font-bold block text-right">
-              ⚡ Free Mineral Water Bottle + Car Tissue Box Included
-            </span>
           </div>
 
           <button
@@ -626,7 +623,7 @@ function BookingForm() {
 
       {/* Trust Line */}
       <p className="text-center text-[10px] font-bold text-slate-400 dark:text-slate-500">
-        ⚡ 100% Scratch Free • Free Mineral Water Bottle + Car Tissue Box Included
+        ⚡ 100% Scratch-Free Snow Foam Bath • Doorstep Pickup &amp; Center Slots
       </p>
     </div>
   );

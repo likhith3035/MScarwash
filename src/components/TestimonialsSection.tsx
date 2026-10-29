@@ -25,7 +25,7 @@ const REVIEWS: Review[] = [
     rating: 5,
     date: 'February 2025',
     review:
-      'Best car wash in Srikalahasti! Completely scratch-free snow foam and the underbody pressure washing blasted off all the sticky highway mud. Complimentary chilled water bottle and tissue box were a wonderful touch!',
+      'Best car wash in Srikalahasti! Completely scratch-free snow foam and the underbody pressure washing blasted off all the sticky highway mud. Highly recommended for all vehicle owners!',
     tag: 'Snow Foam Wash',
   },
   {

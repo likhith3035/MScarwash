@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Car, Bike, ShieldCheck, ArrowRight, CheckCircle2, Sparkles, Gift, Clock } from 'lucide-react';
+import { Car, Bike, ShieldCheck, ArrowRight, CheckCircle2, Sparkles, Clock } from 'lucide-react';
 
 export function QuickPriceEstimator() {
   const [selectedCategory, setSelectedCategory] = useState<'car' | 'bike' | 'repair'>('car');
@@ -168,7 +168,7 @@ export function QuickPriceEstimator() {
                   <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> Underbody Rinse
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <Gift className="w-4 h-4 text-amber-500 shrink-0 animate-pulse" /> Free Water + Tissue Box
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> Microfiber Dry Wipe
                 </span>
               </>
             )}

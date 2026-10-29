@@ -12,7 +12,6 @@ import {
   Car,
   Wrench,
   Sparkles,
-  Gift,
   FileText,
   Phone,
   MessageSquare,
@@ -27,7 +26,7 @@ import {
 const STATUS_STEPS = [
   { key: 'pending', label: 'Booking Confirmed', desc: 'Slot booked & technician assigned' },
   { key: 'in_progress', label: 'Service / Wash Active', desc: 'Scratch-free foam wash or mechanic work in progress' },
-  { key: 'completed', label: 'Ready & Quality Checked', desc: 'Free water bottle + tissue box loaded' },
+  { key: 'completed', label: 'Ready & Quality Checked', desc: 'Vehicle cleaned, inspected & ready for pickup' },
 ];
 
 function TrackerContent() {
@@ -258,11 +257,11 @@ function TrackerContent() {
                     </div>
                   )}
 
-                  {/* Included Perks & Details Strip */}
+                  {/* Service Guarantee & Details Strip */}
                   <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#151D2A] border border-black/5 dark:border-white/5 flex flex-wrap items-center justify-between gap-3 text-xs">
-                    <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-extrabold">
-                      <Gift className="w-4 h-4" />
-                      <span>Complimentary Water Bottle & Car Tissue Box Included</span>
+                    <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-extrabold">
+                      <Sparkles className="w-4 h-4" />
+                      <span>100% Scratch-Free Foam &amp; Quality Check Guaranteed</span>
                     </div>
                     {booking.mode === 'pickup' && booking.address && (
                       <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 font-bold">

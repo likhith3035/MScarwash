@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Bike, Car, Gift, HelpCircle, Phone, MessageSquare, Check, Sparkles, ShieldCheck, ArrowRight, Wrench } from 'lucide-react';
+import { Bike, Car, HelpCircle, Phone, MessageSquare, Check, Sparkles, ShieldCheck, ArrowRight, Wrench } from 'lucide-react';
 import { TWO_WHEELER_PRICING, FOUR_WHEELER_PRICING, ADD_ONS } from '@/lib/types';
 
 export const metadata: Metadata = {
@@ -67,21 +67,21 @@ export default function PricingPage() {
         'Underbody Pressure Rinse',
         'Full Cabin Interior Vacuum',
         'Dashboard & Mat Cleaning',
-        'Free Mineral Water Bottle',
+        'Glass & Mirror Clean',
       ],
       popular: true,
     },
     {
       name: 'Executive Detailing',
-      desc: 'Full wash + body wax polish + interior sanitization + free perks.',
+      desc: 'Full wash + body wax polish + interior deep sanitization & mirror shine.',
       price: 'From ₹500',
       tag: 'Deep Care',
       features: [
         'Everything in Standard Wash',
         'Body Wax Polish Coating',
         'Interior Deep Sanitization',
-        'Free Mineral Water Bottle',
-        'Free Car Tissue Box',
+        'Tire & Trim Gloss Dressing',
+        'Windshield Glass Treatment',
       ],
       popular: false,
     },
@@ -238,10 +238,10 @@ export default function PricingPage() {
       <div className="p-7 rounded-3xl bg-slate-100 dark:bg-[#0D131D] border border-black/10 dark:border-white/10 space-y-4 text-xs shadow-md">
         <div className="flex items-center gap-2 font-black text-slate-900 dark:text-white text-base">
           <HelpCircle className="w-5 h-5 text-amber-500" />
-          <span>Heavy Vehicles (Truck / Van / Tractor / Auto / JCB)</span>
+          <span>All Vehicles Accepted — JCB, Tractors, Lorries, Trucks &amp; Autos</span>
         </div>
         <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium max-w-2xl text-xs">
-          Washing charges vary depending on machinery size and mud accumulation. Contact our Srikalahasti wash center desk directly for instant quotes.
+          At MS Auto Care (Madhu Sujatha Car Wash), we accept all vehicles without exception. From agricultural tractors and JCB 3DX earthmovers to freight lorries, tippers, buses, and 3-wheeler auto rickshaws, our heavy equipment wash bays have industrial water blasters to eliminate deep mud, red soil, and cement buildup. Call or WhatsApp for immediate slots and quotes.
         </p>
         <div className="pt-2 flex flex-wrap gap-3">
           <a href="tel:8309390902" className="px-5 py-3 rounded-full bg-white dark:bg-[#151D2A] border border-black/10 dark:border-white/10 text-slate-900 dark:text-white font-black flex items-center gap-2 shadow-xs hover:scale-105 transition-all">
@@ -253,10 +253,10 @@ export default function PricingPage() {
         </div>
       </div>
 
-      {/* Perks CTA Banner */}
+      {/* CTA Banner */}
       <div className="p-8 sm:p-10 rounded-3xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 text-center space-y-4 shadow-xl">
-        <span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-amber-400 dark:text-amber-600">
-          <Gift className="w-4 h-4 animate-pulse" /> Free Water Bottle + Car Tissue Box Included
+        <span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-emerald-400 dark:text-emerald-600">
+          <Sparkles className="w-4 h-4 animate-pulse" /> 100% Scratch-Free Snow Foam &amp; Detailing
         </span>
         <h2 className="text-3xl font-black tracking-tight">Ready to transform your ride?</h2>
         <Link

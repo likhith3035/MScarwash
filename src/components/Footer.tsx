@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { MapPin, Phone, MessageSquare, Clock, ShieldCheck, Heart, Sparkles, Code, Star } from 'lucide-react';
+import { MapPin, Phone, MessageSquare, Clock, ShieldCheck, Code } from 'lucide-react';
 
 export function Footer() {
   return (
     <footer className="bg-slate-100 dark:bg-[#04060A] text-slate-500 dark:text-slate-400 border-t border-black/[0.08] dark:border-white/[0.08] py-14 transition-colors">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
           
           {/* Brand Info */}
           <div className="space-y-4">
@@ -99,17 +99,6 @@ export function Footer() {
                 </a>
               </div>
             </div>
-          </div>
-
-          {/* Perks */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-[#0D131D] border border-black/[0.08] dark:border-white/[0.08] space-y-2.5 shadow-sm">
-            <div className="flex items-center gap-1.5 text-xs font-extrabold text-slate-900 dark:text-white">
-              <Heart className="w-4 h-4 text-rose-500 fill-rose-500 animate-pulse" />
-              <span>Free Wash Perks</span>
-            </div>
-            <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
-              Every single wash comes with a complimentary <strong className="text-slate-900 dark:text-white">Mineral Water Bottle</strong> & <strong className="text-slate-900 dark:text-white">Car Tissue Box</strong>.
-            </p>
           </div>
 
         </div>
